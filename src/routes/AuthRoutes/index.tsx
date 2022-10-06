@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { protectedRoutes } from './routes/routes';
+import { authRoutes } from '../';
 
-const AppRoute: FC = () => {
+const AuthRoute: FC = () => {
   return (
     <Routes>
-      {protectedRoutes?.map(({ path, element: Component }: any, index) => {
+      {authRoutes?.map(({ path, element: Component }: any, index) => {
         return <Route path={path} element={<Component />} key={index} />;
       })}
+      <Route />
     </Routes>
   );
 };
-
-export default AppRoute;
+export default AuthRoute;

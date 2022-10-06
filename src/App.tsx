@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import AuthRoute from './AuthRoutes';
-import AppRoute from './AppRoutes';
+import AuthRoute from './routes/AuthRoutes';
+import AppRoute from './routes/AppRoutes';
 
 function App() {
   return (
