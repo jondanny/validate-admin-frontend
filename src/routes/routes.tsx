@@ -1,7 +1,8 @@
 import HelloWorld from '../Pages/HelloWorld/hello-world.page'
+import Login from '../Pages/auth/Login';
+import SignUp from '../Pages/auth/SignUp';
 
 export const protectedRoutes = [
-
   {
     path: "/hello-world",
     element: HelloWorld
@@ -10,9 +11,15 @@ export const protectedRoutes = [
     path: "/",
     element: HelloWorld
   }
-
 ]
 
-function async(arg0: () => Promise<any>) {
-  throw new Error("Function not implemented.");
-}
+export const authRoutes = [
+  {
+    path: "/auth/login",
+    element: Login
+  },
+  {
+    path: "/auth/SignUp",
+    element: SignUp
+  },
+]

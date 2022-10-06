@@ -1,23 +1,13 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { protectedRoutes } from './routes/routes'
+import { BrowserRouter } from 'react-router-dom';
+import AuthRoute from './utils/AuthRoutes';
+import AppRoute from './utils/AppRoutes';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {
-          protectedRoutes.map(({path, element: Component}: any, index) => {
-            return (
-              <Route path={path} element={<Component />} key={index}/>
-            )
-          })
-        }
-        <Route
-          path="*"
-          element={<Navigate to="/hello-world" replace />}
-        />
-      </Routes>
+        <AuthRoute />
+        <AppRoute />
     </BrowserRouter>
   );
 }
