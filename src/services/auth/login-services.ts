@@ -1,14 +1,10 @@
-import { HttpPostRequests } from '../../utils/network-requests/axios'
+import network from '../../utils/network';
 
 export interface LoginDataInterface {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export const loginServiceHandler = async (data: LoginDataInterface) => {
-  
-  return await HttpPostRequests({
-    url: `${process.env.REACT_APP_BACKEND_BASE_URL}/auth/login`,
-    data
-  })
-}
+  return await network.post(`/auth/login`, data);
+};

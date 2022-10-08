@@ -1,7 +1,6 @@
 import HelloWorld from '../pages/HelloWorldPage';
 import Login from '../pages/LoginPage';
-import SignUp from '../pages/SignUpPage';
-import Layout from '../layout/index'
+import Layout from '../layout/index';
 
 export const protectedRoutes = [
   {
@@ -14,17 +13,13 @@ export const protectedRoutes = [
   },
   {
     path: '/layout',
-    element: Layout
-  }
+    element: Layout,
+  },
 ];
 
 export const authRoutes = [
   {
-    path: '/auth/login',
+    path: '/login',
     element: Login,
-  },
-  {
-    path: '/auth/SignUp',
-    element: SignUp,
   },
 ];
