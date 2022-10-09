@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { protectedRoutes } from '../';
+import { publicRoutes } from '..';
 
-const AppRoute: FC = () => {
+const PublicRoutes: FC = () => {
   return (
     <Routes>
-      {protectedRoutes?.map(({ path, element: Component }: any, index) => {
+      {publicRoutes?.map(({ path, element: Component }: any, index) => {
         return <Route path={path} element={<Component />} key={index} />;
       })}
     </Routes>
   );
 };
 
-export default AppRoute;
+export default PublicRoutes;

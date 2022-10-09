@@ -1,15 +1,28 @@
 import React, { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { authRoutes } from '../';
+import { protectedRoutes } from '..';
+import AuthGuard from '../../guards/AuthGuard';
+import AdminLayout from '../../layout';
 
-const AuthRoute: FC = () => {
+const AuthRoutes: FC = () => {
   return (
     <Routes>
-      {authRoutes?.map(({ path, element: Component }: any, index) => {
-        return <Route path={path} element={<Component />} key={index} />;
+      {protectedRoutes?.map(({ path, element: Component }: any, index) => {
+        return (
+          <Route
+            path={path}
+            element={
+              <AuthGuard>
+                <AdminLayout>
+                  <Component />
+                </AdminLayout>
+              </AuthGuard>
+            }
+            key={index}
+          />
+        );
       })}
-      <Route />
     </Routes>
   );
 };
-export default AuthRoute;
+export default AuthRoutes;
