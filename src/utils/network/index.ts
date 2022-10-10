@@ -1,7 +1,9 @@
 import axios, { AxiosRequestHeaders } from 'axios';
 import { appConfig } from '../../config/app-config';
+import { setUpInterceptor } from './axios-interceptor'
 
 class Network {
+  axios = setUpInterceptor(axios)
   baseUrl = appConfig.apiUrl;
 
   public async get(path: string, headers?: AxiosRequestHeaders, options?: any) {

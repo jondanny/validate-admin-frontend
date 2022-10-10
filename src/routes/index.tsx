@@ -6,6 +6,10 @@ export const protectedRoutes = [
     path: '/',
     element: TicketProvider,
   },
+  {
+    path: '/ticket-provider',
+    element: TicketProvider
+  }
 ];
 
 export const publicRoutes = [
