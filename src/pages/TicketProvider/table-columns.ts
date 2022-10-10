@@ -3,14 +3,14 @@ export interface Column {
   id: string;
   label: string;
   minWidth?: number;
-  align?: "center";
+  align?: 'center';
   format?: (value: number) => string;
-  dateFormater?: (value: string) => string
+  dateFormater?: (value: string) => string;
 }
 
 const dateConversionHandler = (date: string) => {
-  return moment(date).format("DD-MM-YYYY hh:mm:ss")
-}
+  return moment(date).format('DD-MM-YYYY hh:mm:ss');
+};
 
 export const columns: Column[] = [
   { id: 'id', label: 'Id', minWidth: 80 },
@@ -44,10 +44,9 @@ export const columns: Column[] = [
     dateFormater: (value: string) => dateConversionHandler(value),
   },
   {
-    id: "",
-    label: "Actions",
+    id: '',
+    label: 'Delete',
     align: 'center',
     minWidth: 10,
-  }
+  },
 ];
-    
