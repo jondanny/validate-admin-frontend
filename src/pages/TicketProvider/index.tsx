@@ -1,23 +1,154 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query'
-import { getTicketProviders } from '../../services/app/ticket-provider-service'
 import DataTable from '../../components/DataTable/index'
 import Title from '../../components/Title/index'
+import { styled } from '@mui/material/styles'
+import CreateTicketProvidrModal from '../../components/TicketProviderModal/index'
+import { ToastContainer, toast } from 'react-toastify';
+import { useMutation } from 'react-query';
+import { createTicketProviderService, deleteTicketProvider, getTicketProviders  } from '../../services/app/ticket-provider-service'
+import { columns } from './constants/table-columns'
+import ConfirmationModal from '../../components/ConfirmationModal/index'
+
+const PageContent = styled('div')(({ theme }) => ({
+  marginBottom: '3rem'
+}))
 
 export interface DashboardProps {}
+interface CreateTicketProviderProps {
+  name: string
+  email: string
+}
 
 const TicketProvider: FC<DashboardProps> = () => {
+  const [openTicketProviderModal, setOpenTicketProviderModal] = useState<boolean>(false)
+  const [ticketProvidervalues, setTicketProvidervalues] = useState<CreateTicketProviderProps>({
+    name: "",
+    email: ""
+  })
+  const [ticketProviders, setTickerProviders] = useState({
+    data: [],
+    cursor: {}
+  })
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false)
+  const [deleteTicketProviderId, setDeleteTicketProviderId] = useState("")
 
-  const query = useQuery(['ticket_providers'], getTicketProviders)
+  const query = useQuery(['ticket_providers'], getTicketProviders, {
+    onSuccess: (data) => {
+      setTickerProviders(data)
+    }
+  })
+  const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderService(data), {
+    onSuccess: (data) => {
+      query.refetch()
+    }
+  });
+
+  const deleteMutation = useMutation((data: string) => deleteTicketProvider(data), {
+    onSuccess: (data) => {
+      query.refetch()
+    }
+  });
+
+  const openModal = () => {
+    setOpenTicketProviderModal(true)
+    
+  }
+  const closeModal = () => {
+    setOpenTicketProviderModal(false)
+  }
+
+  const createTicketProviderFormValuesHandler = ( field: string, value: string ) => {
+    if(field == "name"){
+      setTicketProvidervalues({
+        ...ticketProvidervalues,
+        name: value
+      })
+    }else {
+      setTicketProvidervalues({
+        ...ticketProvidervalues,
+        email: value
+      })
+    }
+  }
+
+  const createTicketProvider = () => {
+    if(ticketProvidervalues['name'] == "" || ticketProvidervalues['email'] == ""){
+      toast.error("Please Fill all the fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+      return ;
+    }
+    createMutation.mutate(ticketProvidervalues)
+  }
+
+  const openConfirmationModalHandler = (id: string) => {
+    setOpenConfirmationModal(true)
+    setDeleteTicketProviderId(id)
+  }
+  const closeConfirmationModalHandler = () => {
+    setOpenConfirmationModal(false)
+    setDeleteTicketProviderId("")
+  }
+
+  const deleteTicketProviderHandler = () => {
+    if(deleteTicketProviderId !== ""){
+      deleteMutation.mutate(deleteTicketProviderId)
+      setOpenConfirmationModal(false)
+    }else {
+      toast.error("No ticket Provider is selected", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+    }
+  }
+
+  const searchHandler = (value: string) => {
+  }
 
   return (
     <>
-      <Title
-        title="Ticket Provider"
-      />
+      <PageContent >
+        <Title
+          title="Ticket Provider"
+        />
+      </PageContent>
       <DataTable 
-        data={query.data ? query.data : []}      
+        data={ticketProviders?.data.length ? ticketProviders : []} 
+        deleteHandler={(id: string) => openConfirmationModalHandler(id)}
+        columns={columns}
+        createClickHandler={openModal}
+        buttonText="Create"
+        searchHandler={(value) => searchHandler(value)}
       />
+      <CreateTicketProvidrModal 
+        title='Create Ticket Provider'
+        openModal={openTicketProviderModal}
+        closeModal={closeModal}
+        submitForm={createTicketProvider}
+        inputValueHandler={( field : string, value: string  ) => createTicketProviderFormValuesHandler( field, value )}
+      />
+      <ConfirmationModal 
+        title='Create Ticket Provider'
+        text="Are you sure, You want to delete ticket provider"
+        openModal={openConfirmationModal}
+        closeModal={closeConfirmationModalHandler}
+        submitForm={deleteTicketProviderHandler}
+      />
+      <ToastContainer />
     </>
   );
 };

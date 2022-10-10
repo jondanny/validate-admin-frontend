@@ -1,9 +1,9 @@
 import moment from 'moment';
 export interface Column {
-  id: 'id' | 'uuid' | 'name' | 'email' | 'status' | 'createdAt';
+  id: string;
   label: string;
   minWidth?: number;
-  align?: 'center';
+  align?: "center";
   format?: (value: number) => string;
   dateFormater?: (value: string) => string
 }
@@ -31,7 +31,7 @@ export const columns: Column[] = [
   },
   {
     id: 'status',
-    label: 'Density',
+    label: 'Status',
     minWidth: 120,
     align: 'center',
     format: (value: number) => value.toFixed(2),
@@ -43,6 +43,11 @@ export const columns: Column[] = [
     align: 'center',
     dateFormater: (value: string) => dateConversionHandler(value),
   },
-
+  {
+    id: "",
+    label: "Actions",
+    align: 'center',
+    minWidth: 10,
+  }
 ];
     
