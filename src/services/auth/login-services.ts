@@ -6,5 +6,6 @@ export interface LoginDataInterface {
 }
 
 export const loginServiceHandler = async (data: LoginDataInterface) => {
-  return await network.post(`/auth/login`, data);
+  const response = await network.post(`/auth/login`, data);
+  return response.data;
 };

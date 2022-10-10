@@ -1,23 +1,14 @@
-import HelloWorld from '../pages/HelloWorldPage';
-import Login from '../pages/LoginPage';
-import Layout from '../layout/index';
+import TicketProvider from '../pages/TicketProvider';
+import Login from '../pages/Login';
 
 export const protectedRoutes = [
   {
-    path: '/hello-world',
-    element: HelloWorld,
-  },
-  {
     path: '/',
-    element: HelloWorld,
-  },
-  {
-    path: '/layout',
-    element: Layout,
+    element: TicketProvider,
   },
 ];
 
-export const authRoutes = [
+export const publicRoutes = [
   {
     path: '/login',
     element: Login,

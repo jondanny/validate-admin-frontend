@@ -1,18 +1,18 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import AuthRoute from './routes/AuthRoutes';
-import AppRoute from './routes/AppRoutes';
-import { colorContext as ColorContext, initialUserState } from './utils/contexts/app-contexts'
+import AuthRoutes from './routes/AuthRoutes';
+import PublicRoutes from './routes/PublicRoutes';
+import { colorContext as ColorContext, initialUserState } from './utils/contexts/app-contexts';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 function App() {
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient();
   return (
-    <ColorContext.Provider value={{...initialUserState}}>
+    <ColorContext.Provider value={{ ...initialUserState }}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <AuthRoute />
-          <AppRoute />
+          <PublicRoutes />
+          <AuthRoutes />
         </BrowserRouter>
       </QueryClientProvider>
     </ColorContext.Provider>

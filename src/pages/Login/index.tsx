@@ -13,25 +13,31 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useMutation } from 'react-query';
 import { loginServiceHandler, LoginDataInterface } from '../../services/auth/login-services';
+import { setAccessToken } from '../../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
-interface LoginFuntionProps {
+interface LoginFunctionProps {
   field: string;
   value: string;
 }
 
-export default function SignInSide() {
+export default function Login() {
+  const navigate = useNavigate();
   const [loginData, setLoginData] = useState<LoginDataInterface>({
     email: '',
     password: '',
   });
 
   const mutation = useMutation((data: LoginDataInterface) => loginServiceHandler(data), {
-    onSuccess: () => {},
+    onSuccess: (data) => {
+      setAccessToken(data.accessToken);
+      navigate('/');
+    },
   });
 
-  const inputChangeHandler = ({ field, value }: LoginFuntionProps) => {
+  const inputChangeHandler = ({ field, value }: LoginFunctionProps) => {
     if (field === 'email') {
       setLoginData({
         ...loginData,
