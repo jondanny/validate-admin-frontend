@@ -15,7 +15,7 @@ export const createTicketProviderService = async (data: createTicketProviderInte
   return response.data
 }
 
-export const deleteTicketProvider = async(id: string) => {
+export const deleteTicketProvider = async (id: string) => {
   const response = await network.delete(`/ticket-providers/${id}`);
   return response.data;
 }

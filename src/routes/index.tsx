@@ -1,4 +1,5 @@
 import TicketProvider from '../pages/TicketProvider';
+import Ticket from '../pages/Ticket';
 import Login from '../pages/Login';
 
 export const protectedRoutes = [
@@ -9,6 +10,10 @@ export const protectedRoutes = [
   {
     path: '/ticket-provider',
     element: TicketProvider
+  },
+  {
+    path: '/ticket',
+    element: Ticket
   }
 ];
 
