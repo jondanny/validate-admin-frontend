@@ -59,13 +59,23 @@ const TicketProvider: FC<DashboardProps> = () => {
   const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderService(data), {
     onSuccess: (data) => {
       query.refetch();
+      closeModal();
     },
-    // onError: (err) => {
-    //   // const { response } = err || {}
-    //   // const { data } = response || {}
-    //   // const
-    //   console.log("this is the error: ", err)
-    // }
+    onError: (err) => {
+      const { response }: any = err || {}
+      const { data } = response || {}
+      const { message } = data || {}
+      toast.error(`${message[0]}`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+    }
   });
 
   const deleteMutation = useMutation((data: string) => deleteTicketProvider(data), {
@@ -111,7 +121,6 @@ const TicketProvider: FC<DashboardProps> = () => {
       return;
     }
     createMutation.mutate(ticketProviderValues);
-    closeModal();
   };
 
   const openConfirmationModalHandler = (id: string) => {
