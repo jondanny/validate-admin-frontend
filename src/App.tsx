@@ -6,7 +6,15 @@ import { colorContext as ColorContext, initialUserState } from './utils/contexts
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        staleTime: 1000 * 60 * 60 * 24
+      }
+    }
+  });
   return (
     <ColorContext.Provider value={{ ...initialUserState }}>
       <QueryClientProvider client={queryClient}>
