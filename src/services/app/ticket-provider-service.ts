@@ -5,8 +5,22 @@ export interface createTicketProviderInterface {
   email: string
 }
 
-export const getTicketProviders = async () => {
-  const response = await network.get(`/ticket-providers`);
+interface getTicketProviderParams {
+  limit?: number,
+  afterCursor?: string
+  beforeCursor?: string
+  searchText?: string
+}
+
+export const getTicketProviders = async ({ limit, afterCursor, beforeCursor, searchText }: getTicketProviderParams) => {
+  const response = await network.get({path: `/ticket-providers`, options: {
+    params: {
+      limit,
+      afterCursor,
+      beforeCursor,
+      searchText
+    }
+  }});
   return response.data;
 }
 

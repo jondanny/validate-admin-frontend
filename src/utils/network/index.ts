@@ -6,7 +6,7 @@ class Network {
   axios = setUpInterceptor(axios)
   baseUrl = appConfig.apiUrl;
 
-  public async get(path: string, headers?: AxiosRequestHeaders, options?: any) {
+  public async get({path, headers, options}: {path: string, headers?: AxiosRequestHeaders, options?: any}) {
     const response = await axios.get(this.baseUrl + path, {
       headers,
       ...options,

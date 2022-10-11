@@ -10,8 +10,8 @@ function App() {
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-        staleTime: 1000 * 60 * 60 * 24
+        // refetchOnReconnect: false,
+        staleTime: 1000
       }
     }
   });
