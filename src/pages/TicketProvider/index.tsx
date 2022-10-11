@@ -50,7 +50,7 @@ const TicketProvider: FC<DashboardProps> = () => {
   })
   const [searchText, setSearchText] = useState("")
 
-  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, searchText], () => getTicketProviders({limit: tableSize.default, afterCursor: currentCursor.name == "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name == "previuous" ? currentCursor.value : "", searchText: searchText }), {
+  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, searchText], () => getTicketProviders({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", searchText: searchText }), {
     onSuccess: (data) => {
       setTickerProviders(data);
     },
@@ -168,7 +168,7 @@ const TicketProvider: FC<DashboardProps> = () => {
   const changePageHandler = (changePage: string) => {
     const { cursor } = ticketProviders || {}
     const { afterCursor, beforeCursor } = cursor || {}
-    if(changePage == "go_back" && beforeCursor !== ""){
+    if(changePage === "go_back" && beforeCursor !== ""){
       setCurrentCursor({
         name: "previous",
         value: beforeCursor

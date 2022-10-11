@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { IconButton, ButtonGroup, Typography, Select, MenuItem } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -54,10 +54,10 @@ const Pagination: FC<PaginationProps> = ({ pageSizeChangeHandler, tableSize, cha
 
       <PaginatedButtons>
         <ButtonGroup size='small'>
-          <IconButton onClick={() => changePageHandler("go_back")} disabled={cursors?.beforeCursor == null || cursors?.beforeCursor == ""}>
+          <IconButton onClick={() => changePageHandler("go_back")} disabled={cursors?.beforeCursor === null || cursors?.beforeCursor === ""}>
             <ArrowBackIcon fontSize='small' />
           </IconButton>
-          <IconButton onClick={() => changePageHandler("go_forward")} disabled={(cursors?.afterCursor == null || cursors?.afterCursor == "")}>
+          <IconButton onClick={() => changePageHandler("go_forward")} disabled={(cursors?.afterCursor === null || cursors?.afterCursor === "")}>
             <ArrowForwardIcon fontSize='small' />
           </IconButton>
         </ButtonGroup>
