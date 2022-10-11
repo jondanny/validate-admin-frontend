@@ -45,8 +45,8 @@ const TicketProvider: FC<DashboardProps> = () => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketProviderId, setDeleteTicketProviderId] = useState('');
   const [tableSize, setTableSize] = useState({
-    default: 2,
-    list: [2, 20, 30]
+    default: 5,
+    list: [5, 10, 25]
   })
   const [searchText, setSearchText] = useState("")
 
@@ -54,7 +54,7 @@ const TicketProvider: FC<DashboardProps> = () => {
     onSuccess: (data) => {
       setTickerProviders(data);
     },
-    refetchOnWindowFocus: true 
+    refetchOnWindowFocus: true
   });
   const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderService(data), {
     onSuccess: (data) => {
