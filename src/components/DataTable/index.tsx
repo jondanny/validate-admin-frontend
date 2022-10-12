@@ -48,7 +48,7 @@ interface PaginationProps {
 interface DataTableProps {
   data: any;
   columns: any;
-  deleteHandler: (id: string) => void;
+  deleteHandler?: (id: string) => void;
   createClickHandler?: () => any;
   buttonText?: string;
   searchHandler?: (searchText: string) => void;
@@ -147,9 +147,9 @@ const DataTable: FC<DataTableProps> = ({
                         <TableCell style={{ position: "sticky", right: 0, backgroundColor: "white" }} key={column.id} align={column.align}>
                           {(!value && value !== null) ? (
                             <ButtonGroup size='small'>
-                              <IconButton style={{padding: '0.5rem'}} onClick={() => deleteHandler(row.id)}>
+                              { deleteHandler && <IconButton style={{padding: '0.5rem'}} onClick={() => deleteHandler(row.id)}>
                                 <DeleteIcon fontSize="inherit" />
-                              </IconButton>
+                              </IconButton>}
                               {updateAble && <IconButton style={{padding: '0.5rem'}} onClick={() => editRecordHandler?.(row.id)}>
                                 <EditIcon fontSize="inherit" />
                               </IconButton>}

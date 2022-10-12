@@ -140,7 +140,7 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
             <ListItemButton
               onClick={() => {
                 deleteAccessToken();
-                navigate('login');
+                navigate('/login');
               }}
             >
               <ListItemIcon>

@@ -2,11 +2,8 @@
 import network from "../../utils/network";
 
 export interface createTicketProviderInterface {
-  name: string,
-  email: string,
+  token: string,
   ticketProviderId: number
-  phoneNumber: string
-  status?: string
 }
 
 interface getTicketProviderParams {
@@ -17,7 +14,7 @@ interface getTicketProviderParams {
   ticketProviderId?: string
 }
 
-export const getUsers = async ({ limit, afterCursor, beforeCursor, searchText, ticketProviderId }: getTicketProviderParams) => {
+export const getTicketProviderApiToken = async ({ limit, afterCursor, beforeCursor, searchText, ticketProviderId }: getTicketProviderParams) => {
   let params: {[key: string]: any} = {}
 
   params.limit = limit
@@ -25,26 +22,26 @@ export const getUsers = async ({ limit, afterCursor, beforeCursor, searchText, t
   afterCursor ? params.afterCursor = afterCursor : ""
   beforeCursor ? params.beforeCursor = beforeCursor : ""
   searchText ? params.searchText = searchText : ""
-  ticketProviderId && parseInt(ticketProviderId) !== 0 ? params.ticketProviderId = ticketProviderId : "" 
+  ticketProviderId ? params.ticketProviderId = ticketProviderId : "" 
 
-  const response = await network.get({path: `/users`, options: {
+  const response = await network.get({path: `/ticket-provider-api-tokens`, options: {
     params
   }});
   return response.data;
 }
 
-export const createUser = async (data: createTicketProviderInterface) => {
-  const response = await network.post(`/users`, data);
+export const createTicketProviderApiToken = async (data: createTicketProviderInterface) => {
+  const response = await network.post(`/ticket-provider-api-tokens`, data);
   return response.data
 }
 
-export const updateUser = async (data: createTicketProviderInterface, userId: string) => {
+export const updateTicketProviderApiToken = async (data: createTicketProviderInterface, userId: string) => {
   const response = await network.patch(`/users/${userId}`, data);
   return response.data
 }
 
-export const deleteUser = async(id: string) => {
-  const response = await network.delete(`/users/${id}`);
+export const deleteTicketProviderApiToken = async(id: string) => {
+  const response = await network.delete(`/ticket-provider-api-tokens/${id}`);
   return response.data;
 }
 

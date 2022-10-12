@@ -1,6 +1,8 @@
 import TicketProvider from '../pages/TicketProvider';
 import Login from '../pages/Login';
-import Users from '../pages/Users'
+import Users from '../pages/Users';
+import TicketProviderApiToken from '../pages/TicketProviderApiToken';
+import TicketTransfer from '../pages/TicketTransfer'
 
 export const protectedRoutes = [
   {
@@ -14,6 +16,14 @@ export const protectedRoutes = [
   {
     path: '/users',
     element: Users
+  },
+  {
+    path: '/ticket-provider-api-token',
+    element: TicketProviderApiToken
+  },
+  {
+    path: '/ticket-transfer',
+    element: TicketTransfer
   }
 ];
 
