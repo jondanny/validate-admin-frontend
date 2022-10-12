@@ -12,4 +12,5 @@ const PublicRoutes: FC = () => {
   );
 };
 
+
 export default PublicRoutes;
