@@ -4,6 +4,7 @@ export interface Column {
   label: string;
   minWidth?: number;
   align?: 'center';
+  name?: boolean;
   format?: (value: number) => string;
   dateFormater?: (value: string) => string;
 }
@@ -41,9 +42,11 @@ export const columns: Column[] = [
     minWidth: 300
   },
   {
-    id: "ticketProviderId",
-    label: "Ticket Provider Id",
-    align: "center"
+    id: "ticketProvider",
+    label: "Ticket Provider",
+    align: "center",
+    minWidth: 150,
+    name: true
   },
   {
     id: 'status',

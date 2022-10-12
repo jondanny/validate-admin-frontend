@@ -49,7 +49,8 @@ const Users: FC<DashboardProps> = () => {
     name: "",
     email: "",
     phoneNumber: "",
-    ticketProviderId: 0
+    ticketProviderId: 0,
+    status: "",
   })
   const [userIdForUpdation, setUserIdForUpdation] = useState("")
   const [shouldUpdateUser, setShouldUpdateUser ] = useState(false)
@@ -135,12 +136,13 @@ const Users: FC<DashboardProps> = () => {
       name: "",
       email: "",
       phoneNumber: "",
-      ticketProviderId: 0
+      ticketProviderId: 0,
+      status: ""
     })
     setShouldUpdateUser(false)
   };
 
-  const createUserFormValuesHandler = (field: string, value: string) => {
+  const createUserFormValuesHandler = (field: string, value: string, update?: boolean) => {
     if (field === 'name') {
       setSelectedProviderId({
         ...selectedProviderId,
@@ -157,10 +159,17 @@ const Users: FC<DashboardProps> = () => {
         phoneNumber: value,
       });
     }else if( field === "userStatus"){
-      setUserStatus({
-        ...userStatus,
-        default: value
-      })
+      if(update){
+        setUserStatus({
+          ...userStatus,
+          default: value
+        })
+      }else {
+        setSelectedProviderId({
+          ...selectedProviderId,
+          status: value,
+        });
+      }
     }else {
       setSelectedProviderId({
         ...selectedProviderId,
@@ -292,7 +301,7 @@ const Users: FC<DashboardProps> = () => {
         submitForm={createUserHandler}
         updateUser={() => updateMutation.mutate(selectedProviderId)}
         ticketProviders={ticketProviders}
-        inputValueHandler={(field: string, value: string) => createUserFormValuesHandler(field, value)}
+        inputValueHandler={createUserFormValuesHandler}
         userObject={selectedProviderId}
         shouldUpdateUser={shouldUpdateUser}
         userStatus={userStatus}

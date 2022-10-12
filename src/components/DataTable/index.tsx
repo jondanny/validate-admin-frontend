@@ -100,7 +100,7 @@ const DataTable: FC<DataTableProps> = ({
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   {columns.map((column: any) => {
-                    const value = row[column.id];
+                    const value = column.name ? row[column.id].name : row[column.id];
                     return (
                       <>
                         <TableCell style={{ position: "sticky", right: 0, backgroundColor: "white" }} key={column.id} align={column.align}>
