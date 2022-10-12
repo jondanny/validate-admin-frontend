@@ -58,8 +58,9 @@ const Users: FC<DashboardProps> = () => {
     default: "",
     list: ["Creating", "Active"]
   })
+  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState("")
 
-  const getUsersQuery = useQuery(['users', tableSize.default, currentCursor.value, searchText], () => getUsers({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", searchText: searchText }), {
+  const getUsersQuery = useQuery(['users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue], () => getUsers({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", searchText: searchText, ticketProviderId: ticketProvideFilterValue }), {
     onSuccess: (data) => {
       setUsers(data);
     },
@@ -76,6 +77,7 @@ const Users: FC<DashboardProps> = () => {
     },
     refetchOnWindowFocus: true 
   });
+
   const createMutation = useMutation((data: CreateTicketProviderProps) => createUser(data), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
@@ -274,7 +276,9 @@ const Users: FC<DashboardProps> = () => {
     setShouldUpdateUser(true)
     setOpenTicketProviderModal(true)
   }
-
+  const tickProviderHandler = (ticketProviderId: string) => {
+    setTicketProviderFilterValue(`${ticketProviderId}`)
+  }
   return (
     <>
       <PageContent>
@@ -292,6 +296,9 @@ const Users: FC<DashboardProps> = () => {
         tableSize={tableSize}
         changePageHandler={changePageHandler}
         updateAble={true}
+        tickProviderHandler={tickProviderHandler}
+        ticketProviders={ticketProviders}
+        ticketProvideFilterValue={ticketProvideFilterValue}
       />
       <CreateUserModal
         title="Create User"

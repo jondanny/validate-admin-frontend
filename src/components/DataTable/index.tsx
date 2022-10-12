@@ -9,7 +9,9 @@ import {
   IconButton,
   Button,
   TextField,
-  ButtonGroup
+  ButtonGroup,
+  Select,
+  MenuItem
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -21,6 +23,10 @@ const TableFilters = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
 }));
+
+const Filters = styled('div')(({ theme }) => ({
+  width: '100%'
+}))
 
 const PaginationDiv = styled('div')(({ theme }) => ({
   marginTop: '1rem',
@@ -45,6 +51,9 @@ interface DataTableProps {
   changePageHandler?: (changePage: string) => void,
   updateAble?: boolean
   editRecordHandler?: (id: string) => void
+  tickProviderHandler?: (ticketProviderId: string) => void
+  ticketProviders?: any
+  ticketProvideFilterValue?: string
 }
 
 const DataTable: FC<DataTableProps> = ({
@@ -58,26 +67,48 @@ const DataTable: FC<DataTableProps> = ({
   tableSize,
   changePageHandler,
   updateAble,
-  editRecordHandler
+  editRecordHandler,
+  tickProviderHandler,
+  ticketProviders,
+  ticketProvideFilterValue
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
 
   return (
     <>
       <TableFilters>
-        {searchHandler && (
-          <TextField
-            label="Name"
-            id="outlined-size-small"
-            defaultValue="Small"
-            size="small"
-            value={searchedValue}
-            onChange={(e) => {
-              setSearchedValue(e.target.value);
-              searchHandler(e.target.value);
-            }}
-          />
-        )}
+        <Filters>
+          {searchHandler && (
+            <TextField
+              label="Name"
+              id="outlined-size-small"
+              defaultValue="Small"
+              size="small"
+              value={searchedValue}
+              onChange={(e) => {
+                setSearchedValue(e.target.value);
+                searchHandler(e.target.value);
+              }}
+            />
+          )}
+          {tickProviderHandler && ticketProviders &&
+            <Select
+              value={ticketProvideFilterValue}
+              onChange={(e) => tickProviderHandler(e.target.value as string)}
+              style={{ marginLeft: '2rem', width: '15%' }}
+              size="small"
+              defaultValue={""}
+            >
+              {
+                ticketProviders?.map((provider: any) => {
+                  return (
+                    <MenuItem value={provider.id}>{provider.name}</MenuItem>
+                  )
+                })
+              }
+            </Select>
+          }
+        </Filters>
         {buttonText && (
           <Button variant="contained" color="primary" onClick={createClickHandler}>
             {buttonText}
