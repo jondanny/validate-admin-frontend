@@ -17,14 +17,6 @@ interface getTicketProviderParams {
   ticketProviderId?: string
 }
 
-interface getParams {
-  limit: any,
-  afterCursor?: any,
-  beforeCursor?: any,
-  searchText?: any,
-  ticketProviderId?: any
-}
-
 export const getUsers = async ({ limit, afterCursor, beforeCursor, searchText, ticketProviderId }: getTicketProviderParams) => {
   let params: {[key: string]: any} = {}
 
