@@ -13,6 +13,7 @@ import {
 } from '../../services/app/ticket-provider-service';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
+import { debounce } from 'lodash'
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
@@ -32,20 +33,49 @@ const TicketProvider: FC<DashboardProps> = () => {
   });
   const [ticketProviders, setTickerProviders] = useState({
     data: [],
-    cursor: {},
+    cursor: {
+      afterCursor: "",
+      beforeCursor: ""
+    },
   });
+  const [currentCursor, setCurrentCursor] = useState({
+    name: "",
+    value: ""
+  })
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketProviderId, setDeleteTicketProviderId] = useState('');
+  const [tableSize, setTableSize] = useState({
+    default: 5,
+    list: [5, 10, 25]
+  })
+  const [searchText, setSearchText] = useState("")
 
-  const query = useQuery(['ticket_providers'], getTicketProviders, {
+  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, searchText], () => getTicketProviders({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", searchText: searchText }), {
     onSuccess: (data) => {
       setTickerProviders(data);
     },
+    refetchOnWindowFocus: true
   });
   const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderService(data), {
     onSuccess: (data) => {
       query.refetch();
+      closeModal();
     },
+    onError: (err) => {
+      const { response }: any = err || {}
+      const { data } = response || {}
+      const { message } = data || {}
+      toast.error(`${message[0]}`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+    }
   });
 
   const deleteMutation = useMutation((data: string) => deleteTicketProvider(data), {
@@ -57,6 +87,7 @@ const TicketProvider: FC<DashboardProps> = () => {
   const openModal = () => {
     setOpenTicketProviderModal(true);
   };
+
   const closeModal = () => {
     setOpenTicketProviderModal(false);
   };
@@ -90,13 +121,13 @@ const TicketProvider: FC<DashboardProps> = () => {
       return;
     }
     createMutation.mutate(ticketProviderValues);
-    closeModal();
   };
 
   const openConfirmationModalHandler = (id: string) => {
     setOpenConfirmationModal(true);
     setDeleteTicketProviderId(id);
   };
+
   const closeConfirmationModalHandler = () => {
     setOpenConfirmationModal(false);
     setDeleteTicketProviderId('');
@@ -120,7 +151,38 @@ const TicketProvider: FC<DashboardProps> = () => {
     }
   };
 
-  const searchHandler = (value: string) => {};
+  const searchHandler = debounce((value: string) => {
+    setSearchText(value)
+    query.refetch()
+  }, 1000)
+
+
+  const pageSizeHandler = (pageSize: number) => {
+    setTableSize({
+      ...tableSize,
+      default: pageSize
+    })
+    query.refetch()
+  }
+
+  const changePageHandler = (changePage: string) => {
+    const { cursor } = ticketProviders || {}
+    const { afterCursor, beforeCursor } = cursor || {}
+    if(changePage === "go_back" && beforeCursor !== ""){
+      setCurrentCursor({
+        name: "previous",
+        value: beforeCursor
+      })
+    }else {
+      if(afterCursor !== ""){
+        setCurrentCursor({
+          name: "next",
+          value: afterCursor
+        })
+      }
+    }
+    query.refetch()
+  }
 
   return (
     <>
@@ -134,6 +196,9 @@ const TicketProvider: FC<DashboardProps> = () => {
         createClickHandler={openModal}
         buttonText="Create"
         searchHandler={(value) => searchHandler(value)}
+        pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
+        tableSize={tableSize}
+        changePageHandler={changePageHandler}
       />
       <CreateTicketProviderModal
         title="Create Ticket Provider"

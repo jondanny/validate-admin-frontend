@@ -9,13 +9,10 @@ import {
   IconButton,
   Button,
   TextField,
-  Pagination,
-  PaginationItem,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Pagination from './pagination';
 
 const TableFilters = styled('div')(({ theme }) => ({
   marginBottom: '1rem',
@@ -29,6 +26,11 @@ const PaginationDiv = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
+interface PaginationProps {
+  default: number,
+  list: number[]
+}
+
 interface DataTableProps {
   data: any;
   columns: any;
@@ -36,6 +38,9 @@ interface DataTableProps {
   createClickHandler?: () => any;
   buttonText?: string;
   searchHandler?: (searchText: string) => void;
+  pageSizeChangeHandler?: (pageSize: number) => void,
+  tableSize?: PaginationProps
+  changePageHandler?: (changePage: string) => void
 }
 
 const DataTable: FC<DataTableProps> = ({
@@ -45,6 +50,9 @@ const DataTable: FC<DataTableProps> = ({
   createClickHandler,
   buttonText,
   searchHandler,
+  pageSizeChangeHandler,
+  tableSize,
+  changePageHandler,
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
 
@@ -110,11 +118,11 @@ const DataTable: FC<DataTableProps> = ({
         </Table>
       </TableContainer>
       <PaginationDiv>
-        <Pagination
-          count={0}
-          renderItem={(item) => {
-            return <PaginationItem components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />;
-          }}
+        <Pagination 
+          pageSizeChangeHandler={(value: number) => pageSizeChangeHandler?.(value)}
+          tableSize={tableSize}
+          changePageHandler={(changePage: string) => changePageHandler?.(changePage)}
+          cursors= {data.cursor}
         />
       </PaginationDiv>
     </>
