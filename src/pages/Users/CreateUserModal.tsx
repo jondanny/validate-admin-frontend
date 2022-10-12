@@ -35,7 +35,9 @@ interface CreateTicketProviderModalProps {
   ticketProviders: any[],
   selectedProviderId: any
   userObject: any
-  updateUser: () => void
+  updateUser: () => void,
+  shouldUpdateUser: boolean
+  userStatus: any
 }
 
 const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
@@ -47,7 +49,9 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
   ticketProviders,
   selectedProviderId,
   userObject,
-  updateUser
+  updateUser,
+  shouldUpdateUser,
+  userStatus
 }) => {
   return (
     <>
@@ -95,29 +99,46 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-            <Select
-              value={ selectedProviderId.ticketProviderId }
-              onChange={(e) => inputValueHandler('ticketProvider', e.target.value)}
-              style={{ width: '100%', marginTop: '0.6rem' }}
-              size="small"
-              defaultValue={userObject?.ticketProviderId || ""}
-            >
-              {
-                ticketProviders?.map((provider: any) => {
-                  return (
-                    <MenuItem value={provider.id}>{provider.name}</MenuItem>
-                  )
-                })
-              }
-            </Select>
+            {
+              !shouldUpdateUser ? <Select
+                value={ selectedProviderId.ticketProviderId }
+                onChange={(e) => inputValueHandler('ticketProvider', e.target.value)}
+                style={{ width: '100%', marginTop: '0.6rem' }}
+                size="small"
+                defaultValue={userObject?.ticketProviderId || ""}
+              >
+                {
+                  ticketProviders?.map((provider: any) => {
+                    return (
+                      <MenuItem value={provider.id}>{provider.name}</MenuItem>
+                    )
+                  })
+                }
+              </Select> : 
+              <Select
+                value={ userStatus?.default }
+                onChange={(e) => inputValueHandler('userStatus', e.target.value)}
+                style={{ width: '100%', marginTop: '0.6rem' }}
+                size="small"
+                defaultValue={userObject?.ticketProviderId || ""}
+              >
+                {
+                  userStatus?.list?.map((status: any) => {
+                    return (
+                      <MenuItem value={status.toLowerCase()}>{status}</MenuItem>
+                    )
+                  })
+                }
+              </Select>
+            }
             </Grid>
           </Grid>
           <ButtonDiv>
             <Button variant="contained" onClick={closeModal} sx={{ mt: 3, ml: 1 }} color="inherit">
               Close
             </Button>
-            <Button variant="contained" onClick={userObject?.name ? updateUser : submitForm} sx={{ mt: 3, ml: 1 }} color="primary">
-              {userObject?.name ? "Update" : "Create"}
+            <Button variant="contained" onClick={shouldUpdateUser ? updateUser : submitForm} sx={{ mt: 3, ml: 1 }} color="primary">
+              {shouldUpdateUser ? "Update" : "Create"}
             </Button>
           </ButtonDiv>
         </Box>

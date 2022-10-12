@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,6 +13,7 @@ import { useMutation } from 'react-query';
 import { loginServiceHandler, LoginDataInterface } from '../../services/auth/login-services';
 import { setAccessToken } from '../../utils/auth';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const theme = createTheme();
 
@@ -35,6 +34,21 @@ export default function Login() {
       setAccessToken(data.accessToken);
       navigate('/');
     },
+    onError: (err) => {
+      const { response }: any = err || {}
+      const { data } = response || {}
+      const { message } = data || {}
+      toast.error(`${message}`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+    }
   });
 
   const inputChangeHandler = ({ field, value }: LoginFunctionProps) => {
@@ -114,13 +128,13 @@ export default function Login() {
                 onChange={(e: any) => inputChangeHandler({ field: 'password', value: e.target.value })}
                 autoComplete="current-password"
               />
-              <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
               <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={() => mutation.mutate(loginData)}>
                 Sign In
               </Button>
             </Box>
           </Box>
         </Grid>
+        <ToastContainer />
       </Grid>
     </ThemeProvider>
   );

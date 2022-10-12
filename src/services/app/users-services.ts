@@ -5,6 +5,7 @@ export interface createTicketProviderInterface {
   email: string,
   ticketProviderId: number
   phoneNumber: string
+  status?: string
 }
 
 interface getTicketProviderParams {

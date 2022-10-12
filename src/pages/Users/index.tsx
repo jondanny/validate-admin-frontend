@@ -40,8 +40,8 @@ const Users: FC<DashboardProps> = () => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState('');
   const [tableSize, setTableSize] = useState({
-    default: 2,
-    list: [2, 20, 30]
+    default: 5,
+    list: [5, 10, 25]
   })
   const [searchText, setSearchText] = useState("")
   const [ticketProviders, setTicketProviders] = useState([])
@@ -52,6 +52,11 @@ const Users: FC<DashboardProps> = () => {
     ticketProviderId: 0
   })
   const [userIdForUpdation, setUserIdForUpdation] = useState("")
+  const [shouldUpdateUser, setShouldUpdateUser ] = useState(false)
+  const [userStatus, setUserStatus] = useState({
+    default: "",
+    list: ["Creating", "Active"]
+  })
 
   const getUsersQuery = useQuery(['users', tableSize.default, currentCursor.value, searchText], () => getUsers({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", searchText: searchText }), {
     onSuccess: (data) => {
@@ -98,7 +103,7 @@ const Users: FC<DashboardProps> = () => {
     },
   });
 
-  const updateMutation = useMutation((data: CreateTicketProviderProps) => updateUser(selectedProviderId, userIdForUpdation), {
+  const updateMutation = useMutation((data: CreateTicketProviderProps) => updateUser({...selectedProviderId, status: userStatus?.default}, userIdForUpdation), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
       closeModal();
@@ -126,6 +131,13 @@ const Users: FC<DashboardProps> = () => {
 
   const closeModal = () => {
     setOpenTicketProviderModal(false);
+    setSelectedProviderId({
+      name: "",
+      email: "",
+      phoneNumber: "",
+      ticketProviderId: 0
+    })
+    setShouldUpdateUser(false)
   };
 
   const createUserFormValuesHandler = (field: string, value: string) => {
@@ -144,6 +156,11 @@ const Users: FC<DashboardProps> = () => {
         ...selectedProviderId,
         phoneNumber: value,
       });
+    }else if( field === "userStatus"){
+      setUserStatus({
+        ...userStatus,
+        default: value
+      })
     }else {
       setSelectedProviderId({
         ...selectedProviderId,
@@ -241,6 +258,7 @@ const Users: FC<DashboardProps> = () => {
       ticketProviderId: user.ticketProviderId
     })
     setUserIdForUpdation(userId)
+    setShouldUpdateUser(true)
     setOpenTicketProviderModal(true)
   }
 
@@ -272,6 +290,8 @@ const Users: FC<DashboardProps> = () => {
         ticketProviders={ticketProviders}
         inputValueHandler={(field: string, value: string) => createUserFormValuesHandler(field, value)}
         userObject={selectedProviderId}
+        shouldUpdateUser={shouldUpdateUser}
+        userStatus={userStatus}
       />
       <ConfirmationModal
         title="Create Ticket Provider"
