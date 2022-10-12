@@ -257,6 +257,10 @@ const Users: FC<DashboardProps> = () => {
       phoneNumber: user.phoneNumber,
       ticketProviderId: user.ticketProviderId
     })
+    setUserStatus({
+      ...userStatus,
+      default: user?.status
+    })
     setUserIdForUpdation(userId)
     setShouldUpdateUser(true)
     setOpenTicketProviderModal(true)
