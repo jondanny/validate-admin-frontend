@@ -25,7 +25,7 @@ export const getUsers = async ({ limit, afterCursor, beforeCursor, searchText, t
   afterCursor ? params.afterCursor = afterCursor : ""
   beforeCursor ? params.beforeCursor = beforeCursor : ""
   searchText ? params.searchText = searchText : ""
-  ticketProviderId ? params.ticketProviderId = ticketProviderId : "" 
+  ticketProviderId && parseInt(ticketProviderId) != 0 ? params.ticketProviderId = ticketProviderId : "" 
 
   const response = await network.get({path: `/users`, options: {
     params

@@ -11,7 +11,8 @@ import {
   TextField,
   ButtonGroup,
   Select,
-  MenuItem
+  MenuItem,
+  InputLabel
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -25,7 +26,12 @@ const TableFilters = styled('div')(({ theme }) => ({
 }));
 
 const Filters = styled('div')(({ theme }) => ({
-  width: '100%'
+  width: '100%',
+  display: "flex"
+}))
+
+const TicketProviderFilter = styled('div')(({ theme }) => ({
+  marginTop: '-1.5rem'
 }))
 
 const PaginationDiv = styled('div')(({ theme }) => ({
@@ -92,21 +98,25 @@ const DataTable: FC<DataTableProps> = ({
             />
           )}
           {tickProviderHandler && ticketProviders &&
-            <Select
-              value={ticketProvideFilterValue}
-              onChange={(e) => tickProviderHandler(e.target.value as string)}
-              style={{ marginLeft: '2rem', width: '15%' }}
-              size="small"
-              defaultValue={""}
-            >
-              {
-                ticketProviders?.map((provider: any) => {
-                  return (
-                    <MenuItem value={provider.id}>{provider.name}</MenuItem>
-                  )
-                })
-              }
-            </Select>
+            <TicketProviderFilter>
+              <InputLabel id="ticketProvider" style={{ marginLeft: '2rem' }}>Ticket Provider</InputLabel>
+              <Select
+                value={ticketProvideFilterValue}
+                onChange={(e) => tickProviderHandler(e.target.value as string)}
+                style={{ marginLeft: '2rem', width: '11rem' }}
+                size="small"
+                defaultValue={""}
+                labelId="ticketProvider"
+              >
+                {
+                  ticketProviders?.map((provider: any) => {
+                    return (
+                      <MenuItem value={provider.id}>{provider.name}</MenuItem>
+                    )
+                  })
+                }
+              </Select>
+            </TicketProviderFilter>
           }
         </Filters>
         {buttonText && (

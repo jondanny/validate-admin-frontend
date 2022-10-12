@@ -69,7 +69,14 @@ const Users: FC<DashboardProps> = () => {
 
   useQuery(['ticket_providers'], () => getTicketProviders(), {
     onSuccess: (data) => {
-      setTicketProviders(data);
+      console.log({data})
+      let ticketProviders = [...data]
+      ticketProviders.unshift({
+        name: "None",
+        id: 0
+      })
+      // setTicketProviders(data);
+      setTicketProviders(ticketProviders as any)
       setSelectedProviderId({
         ...selectedProviderId,
         ticketProviderId: parseInt(data[0].id)

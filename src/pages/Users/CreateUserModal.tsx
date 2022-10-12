@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Modal, Box, TextField, Button, Grid, Select, MenuItem } from '@mui/material';
+import { Modal, Box, TextField, Button, Grid, Select, MenuItem, InputLabel } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const ModalTitle = styled('h2')(({ theme }) => ({
@@ -101,12 +101,14 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
             <Grid item xs={12} sm={6}>
             {
               !shouldUpdateUser ? <>
+                <InputLabel id="ProviderId">Ticket Provider</InputLabel>
                 <Select
                   value={ selectedProviderId.ticketProviderId }
                   onChange={(e) => inputValueHandler('ticketProvider', e.target.value)}
-                  style={{ width: '100%', marginTop: '0.6rem' }}
+                  style={{ width: '100%' }}
                   size="small"
                   defaultValue={userObject?.ticketProviderId || ""}
+                  labelId="ProviderId"
                 >
                   {
                     ticketProviders?.map((provider: any) => {
@@ -117,31 +119,15 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
                   }
                 </Select>
               </> :
-              <Select
-                value={ userStatus?.default }
-                onChange={(e) => inputValueHandler('userStatus', e.target.value, true)}
-                style={{ width: '100%', marginTop: '0.6rem' }}
-                size="small"
-                defaultValue={userObject?.ticketProviderId || ""}
-              >
-                {
-                  userStatus?.list?.map((status: any) => {
-                    return (
-                      <MenuItem value={status.toLowerCase()}>{status}</MenuItem>
-                    )
-                  })
-                }
-              </Select>
-            }
-            </Grid>
-            {!shouldUpdateUser && (
-              <Grid item xs={12} sm={6}>
-                 <Select
-                  value={ selectedProviderId?.status }
-                  onChange={(e) => inputValueHandler('userStatus', e.target.value)}
-                  style={{ width: '100%', marginTop: '0.6rem' }}
+              <>
+                <InputLabel id="userStatus">User Status</InputLabel>
+                <Select
+                  value={ userStatus?.default }
+                  onChange={(e) => inputValueHandler('userStatus', e.target.value, true)}
+                  style={{ width: '100%' }}
                   size="small"
-
+                  defaultValue={userObject?.ticketProviderId || ""}
+                  labelId='userStatus'
                 >
                   {
                     userStatus?.list?.map((status: any) => {
@@ -152,6 +138,29 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
                   }
                 </Select>
 
+              </>
+            }
+            </Grid>
+            {!shouldUpdateUser && (
+              <Grid item xs={12} sm={6}>
+                <>
+                  <InputLabel id="userStatus"> User Status </InputLabel>
+                  <Select
+                    value={ selectedProviderId?.status }
+                    onChange={(e) => inputValueHandler('userStatus', e.target.value)}
+                    style={{ width: '100%' }}
+                    size="small"
+                    labelId='userStatus'
+                  >
+                    {
+                      userStatus?.list?.map((status: any) => {
+                        return (
+                          <MenuItem value={status.toLowerCase()}>{status}</MenuItem>
+                        )
+                      })
+                    }
+                  </Select>
+                </>
               </Grid>
             )}
           </Grid>
