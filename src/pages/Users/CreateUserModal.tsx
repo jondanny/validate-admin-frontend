@@ -35,6 +35,7 @@ interface CreateTicketProviderModalProps {
   ticketProviders: any[],
   selectedProviderId: any
   userObject: any
+  updateUser: () => void
 }
 
 const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
@@ -45,7 +46,8 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
   inputValueHandler,
   ticketProviders,
   selectedProviderId,
-  userObject
+  userObject,
+  updateUser
 }) => {
   return (
     <>
@@ -114,7 +116,7 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
             <Button variant="contained" onClick={closeModal} sx={{ mt: 3, ml: 1 }} color="inherit">
               Close
             </Button>
-            <Button variant="contained" onClick={submitForm} sx={{ mt: 3, ml: 1 }} color="primary">
+            <Button variant="contained" onClick={userObject?.name ? updateUser : submitForm} sx={{ mt: 3, ml: 1 }} color="primary">
               {userObject?.name ? "Update" : "Create"}
             </Button>
           </ButtonDiv>

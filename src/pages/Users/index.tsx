@@ -98,7 +98,7 @@ const Users: FC<DashboardProps> = () => {
     },
   });
 
-  useMutation((data: CreateTicketProviderProps) => updateUser(selectedProviderId, userIdForUpdation), {
+  const updateMutation = useMutation((data: CreateTicketProviderProps) => updateUser(selectedProviderId, userIdForUpdation), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
       closeModal();
@@ -268,6 +268,7 @@ const Users: FC<DashboardProps> = () => {
         openModal={openTicketProviderModal}
         closeModal={closeModal}
         submitForm={createUserHandler}
+        updateUser={() => updateMutation.mutate(selectedProviderId)}
         ticketProviders={ticketProviders}
         inputValueHandler={(field: string, value: string) => createUserFormValuesHandler(field, value)}
         userObject={selectedProviderId}
