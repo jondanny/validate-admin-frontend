@@ -5,4 +5,6 @@ export const sideBarMenu = [
   { title: 'Ticket', icon: InboxIcon, path: '/ticket' },
   { title: 'Ticket Providers', icon: InboxIcon, path: '/' },
   { title: 'Users', icon: ContactEmergencyIcon, path: '/users' },
+  { title: 'Ticket Provider Api Token', icon: InboxIcon, path: '/ticket-provider-api-token' },
+  { title: 'Ticket Transfer', icon: InboxIcon, path: '/ticket-transfer' }
 ];

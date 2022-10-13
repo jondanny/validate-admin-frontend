@@ -33,6 +33,11 @@ export const getUsers = async ({
   searchText ? (params.searchText = searchText) : '';
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
+  afterCursor ? (params.afterCursor = afterCursor) : '';
+  beforeCursor ? (params.beforeCursor = beforeCursor) : '';
+  searchText ? (params.searchText = searchText) : '';
+  ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
+
   const response = await network.get({
     path: `/users`,
     options: {

@@ -48,7 +48,7 @@ interface PaginationProps {
 interface DataTableProps {
   data: any;
   columns: any;
-  deleteHandler: (id: string) => void;
+  deleteHandler?: (id: string) => void;
   createClickHandler?: () => any;
   buttonText?: string;
   searchHandler?: (searchText: string) => void;
@@ -147,7 +147,7 @@ const DataTable: FC<DataTableProps> = ({
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   {columns.map((column: any) => {
-                    const value = column?.name ? row[column.id]?.name : row[column.id];
+                    const value = column?.name ? row[column.id]?.name || 'N/A' : row[column.id] || 'N/A';
                     return (
                       <>
                         <TableCell
@@ -157,7 +157,7 @@ const DataTable: FC<DataTableProps> = ({
                         >
                           {!value && value !== null ? (
                             <ButtonGroup size="small">
-                              <IconButton style={{ padding: '0.5rem' }} onClick={() => deleteHandler(row.id)}>
+                              <IconButton style={{ padding: '0.5rem' }} onClick={() => deleteHandler?.(row.id)}>
                                 <DeleteIcon fontSize="inherit" />
                               </IconButton>
                               {updateAble && (
