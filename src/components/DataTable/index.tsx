@@ -27,8 +27,8 @@ const PaginationDiv = styled('div')(({ theme }) => ({
 }));
 
 interface PaginationProps {
-  default: number,
-  list: number[]
+  default: number;
+  list: number[];
 }
 
 interface DataTableProps {
@@ -38,9 +38,9 @@ interface DataTableProps {
   createClickHandler?: () => any;
   buttonText?: string;
   searchHandler?: (searchText: string) => void;
-  pageSizeChangeHandler?: (pageSize: number) => void,
-  tableSize?: PaginationProps
-  changePageHandler?: (changePage: string) => void
+  pageSizeChangeHandler?: (pageSize: number) => void;
+  tableSize?: PaginationProps;
+  changePageHandler?: (changePage: string) => void;
 }
 
 const DataTable: FC<DataTableProps> = ({
@@ -96,19 +96,17 @@ const DataTable: FC<DataTableProps> = ({
                   {columns.map((column: any) => {
                     const value = row[column.id];
                     return (
-                      <>
-                        <TableCell key={column.id} align={column.align}>
-                          {!value ? (
-                            <IconButton onClick={() => deleteHandler(row.id)}>
-                              <DeleteIcon fontSize="inherit" />
-                            </IconButton>
-                          ) : column.format && typeof value === 'number' ? (
-                            column.format(value)
-                          ) : (
-                            value
-                          )}
-                        </TableCell>
-                      </>
+                      <TableCell key={column.id} align={column.align}>
+                        {!value ? (
+                          <IconButton onClick={() => deleteHandler(row.id)}>
+                            <DeleteIcon fontSize="inherit" />
+                          </IconButton>
+                        ) : column.format && typeof value === 'number' ? (
+                          column.format(value)
+                        ) : (
+                          value
+                        )}
+                      </TableCell>
                     );
                   })}
                 </TableRow>
@@ -118,11 +116,11 @@ const DataTable: FC<DataTableProps> = ({
         </Table>
       </TableContainer>
       <PaginationDiv>
-        <Pagination 
+        <Pagination
           pageSizeChangeHandler={(value: number) => pageSizeChangeHandler?.(value)}
           tableSize={tableSize}
           changePageHandler={(changePage: string) => changePageHandler?.(changePage)}
-          cursors= {data.cursor}
+          cursors={data.cursor}
         />
       </PaginationDiv>
     </>

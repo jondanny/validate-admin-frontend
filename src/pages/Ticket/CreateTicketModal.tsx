@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Modal, Box, TextField, Button, Grid } from '@mui/material';
+import { Autocomplete, Box, Button, Grid, Modal, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const ModalTitle = styled('h2')(({ theme }) => ({
@@ -26,12 +26,18 @@ const style = {
   borderRadius: 2,
 };
 
+interface ticketProviderOptionType {
+  id: number;
+  name: string;
+}
+
 interface CreateTicketModalProps {
   title: string;
   openModal: boolean;
   closeModal: () => any;
   submitForm: () => any;
-  inputValueHandler: (field: string, value: string) => any;
+  inputValueHandler: (field: string, value: string | number) => any;
+  ticketProviders: any;
 }
 
 const CreateTicketModal: FC<CreateTicketModalProps> = ({
@@ -40,6 +46,7 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
   closeModal,
   submitForm,
   inputValueHandler,
+  ticketProviders,
 }) => {
   return (
     <>
@@ -50,9 +57,9 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="firstName"
-                name="firstName"
-                label="First name"
+                id="ticketName"
+                name="ticketName"
+                label="Ticket Name"
                 fullWidth
                 autoComplete="given-name"
                 variant="standard"
@@ -60,15 +67,17 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="email"
-                name="email"
-                label="Email"
-                fullWidth
-                autoComplete="given-email"
-                variant="standard"
-                onChange={(e) => inputValueHandler('email', e.target.value)}
+              <Autocomplete
+                options={ticketProviders}
+                getOptionLabel={(option: ticketProviderOptionType) => option.name}
+                autoComplete
+                includeInputInList
+                onChange={(e: any, newValue: ticketProviderOptionType | null) => {
+                  inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Ticket Provider *" fullWidth variant="standard" />
+                )}
               />
             </Grid>
           </Grid>
@@ -76,25 +85,67 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="ticketName"
-                name="ticketName"
-                label="Name"
+                id="contractId"
+                name="contractId"
+                label="Contract ID"
                 fullWidth
-                autoComplete="given-name"
+                autoComplete="given-contract-id"
                 variant="standard"
-                onChange={(e) => inputValueHandler('name', e.target.value)}
+                onChange={(e) => inputValueHandler('contractId', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="imageUri"
-                name="imageUri"
+                id="tokenId"
+                name="tokenId"
+                label="Token Id"
+                fullWidth
+                autoComplete="given-token-id"
+                variant="standard"
+                onChange={(e) => inputValueHandler('tokenId', e.target.value)}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required
+                id="userId"
+                name="userId"
+                label="User ID"
+                fullWidth
+                autoComplete="given-user-id"
+                variant="standard"
+                onChange={(e) => inputValueHandler('userId', e.target.value)}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                required
+                id="imageUrl"
+                name="imageUrl"
                 label="Image URL"
                 fullWidth
-                autoComplete="given-url"
+                autoComplete="given-image-url"
                 variant="standard"
-                onChange={(e) => inputValueHandler('image_url', e.target.value)}
+                onChange={(e) => inputValueHandler('imageUrl', e.target.value)}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                required
+                id="ipfsUri"
+                name="ipfsUri"
+                label="IPFS URI"
+                fullWidth
+                autoComplete="given-ipfs-uri"
+                variant="standard"
+                onChange={(e) => inputValueHandler('ipfsUri', e.target.value)}
               />
             </Grid>
           </Grid>

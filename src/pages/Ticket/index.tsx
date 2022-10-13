@@ -1,97 +1,97 @@
 import React, { FC, useState } from 'react';
-import { useQuery } from 'react-query';
-import DataTable from '../../components/DataTable/index';
-import Title from '../../components/Title/index';
+import { useQuery, useMutation } from 'react-query';
 import { styled } from '@mui/material/styles';
-import CreateTicketModal from './CreateTicketModal';
 import { ToastContainer, toast } from 'react-toastify';
-import { useMutation } from 'react-query';
-import {
-  createTicket,
-  deleteTicket,
-  getTickets,
-} from '../../services/app/ticket-service';
+import { debounce } from 'lodash';
+import Title from '../../components/Title/index';
+import DataTable from '../../components/DataTable/index';
 import { columns } from './table-columns';
+import { createTicketService, deleteTicket, getTickets } from '../../services/app/ticket-service';
+import { getTicketProviders } from '../../services/app/ticket-provider-service';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
-import { createTicketInterface } from '../../services/app/ticket-service';
+import CreateTicketModal from './CreateTicketModal';
+
+export interface TicketInterface {}
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
 }));
 
-export interface DashboardProps { }
 interface CreateTicketProps {
   name: string;
-  email: string;
+  ticketProviderId: number;
+  contractId: string;
+  tokenId: number;
+  userId: number;
+  imageUrl: string;
+  ipfsUri: string;
 }
 
-// export interface createTicketInterface {
-//   ticket_provider_id: number,
-//   name: string,
-//   image_url: string,
-//   contract_id: number,
-//   token_id: number,
-//   user_id: number
-// }
-
-const Ticket: FC<DashboardProps> = () => {
-  const [openTicketModal, setOpenTicketModal] = useState<boolean>(false);
-  const [ticketValues, setTicketValues] = useState<createTicketInterface>({
-    ticket_provider_id: 0,
-    name: '',
-    image_url: '',
-    contract_id: 0,
-    token_id: 0, user_id: 0
-  });
-  const [tickets, setTickers] = useState({
+const Ticket: FC<TicketInterface> = () => {
+  const [tickets, setTickets] = useState({
     data: [],
-    cursor: {},
+    cursor: {
+      afterCursor: '',
+      beforeCursor: '',
+    },
+  });
+  const [ticketProviders, setTicketProviders] = useState([]);
+  const [openTicketModal, setOpenTicketModal] = useState<boolean>(false);
+  const [ticketValues, setTicketValues] = useState<CreateTicketProps>({
+    name: '',
+    ticketProviderId: 0,
+    contractId: '',
+    tokenId: 0,
+    userId: 0,
+    imageUrl: '',
+    ipfsUri: '',
+  });
+  const [currentCursor, setCurrentCursor] = useState({
+    name: '',
+    value: '',
   });
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketId, setDeleteTicketId] = useState('');
+  const [tableSize, setTableSize] = useState({
+    default: 5,
+    list: [5, 10, 25],
+  });
+  const [searchText, setSearchText] = useState('');
 
-  const query = useQuery(['ticket_providers'], getTickets, {
+  useQuery(['ticket_provider'], () => getTicketProviders({}), {
     onSuccess: (data) => {
-      setTickers(data);
+      setTicketProviders(data.data.map((item: any) => ({ id: item.id, name: item.name })));
     },
+    refetchOnWindowFocus: true,
   });
 
-  const createMutation = useMutation((data: createTicketInterface) => createTicket(data), {
+  const query = useQuery(
+    ['ticket', tableSize.default, currentCursor.value, searchText],
+    () =>
+      getTickets({
+        limit: tableSize.default,
+        afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
+        beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
+        searchText: searchText,
+      }),
+    {
+      onSuccess: (data) => {
+        setTickets(data);
+      },
+      refetchOnWindowFocus: true,
+    },
+  );
+
+  const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data), {
     onSuccess: (data) => {
       query.refetch();
+      closeModal();
     },
-  });
-
-  const deleteMutation = useMutation((data: string) => deleteTicket(data), {
-    onSuccess: (data) => {
-      query.refetch();
-    },
-  });
-
-  const openModal = () => {
-    setOpenTicketModal(true);
-  };
-  const closeModal = () => {
-    setOpenTicketModal(false);
-  };
-
-  const createTicketFormValuesHandler = (field: string, value: string) => {
-    if (field === 'name') {
-      setTicketValues({
-        ...ticketValues,
-        name: value,
-      });
-    } else {
-      setTicketValues({
-        ...ticketValues,
-        email: value,
-      });
-    }
-  };
-
-  const createTicket = () => {
-    if (ticketValues['name'] === '' || ticketValues['email'] === '') {
-      toast.error('Please Fill all the fields', {
+    onError: (err) => {
+      const { response }: any = err || {};
+      const { data } = response || {};
+      const { message } = data || {};
+      toast.error(`${message[0]}`, {
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,
@@ -101,19 +101,40 @@ const Ticket: FC<DashboardProps> = () => {
         progress: undefined,
         theme: 'light',
       });
-      return;
-    }
-    createMutation.mutate(ticketValues);
-    closeModal();
+    },
+  });
+
+  const deleteMutation = useMutation((data: string) => deleteTicket(data), {
+    onSuccess: (data) => {
+      query.refetch();
+    },
+  });
+
+  const closeModal = () => {
+    setOpenTicketModal(false);
+  };
+
+  const openModal = () => {
+    setOpenTicketModal(true);
   };
 
   const openConfirmationModalHandler = (id: string) => {
     setOpenConfirmationModal(true);
     setDeleteTicketId(id);
   };
+
   const closeConfirmationModalHandler = () => {
     setOpenConfirmationModal(false);
     setDeleteTicketId('');
+  };
+
+  const createTicketFormValuesHandler = (field: string, value: string | number) => {
+    setTicketValues((prevState) => {
+      return {
+        ...prevState,
+        [field]: value,
+      };
+    });
   };
 
   const deleteTicketHandler = () => {
@@ -134,12 +155,59 @@ const Ticket: FC<DashboardProps> = () => {
     }
   };
 
-  const searchHandler = (value: string) => { };
+  const createTicket = () => {
+    if (ticketValues['name'] === '' || !ticketValues['ticketProviderId'] || !ticketValues['userId']) {
+      toast.error('Please Fill all the fields', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+      return;
+    }
+    createMutation.mutate(ticketValues);
+  };
+
+  const searchHandler = debounce((value: string) => {
+    setSearchText(value);
+    query.refetch();
+  }, 1000);
+
+  const pageSizeHandler = (pageSize: number) => {
+    setTableSize({
+      ...tableSize,
+      default: pageSize,
+    });
+    query.refetch();
+  };
+
+  const changePageHandler = (changePage: string) => {
+    const { cursor } = tickets || {};
+    const { afterCursor, beforeCursor } = cursor || {};
+    if (changePage === 'go_back' && beforeCursor !== '') {
+      setCurrentCursor({
+        name: 'previous',
+        value: beforeCursor,
+      });
+    } else {
+      if (afterCursor !== '') {
+        setCurrentCursor({
+          name: 'next',
+          value: afterCursor,
+        });
+      }
+    }
+    query.refetch();
+  };
 
   return (
     <>
       <PageContent>
-        <Title title="Ticket " />
+        <Title title="Ticket" />
       </PageContent>
       <DataTable
         data={tickets?.data.length ? tickets : []}
@@ -148,16 +216,20 @@ const Ticket: FC<DashboardProps> = () => {
         createClickHandler={openModal}
         buttonText="Create"
         searchHandler={(value) => searchHandler(value)}
+        pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
+        tableSize={tableSize}
+        changePageHandler={changePageHandler}
       />
       <CreateTicketModal
-        title="Create Ticket "
+        title="Create Ticket Provider"
         openModal={openTicketModal}
         closeModal={closeModal}
         submitForm={createTicket}
-        inputValueHandler={(field: string, value: string) => createTicketFormValuesHandler(field, value)}
+        inputValueHandler={(field: string, value: string | number) => createTicketFormValuesHandler(field, value)}
+        ticketProviders={ticketProviders}
       />
       <ConfirmationModal
-        title="Create Ticket "
+        title="Create Ticket Provider"
         text="Are you sure, You want to delete ticket provider"
         openModal={openConfirmationModal}
         closeModal={closeConfirmationModalHandler}

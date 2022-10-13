@@ -13,7 +13,7 @@ import {
 } from '../../services/app/ticket-provider-service';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
-import { debounce } from 'lodash'
+import { debounce } from 'lodash';
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
@@ -34,37 +34,47 @@ const TicketProvider: FC<DashboardProps> = () => {
   const [ticketProviders, setTickerProviders] = useState({
     data: [],
     cursor: {
-      afterCursor: "",
-      beforeCursor: ""
+      afterCursor: '',
+      beforeCursor: '',
     },
   });
   const [currentCursor, setCurrentCursor] = useState({
-    name: "",
-    value: ""
-  })
+    name: '',
+    value: '',
+  });
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketProviderId, setDeleteTicketProviderId] = useState('');
   const [tableSize, setTableSize] = useState({
     default: 5,
-    list: [5, 10, 25]
-  })
-  const [searchText, setSearchText] = useState("")
-
-  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, searchText], () => getTicketProviders({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", searchText: searchText }), {
-    onSuccess: (data) => {
-      setTickerProviders(data);
-    },
-    refetchOnWindowFocus: true
+    list: [5, 10, 25],
   });
+  const [searchText, setSearchText] = useState('');
+
+  const query = useQuery(
+    ['ticket_providers', tableSize.default, currentCursor.value, searchText],
+    () =>
+      getTicketProviders({
+        limit: tableSize.default,
+        afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
+        beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
+        searchText: searchText,
+      }),
+    {
+      onSuccess: (data) => {
+        setTickerProviders(data);
+      },
+      refetchOnWindowFocus: true,
+    },
+  );
   const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderService(data), {
     onSuccess: (data) => {
       query.refetch();
       closeModal();
     },
     onError: (err) => {
-      const { response }: any = err || {}
-      const { data } = response || {}
-      const { message } = data || {}
+      const { response }: any = err || {};
+      const { data } = response || {};
+      const { message } = data || {};
       toast.error(`${message[0]}`, {
         position: 'top-right',
         autoClose: 3000,
@@ -75,7 +85,7 @@ const TicketProvider: FC<DashboardProps> = () => {
         progress: undefined,
         theme: 'light',
       });
-    }
+    },
   });
 
   const deleteMutation = useMutation((data: string) => deleteTicketProvider(data), {
@@ -152,37 +162,36 @@ const TicketProvider: FC<DashboardProps> = () => {
   };
 
   const searchHandler = debounce((value: string) => {
-    setSearchText(value)
-    query.refetch()
-  }, 1000)
-
+    setSearchText(value);
+    query.refetch();
+  }, 1000);
 
   const pageSizeHandler = (pageSize: number) => {
     setTableSize({
       ...tableSize,
-      default: pageSize
-    })
-    query.refetch()
-  }
+      default: pageSize,
+    });
+    query.refetch();
+  };
 
   const changePageHandler = (changePage: string) => {
-    const { cursor } = ticketProviders || {}
-    const { afterCursor, beforeCursor } = cursor || {}
-    if(changePage === "go_back" && beforeCursor !== ""){
+    const { cursor } = ticketProviders || {};
+    const { afterCursor, beforeCursor } = cursor || {};
+    if (changePage === 'go_back' && beforeCursor !== '') {
       setCurrentCursor({
-        name: "previous",
-        value: beforeCursor
-      })
-    }else {
-      if(afterCursor !== ""){
+        name: 'previous',
+        value: beforeCursor,
+      });
+    } else {
+      if (afterCursor !== '') {
         setCurrentCursor({
-          name: "next",
-          value: afterCursor
-        })
+          name: 'next',
+          value: afterCursor,
+        });
       }
     }
-    query.refetch()
-  }
+    query.refetch();
+  };
 
   return (
     <>

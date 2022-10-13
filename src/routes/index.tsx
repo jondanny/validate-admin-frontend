@@ -9,12 +9,12 @@ export const protectedRoutes = [
   },
   {
     path: '/ticket-provider',
-    element: TicketProvider
+    element: TicketProvider,
   },
   {
     path: '/ticket',
-    element: Ticket
-  }
+    element: Ticket,
+  },
 ];
 
 export const publicRoutes = [
