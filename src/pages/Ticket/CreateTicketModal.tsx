@@ -31,6 +31,11 @@ interface ticketProviderOptionType {
   name: string;
 }
 
+interface userOptionType {
+  id: number;
+  name: string;
+}
+
 interface CreateTicketModalProps {
   title: string;
   openModal: boolean;
@@ -38,6 +43,7 @@ interface CreateTicketModalProps {
   submitForm: () => any;
   inputValueHandler: (field: string, value: string | number) => any;
   ticketProviders: any;
+  users: any;
 }
 
 const CreateTicketModal: FC<CreateTicketModalProps> = ({
@@ -47,6 +53,7 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
   submitForm,
   inputValueHandler,
   ticketProviders,
+  users,
 }) => {
   return (
     <>
@@ -109,15 +116,15 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
           </Grid>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="userId"
-                name="userId"
-                label="User ID"
-                fullWidth
-                autoComplete="given-user-id"
-                variant="standard"
-                onChange={(e) => inputValueHandler('userId', e.target.value)}
+              <Autocomplete
+                options={users}
+                getOptionLabel={(option: userOptionType) => option.name}
+                autoComplete
+                includeInputInList
+                onChange={(e: any, newValue: userOptionType | null) => {
+                  inputValueHandler('userId', newValue ? newValue?.id : 0);
+                }}
+                renderInput={(params) => <TextField {...params} label="User *" fullWidth variant="standard" />}
               />
             </Grid>
           </Grid>

@@ -10,6 +10,7 @@ import { createTicketService, deleteTicket, getTickets } from '../../services/ap
 import { getTicketProviders } from '../../services/app/ticket-provider-service';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
+import { getUsers } from '../../services/app/users-services';
 
 export interface TicketInterface {}
 
@@ -36,6 +37,7 @@ const Ticket: FC<TicketInterface> = () => {
     },
   });
   const [ticketProviders, setTicketProviders] = useState([]);
+  const [users, setUsers] = useState([]);
   const [openTicketModal, setOpenTicketModal] = useState<boolean>(false);
   const [ticketValues, setTicketValues] = useState<CreateTicketProps>({
     name: '',
@@ -61,6 +63,13 @@ const Ticket: FC<TicketInterface> = () => {
   useQuery(['ticket_provider'], () => getTicketProviders({}), {
     onSuccess: (data) => {
       setTicketProviders(data.data.map((item: any) => ({ id: item.id, name: item.name })));
+    },
+    refetchOnWindowFocus: true,
+  });
+
+  useQuery(['user'], () => getUsers({}), {
+    onSuccess: (data) => {
+      setUsers(data.data.map((item: any) => ({ id: item.id, name: item.name })));
     },
     refetchOnWindowFocus: true,
   });
@@ -156,7 +165,15 @@ const Ticket: FC<TicketInterface> = () => {
   };
 
   const createTicket = () => {
-    if (ticketValues['name'] === '' || !ticketValues['ticketProviderId'] || !ticketValues['userId']) {
+    if (
+      ticketValues['name'] === '' ||
+      ticketValues['contractId'] === '' ||
+      ticketValues['imageUrl'] === '' ||
+      ticketValues['ipfsUri'] === '' ||
+      !ticketValues['ticketProviderId'] ||
+      !ticketValues['userId'] ||
+      !ticketValues['tokenId']
+    ) {
       toast.error('Please Fill all the fields', {
         position: 'top-right',
         autoClose: 3000,
@@ -221,16 +238,17 @@ const Ticket: FC<TicketInterface> = () => {
         changePageHandler={changePageHandler}
       />
       <CreateTicketModal
-        title="Create Ticket Provider"
+        title="Create Ticket"
         openModal={openTicketModal}
         closeModal={closeModal}
         submitForm={createTicket}
         inputValueHandler={(field: string, value: string | number) => createTicketFormValuesHandler(field, value)}
         ticketProviders={ticketProviders}
+        users={users}
       />
       <ConfirmationModal
-        title="Create Ticket Provider"
-        text="Are you sure, You want to delete ticket provider"
+        title="Create Ticket"
+        text="Are you sure, You want to delete ticket"
         openModal={openConfirmationModal}
         closeModal={closeConfirmationModalHandler}
         submitForm={deleteTicketHandler}
