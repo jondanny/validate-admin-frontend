@@ -17,14 +17,16 @@ export const columns: Column[] = [
   { id: 'id', label: 'Id', minWidth: 80 },
   { id: 'uuid', label: 'UUID', minWidth: 300 },
   {
-    id: "userIdFrom",
+    id: "userFrom",
     label: "User From",
     align: "center",
+    name: true,
   },
   {
-    id: "userIdTo",
+    id: "userTo",
     label: "User To",
-    align: "center"
+    align: "center",
+    name: true
   },
   {
     id: "ticketId",
@@ -32,9 +34,10 @@ export const columns: Column[] = [
     align: "center"
   },
   {
-    id: "ticketProviderId",
-    label: "Ticket Provider Id",
-    align: "center"
+    id: "ticketProvider",
+    label: "Ticket Provider",
+    align: "center",
+    name: true
   },
   {
     id: "status",

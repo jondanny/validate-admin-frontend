@@ -76,7 +76,6 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
       <DataTable
         data={ticketTransfer?.data.length ? ticketTransfer : []}
         columns={columns}
-        buttonText="Create"
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}
         changePageHandler={changePageHandler}

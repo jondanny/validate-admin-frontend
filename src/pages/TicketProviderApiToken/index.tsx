@@ -45,13 +45,14 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketProviderApiTokenId, setDeleteTicketProviderApiTokenId] = useState('');
   const [ticketProviders, setTicketProviders] = useState([])
+  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState("")
   
   const [tableSize, setTableSize] = useState({
     default: 5,
     list: [5, 10, 25]
   })
 
-  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value], () => getTicketProviderApiToken({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : ""}), {
+  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue], () => getTicketProviderApiToken({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", ticketProviderId: ticketProvideFilterValue}), {
     onSuccess: (data) => {
       setTicketProviderApiToken(data);
     },
@@ -60,7 +61,12 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
 
   useQuery(['ticket_providers'], () => getTicketProviders(), {
     onSuccess: (data) => {
-      setTicketProviders(data as any)
+      let ticketProviders = [...data]
+      ticketProviders.unshift({
+        name: "None",
+        id: 0
+      })
+      setTicketProviders(ticketProviders as any)
     },
     refetchOnWindowFocus: true 
   });
@@ -188,6 +194,10 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
     query.refetch()
   }
 
+  const ticketProviderChangeHandler = (ticketProviderId: string) => {
+    setTicketProviderFilterValue(`${ticketProviderId}`)
+  }
+
   return (
     <>
       <PageContent>
@@ -202,6 +212,8 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}
         changePageHandler={changePageHandler}
+        ticketProviders={ticketProviders}
+        tickProviderHandler={ticketProviderChangeHandler}
       />
       <CreateTicketProviderApiTokenModal
         title="Create Ticket Provider Api Token"

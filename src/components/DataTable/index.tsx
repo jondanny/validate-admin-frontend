@@ -141,7 +141,7 @@ const DataTable: FC<DataTableProps> = ({
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   {columns.map((column: any) => {
-                    const value = column?.name ? row[column.id]?.name : row[column.id];
+                    const value = column?.name ? row[column.id]?.name || "N/A" : row[column.id] || "N/A";
                     return (
                       <>
                         <TableCell style={{ position: "sticky", right: 0, backgroundColor: "white" }} key={column.id} align={column.align}>
@@ -157,7 +157,7 @@ const DataTable: FC<DataTableProps> = ({
                           ) : column.format && typeof value === 'number' ? (
                             column.format(value)
                           ) : (
-                            value || "N/A"
+                            value
                           )}
                         </TableCell>
                       </>
