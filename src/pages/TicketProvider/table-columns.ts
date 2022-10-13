@@ -44,7 +44,7 @@ export const columns: Column[] = [
     dateFormater: (value: string) => dateConversionHandler(value),
   },
   {
-    id: '',
+    id: 'delete',
     label: 'Delete',
     align: 'center',
     minWidth: 10,

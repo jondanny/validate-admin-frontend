@@ -12,7 +12,7 @@ import {
   ButtonGroup,
   Select,
   MenuItem,
-  InputLabel
+  InputLabel,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -27,12 +27,12 @@ const TableFilters = styled('div')(({ theme }) => ({
 
 const Filters = styled('div')(({ theme }) => ({
   width: '100%',
-  display: "flex"
-}))
+  display: 'flex',
+}));
 
 const TicketProviderFilter = styled('div')(({ theme }) => ({
-  marginTop: '-1.5rem'
-}))
+  marginTop: '-1.5rem',
+}));
 
 const PaginationDiv = styled('div')(({ theme }) => ({
   marginTop: '1rem',
@@ -41,8 +41,8 @@ const PaginationDiv = styled('div')(({ theme }) => ({
 }));
 
 interface PaginationProps {
-  default: number,
-  list: number[]
+  default: number;
+  list: number[];
 }
 
 interface DataTableProps {
@@ -52,14 +52,14 @@ interface DataTableProps {
   createClickHandler?: () => any;
   buttonText?: string;
   searchHandler?: (searchText: string) => void;
-  pageSizeChangeHandler?: (pageSize: number) => void,
-  tableSize?: PaginationProps
-  changePageHandler?: (changePage: string) => void,
-  updateAble?: boolean
-  editRecordHandler?: (id: string) => void
-  tickProviderHandler?: (ticketProviderId: string) => void
-  ticketProviders?: any
-  ticketProvideFilterValue?: string
+  pageSizeChangeHandler?: (pageSize: number) => void;
+  tableSize?: PaginationProps;
+  changePageHandler?: (changePage: string) => void;
+  updateAble?: boolean;
+  editRecordHandler?: (id: string) => void;
+  tickProviderHandler?: (ticketProviderId: string) => void;
+  ticketProviders?: any;
+  ticketProvideFilterValue?: string;
 }
 
 const DataTable: FC<DataTableProps> = ({
@@ -76,7 +76,7 @@ const DataTable: FC<DataTableProps> = ({
   editRecordHandler,
   tickProviderHandler,
   ticketProviders,
-  ticketProvideFilterValue
+  ticketProvideFilterValue,
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
 
@@ -97,27 +97,25 @@ const DataTable: FC<DataTableProps> = ({
               }}
             />
           )}
-          {tickProviderHandler && ticketProviders &&
+          {tickProviderHandler && ticketProviders && (
             <TicketProviderFilter>
-              <InputLabel id="ticketProvider" style={{ marginLeft: '2rem' }}>Ticket Provider</InputLabel>
+              <InputLabel id="ticketProvider" style={{ marginLeft: '2rem' }}>
+                Ticket Provider
+              </InputLabel>
               <Select
                 value={ticketProvideFilterValue}
                 onChange={(e) => tickProviderHandler(e.target.value as string)}
                 style={{ marginLeft: '2rem', width: '11rem' }}
                 size="small"
-                defaultValue={""}
+                defaultValue={''}
                 labelId="ticketProvider"
               >
-                {
-                  ticketProviders?.map((provider: any) => {
-                    return (
-                      <MenuItem value={provider.id}>{provider.name}</MenuItem>
-                    )
-                  })
-                }
+                {ticketProviders?.map((provider: any) => {
+                  return <MenuItem value={provider.id}>{provider.name}</MenuItem>;
+                })}
               </Select>
             </TicketProviderFilter>
-          }
+          )}
         </Filters>
         {buttonText && (
           <Button variant="contained" color="primary" onClick={createClickHandler}>
@@ -125,12 +123,20 @@ const DataTable: FC<DataTableProps> = ({
           </Button>
         )}
       </TableFilters>
-      <TableContainer sx={{ maxHeight: 440 }} style={{width: '97vw'}}>
+      <TableContainer sx={{ maxHeight: 440 }} style={{ width: '97vw' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column: any, index: any) => (
-                <TableCell style={index === columns.length - 1 ? { position: "sticky", right: 0, backgroundColor: "white" } : { minWidth: column.minWidth }} key={column.id} align={column.align}>
+                <TableCell
+                  style={
+                    index === columns.length - 1
+                      ? { position: 'sticky', right: 0, backgroundColor: 'white' }
+                      : { minWidth: column.minWidth }
+                  }
+                  key={column.id}
+                  align={column.align}
+                >
                   {column.label}
                 </TableCell>
               ))}
@@ -144,20 +150,26 @@ const DataTable: FC<DataTableProps> = ({
                     const value = column?.name ? row[column.id]?.name : row[column.id];
                     return (
                       <>
-                        <TableCell style={{ position: "sticky", right: 0, backgroundColor: "white" }} key={column.id} align={column.align}>
-                          {(!value && value !== null) ? (
-                            <ButtonGroup size='small'>
-                              <IconButton style={{padding: '0.5rem'}} onClick={() => deleteHandler(row.id)}>
+                        <TableCell
+                          style={{ position: 'sticky', right: 0, backgroundColor: 'white' }}
+                          key={column.id}
+                          align={column.align}
+                        >
+                          {!value && value !== null ? (
+                            <ButtonGroup size="small">
+                              <IconButton style={{ padding: '0.5rem' }} onClick={() => deleteHandler(row.id)}>
                                 <DeleteIcon fontSize="inherit" />
                               </IconButton>
-                              {updateAble && <IconButton style={{padding: '0.5rem'}} onClick={() => editRecordHandler?.(row.id)}>
-                                <EditIcon fontSize="inherit" />
-                              </IconButton>}
+                              {updateAble && (
+                                <IconButton style={{ padding: '0.5rem' }} onClick={() => editRecordHandler?.(row.id)}>
+                                  <EditIcon fontSize="inherit" />
+                                </IconButton>
+                              )}
                             </ButtonGroup>
                           ) : column.format && typeof value === 'number' ? (
                             column.format(value)
                           ) : (
-                            value || "N/A"
+                            value || 'N/A'
                           )}
                         </TableCell>
                       </>
@@ -170,11 +182,11 @@ const DataTable: FC<DataTableProps> = ({
         </Table>
       </TableContainer>
       <PaginationDiv>
-        <Pagination 
+        <Pagination
           pageSizeChangeHandler={(value: number) => pageSizeChangeHandler?.(value)}
           tableSize={tableSize}
           changePageHandler={(changePage: string) => changePageHandler?.(changePage)}
-          cursors= {data.cursor}
+          cursors={data.cursor}
         />
       </PaginationDiv>
     </>

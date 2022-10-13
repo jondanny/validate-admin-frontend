@@ -1,6 +1,7 @@
 import TicketProvider from '../pages/TicketProvider';
+import Ticket from '../pages/Ticket';
 import Login from '../pages/Login';
-import Users from '../pages/Users'
+import Users from '../pages/Users';
 
 export const protectedRoutes = [
   {
@@ -9,12 +10,16 @@ export const protectedRoutes = [
   },
   {
     path: '/ticket-provider',
-    element: TicketProvider
+    element: TicketProvider,
+  },
+  {
+    path: '/ticket',
+    element: Ticket,
   },
   {
     path: '/users',
-    element: Users
-  }
+    element: Users,
+  },
 ];
 
 export const publicRoutes = [
