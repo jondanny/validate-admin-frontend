@@ -11,15 +11,18 @@ interface getTickettransferParams {
   limit?: number,
   afterCursor?: string
   beforeCursor?: string
+  ticketProviderId?: string
 }
 
-export const getTicketTranser = async ({ limit, afterCursor, beforeCursor }: getTickettransferParams) => {
+export const getTicketTranser = async ({ limit, afterCursor, beforeCursor, ticketProviderId }: getTickettransferParams) => {
   let params: {[key: string]: any} = {}
 
   params.limit = limit
   
   afterCursor ? params.afterCursor = afterCursor : ""
   beforeCursor ? params.beforeCursor = beforeCursor : ""
+  ticketProviderId && parseInt(ticketProviderId) !== 0 ? params.ticketProviderId = ticketProviderId : ""
+
 
   const response = await network.get({path: `/ticket-transfers`, options: {
     params

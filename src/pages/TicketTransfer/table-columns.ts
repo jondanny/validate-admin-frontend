@@ -29,9 +29,10 @@ export const columns: Column[] = [
     name: true
   },
   {
-    id: "ticketId",
+    id: "ticket",
     label: "Ticket Id",
-    align: "center"
+    align: "center",
+    name: true
   },
   {
     id: "ticketProvider",

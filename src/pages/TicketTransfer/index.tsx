@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import { ToastContainer } from 'react-toastify';
 import {
   getTicketTranser,
+  getTicketProviders
 } from '../../services/app/ticket-transfer-service'
 import { columns } from './table-columns';
 
@@ -32,8 +33,10 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
     default: 5,
     list: [5, 10, 25]
   })
+  const [ticketProviders, setTicketProviders] = useState([])
+  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState("")
 
-  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value], () => getTicketTranser({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : ""}), {
+  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue], () => getTicketTranser({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", ticketProviderId: ticketProvideFilterValue }), {
     onSuccess: (data) => {
         setTicketTransfer(data);
     },
@@ -68,6 +71,22 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
     query.refetch()
   }
 
+  useQuery(['ticket_providers'], () => getTicketProviders(), {
+    onSuccess: (data) => {
+      let ticketProviders = [...data]
+      ticketProviders.unshift({
+        name: "None",
+        id: 0
+      })
+      setTicketProviders(ticketProviders as any)
+    },
+    refetchOnWindowFocus: true 
+  });
+
+  const ticketProviderChangeHandler = (ticketProviderId: string) => {
+    setTicketProviderFilterValue(`${ticketProviderId}`)
+  }
+
   return (
     <>
       <PageContent>
@@ -79,6 +98,8 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}
         changePageHandler={changePageHandler}
+        ticketProviders={ticketProviders}
+        tickProviderHandler={ticketProviderChangeHandler}
       />
       <ToastContainer />
     </>

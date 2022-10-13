@@ -52,7 +52,7 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
     list: [5, 10, 25]
   })
 
-  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue], () => getTicketProviderApiToken({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", ticketProviderId: ticketProvideFilterValue}), {
+  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue], () => getTicketProviderApiToken({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", ticketProviderId: ticketProvideFilterValue }), {
     onSuccess: (data) => {
       setTicketProviderApiToken(data);
     },
