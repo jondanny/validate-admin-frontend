@@ -24,6 +24,15 @@ class Network {
     return response;
   }
 
+  public async patch(path: string, data: any, headers?: AxiosRequestHeaders, options?: any) {
+    const response = await axios.patch(this.baseUrl + path, data, {
+      headers,
+      ...options,
+    });
+
+    return response;
+  }
+
   public async delete(path: string, data?: any, headers?: AxiosRequestHeaders, options?: any) {
     const response = await axios.delete(this.baseUrl + path, {
       headers,
