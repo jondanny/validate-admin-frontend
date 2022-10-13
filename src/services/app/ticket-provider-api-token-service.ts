@@ -22,7 +22,7 @@ export const getTicketProviderApiToken = async ({ limit, afterCursor, beforeCurs
   afterCursor ? params.afterCursor = afterCursor : ""
   beforeCursor ? params.beforeCursor = beforeCursor : ""
   searchText ? params.searchText = searchText : ""
-  ticketProviderId ? params.ticketProviderId = ticketProviderId : "" 
+  ticketProviderId && parseInt(ticketProviderId) !== 0 ? params.ticketProviderId = ticketProviderId : ""
 
   const response = await network.get({path: `/ticket-provider-api-tokens`, options: {
     params
