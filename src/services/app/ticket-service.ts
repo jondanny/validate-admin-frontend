@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import network from '../../utils/network';
 
 export interface createTicketInterface {
@@ -15,18 +16,34 @@ interface getTicketParams {
   afterCursor?: string;
   beforeCursor?: string;
   searchText?: string;
+  ticketProviderId?: string;
 }
 
-export const getTickets = async ({ limit, afterCursor, beforeCursor, searchText }: getTicketParams) => {
+export const getTickets = async ({
+  limit,
+  afterCursor,
+  beforeCursor,
+  searchText,
+  ticketProviderId,
+}: getTicketParams) => {
+  let params: { [key: string]: any } = {};
+
+  params.limit = limit;
+
+  afterCursor ? (params.afterCursor = afterCursor) : '';
+  beforeCursor ? (params.beforeCursor = beforeCursor) : '';
+  searchText ? (params.searchText = searchText) : '';
+  ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
+
+  afterCursor ? (params.afterCursor = afterCursor) : '';
+  beforeCursor ? (params.beforeCursor = beforeCursor) : '';
+  searchText ? (params.searchText = searchText) : '';
+  ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
+
   const response = await network.get({
     path: `/tickets`,
     options: {
-      params: {
-        limit,
-        afterCursor,
-        beforeCursor,
-        searchText,
-      },
+      params,
     },
   });
   return response.data;

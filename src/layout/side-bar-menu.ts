@@ -1,10 +1,13 @@
 import InboxIcon from '@mui/icons-material/AirplaneTicket';
-import ContactEmergencyIcon from '@mui/icons-material/ContactEmergency';
+import SendIcon from '@mui/icons-material/Send';
+import PeopleIcon from '@mui/icons-material/People';
+import ApiIcon from '@mui/icons-material/Api';
+import BusinessIcon from '@mui/icons-material/Business';
 
 export const sideBarMenu = [
   { title: 'Ticket', icon: InboxIcon, path: '/ticket' },
-  { title: 'Ticket Providers', icon: InboxIcon, path: '/' },
-  { title: 'Users', icon: ContactEmergencyIcon, path: '/users' },
-  { title: 'Ticket Provider Api Token', icon: InboxIcon, path: '/ticket-provider-api-token' },
-  { title: 'Ticket Transfer', icon: InboxIcon, path: '/ticket-transfer' }
+  { title: 'Ticket Providers', icon: BusinessIcon, path: '/' },
+  { title: 'Users', icon: PeopleIcon, path: '/users' },
+  { title: 'Ticket Provider Api Token', icon: ApiIcon, path: '/ticket-provider-api-token' },
+  { title: 'Ticket Transfer', icon: SendIcon, path: '/ticket-transfer' },
 ];

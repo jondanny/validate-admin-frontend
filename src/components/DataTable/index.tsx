@@ -79,7 +79,6 @@ const DataTable: FC<DataTableProps> = ({
   ticketProvideFilterValue,
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
-
   return (
     <>
       <TableFilters>
@@ -107,7 +106,7 @@ const DataTable: FC<DataTableProps> = ({
                 onChange={(e) => tickProviderHandler(e.target.value as string)}
                 style={{ marginLeft: '2rem', width: '11rem' }}
                 size="small"
-                defaultValue={''}
+                defaultValue="All"
                 labelId="ticketProvider"
               >
                 {ticketProviders?.map((provider: any) => {
@@ -123,7 +122,7 @@ const DataTable: FC<DataTableProps> = ({
           </Button>
         )}
       </TableFilters>
-      <TableContainer sx={{ maxHeight: 440 }} style={{ width: '97vw' }}>
+      <TableContainer sx={{ maxHeight: 1440 }} style={{ width: '97vw' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

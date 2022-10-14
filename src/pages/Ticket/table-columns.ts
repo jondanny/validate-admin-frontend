@@ -4,6 +4,7 @@ export interface Column {
   label: string;
   minWidth?: number;
   align?: 'center';
+  name?: boolean;
   format?: (value: number) => string;
   dateFormater?: (value: string) => string;
 }
@@ -44,18 +45,18 @@ export const columns: Column[] = [
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'ticketProviderId',
-    label: 'Ticket Provider ID',
+    id: 'ticketProvider',
+    label: 'Ticket Provider',
     minWidth: 60,
     align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
+    name: true,
   },
   {
-    id: 'userId',
+    id: 'user',
     label: 'User ID',
     minWidth: 60,
     align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
+    name: true,
   },
   {
     id: 'status',

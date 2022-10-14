@@ -7,7 +7,7 @@ import Title from '../../components/Title/index';
 import DataTable from '../../components/DataTable/index';
 import { columns } from './table-columns';
 import { createTicketService, deleteTicket, getTickets } from '../../services/app/ticket-service';
-import { getTicketProviders } from '../../services/app/ticket-provider-service';
+import { getTicketProviders } from '../../services/app/users-services';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
 import { getUsers } from '../../services/app/users-services';
@@ -55,14 +55,31 @@ const Ticket: FC<TicketInterface> = () => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketId, setDeleteTicketId] = useState('');
   const [tableSize, setTableSize] = useState({
-    default: 5,
+    default: 10,
     list: [5, 10, 25],
   });
   const [searchText, setSearchText] = useState('');
+  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState('');
+  const [selectedProviderId, setSelectedProviderId] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    ticketProviderId: 0,
+    status: '',
+  });
 
-  useQuery(['ticket_provider'], () => getTicketProviders({}), {
+  useQuery(['ticket_provider'], () => getTicketProviders(), {
     onSuccess: (data) => {
-      setTicketProviders(data.data.map((item: any) => ({ id: item.id, name: item.name })));
+      let ticketProviders = [...data];
+      ticketProviders.unshift({
+        name: 'All',
+        id: 0,
+      });
+      setTicketProviders(ticketProviders as any);
+      setSelectedProviderId({
+        ...selectedProviderId,
+        ticketProviderId: parseInt(data[0].id),
+      });
     },
     refetchOnWindowFocus: true,
   });
@@ -75,13 +92,14 @@ const Ticket: FC<TicketInterface> = () => {
   });
 
   const query = useQuery(
-    ['ticket', tableSize.default, currentCursor.value, searchText],
+    ['ticket', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
     () =>
       getTickets({
         limit: tableSize.default,
         afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
         searchText: searchText,
+        ticketProviderId: ticketProvideFilterValue,
       }),
     {
       onSuccess: (data) => {
@@ -166,7 +184,7 @@ const Ticket: FC<TicketInterface> = () => {
 
   const createTicket = () => {
     if (
-      ticketValues['name'] === '' ||
+      ticketValues.name === '' ||
       ticketValues['contractId'] === '' ||
       ticketValues['imageUrl'] === '' ||
       ticketValues['ipfsUri'] === '' ||
@@ -221,6 +239,10 @@ const Ticket: FC<TicketInterface> = () => {
     query.refetch();
   };
 
+  const tickProviderHandler = (ticketProviderId: string) => {
+    setTicketProviderFilterValue(`${ticketProviderId}`);
+  };
+
   return (
     <>
       <PageContent>
@@ -236,6 +258,9 @@ const Ticket: FC<TicketInterface> = () => {
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}
         changePageHandler={changePageHandler}
+        tickProviderHandler={tickProviderHandler}
+        ticketProviders={ticketProviders}
+        ticketProvideFilterValue={ticketProvideFilterValue}
       />
       <CreateTicketModal
         title="Create Ticket"

@@ -14,8 +14,8 @@ const dateConversionHandler = (date: string) => {
 };
 
 export const columns: Column[] = [
-  { id: 'id', label: 'Id', minWidth: 80 },
-  { id: 'uuid', label: 'UUID', minWidth: 300 },
+  { id: 'id', label: 'Id', minWidth: 30 },
+  { id: 'uuid', label: 'UUID', minWidth: 200 },
   {
     id: 'name',
     label: 'Name',
@@ -31,27 +31,27 @@ export const columns: Column[] = [
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: "phoneNumber",
-    label: "Contact Info",
-    align: "center",
+    id: 'phoneNumber',
+    label: 'Contact Info',
+    align: 'center',
   },
   {
-    id: "walletAddress",
-    label: "Wallet Address",
-    align: "center",
-    minWidth: 300
+    id: 'walletAddress',
+    label: 'Wallet Address',
+    align: 'center',
+    minWidth: 200,
   },
   {
-    id: "ticketProvider",
-    label: "Ticket Provider",
-    align: "center",
-    minWidth: 150,
-    name: true
+    id: 'ticketProvider',
+    label: 'Ticket Provider',
+    align: 'center',
+    minWidth: 100,
+    name: true,
   },
   {
     id: 'status',
     label: 'Status',
-    minWidth: 120,
+    minWidth: 80,
     align: 'center',
     format: (value: number) => value.toFixed(2),
   },

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Modal, Box, TextField, Button, Grid, Select, MenuItem, InputLabel } from '@mui/material';
+import { Autocomplete, Modal, Box, TextField, Button, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const ModalTitle = styled('h2')(({ theme }) => ({
@@ -26,18 +26,28 @@ const style = {
   borderRadius: 2,
 };
 
+const statusOptions = [
+  { name: 'Creating', value: 'creating' },
+  { name: 'Active', value: 'active' },
+];
+
+interface ticketProviderOptionType {
+  id: number;
+  name: string;
+}
+
 interface CreateTicketProviderModalProps {
   title: string;
   openModal: boolean;
   closeModal: () => any;
   submitForm: () => any;
-  inputValueHandler: (field: string, value: string, update?: boolean) => any;
-  ticketProviders: any[],
-  selectedProviderId: any
-  userObject: any
-  updateUser: () => void,
-  shouldUpdateUser: boolean
-  userStatus: any
+  inputValueHandler: (field: string, value: string | number, update?: boolean) => any;
+  ticketProviders: any[];
+  selectedProviderId: any;
+  userObject: any;
+  updateUser: () => void;
+  shouldUpdateUser: boolean;
+  userStatus: any;
 }
 
 const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
@@ -51,7 +61,7 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
   userObject,
   updateUser,
   shouldUpdateUser,
-  userStatus
+  userStatus,
 }) => {
   return (
     <>
@@ -68,10 +78,12 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
                 fullWidth
                 autoComplete="given-name"
                 variant="standard"
-                defaultValue={userObject?.name || ""}
+                defaultValue={userObject?.name || ''}
                 onChange={(e) => inputValueHandler('name', e.target.value)}
               />
             </Grid>
+          </Grid>
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
                 required
@@ -81,7 +93,7 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
                 fullWidth
                 autoComplete="given-email"
                 variant="standard"
-                defaultValue={userObject?.email || ""}
+                defaultValue={userObject?.email || ''}
                 onChange={(e) => inputValueHandler('email', e.target.value)}
               />
             </Grid>
@@ -94,82 +106,50 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
                 fullWidth
                 autoComplete="given-name"
                 variant="standard"
-                defaultValue={userObject?.phoneNumber || ""}
+                defaultValue={userObject?.phoneNumber || ''}
                 onChange={(e) => inputValueHandler('phoneNumber', e.target.value)}
               />
             </Grid>
+          </Grid>
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-            {
-              !shouldUpdateUser ? <>
-                <InputLabel id="ProviderId">Ticket Provider</InputLabel>
-                <Select
-                  value={ selectedProviderId.ticketProviderId }
-                  onChange={(e) => inputValueHandler('ticketProvider', e.target.value)}
-                  style={{ width: '100%' }}
-                  size="small"
-                  defaultValue={userObject?.ticketProviderId || ""}
-                  labelId="ProviderId"
-                >
-                  {
-                    ticketProviders?.map((provider: any) => {
-                      return (
-                        <MenuItem value={provider.id}>{provider.name}</MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-              </> :
-              <>
-                <InputLabel id="userStatus">User Status</InputLabel>
-                <Select
-                  value={ userStatus?.default }
-                  onChange={(e) => inputValueHandler('userStatus', e.target.value, true)}
-                  style={{ width: '100%' }}
-                  size="small"
-                  defaultValue={userObject?.ticketProviderId || ""}
-                  labelId='userStatus'
-                >
-                  {
-                    userStatus?.list?.map((status: any) => {
-                      return (
-                        <MenuItem value={status.toLowerCase()}>{status}</MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-
-              </>
-            }
+              <Autocomplete
+                options={ticketProviders.filter((provider: any) => provider.id)}
+                getOptionLabel={(option: ticketProviderOptionType) => option.name}
+                autoComplete
+                includeInputInList
+                onChange={(e: any, newValue: ticketProviderOptionType | null) => {
+                  inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Ticket Provider *" fullWidth variant="standard" />
+                )}
+              />
             </Grid>
-            {!shouldUpdateUser && (
-              <Grid item xs={12} sm={6}>
-                <>
-                  <InputLabel id="userStatus"> User Status </InputLabel>
-                  <Select
-                    value={ selectedProviderId?.status }
-                    onChange={(e) => inputValueHandler('userStatus', e.target.value)}
-                    style={{ width: '100%' }}
-                    size="small"
-                    labelId='userStatus'
-                  >
-                    {
-                      userStatus?.list?.map((status: any) => {
-                        return (
-                          <MenuItem value={status.toLowerCase()}>{status}</MenuItem>
-                        )
-                      })
-                    }
-                  </Select>
-                </>
-              </Grid>
-            )}
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                options={statusOptions}
+                getOptionLabel={(option) => option.name}
+                autoComplete
+                includeInputInList
+                onChange={(e: any, newValue: any) => {
+                  inputValueHandler('status', newValue ? newValue?.value : '');
+                }}
+                renderInput={(params) => <TextField {...params} label="Status *" fullWidth variant="standard" />}
+              />
+            </Grid>
           </Grid>
           <ButtonDiv>
             <Button variant="contained" onClick={closeModal} sx={{ mt: 3, ml: 1 }} color="inherit">
               Close
             </Button>
-            <Button variant="contained" onClick={shouldUpdateUser ? updateUser : submitForm} sx={{ mt: 3, ml: 1 }} color="primary">
-              {shouldUpdateUser ? "Update" : "Create"}
+            <Button
+              variant="contained"
+              onClick={shouldUpdateUser ? updateUser : submitForm}
+              sx={{ mt: 3, ml: 1 }}
+              color="primary"
+            >
+              {shouldUpdateUser ? 'Update' : 'Create'}
             </Button>
           </ButtonDiv>
         </Box>
