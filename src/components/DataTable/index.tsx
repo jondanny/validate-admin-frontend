@@ -79,7 +79,6 @@ const DataTable: FC<DataTableProps> = ({
   ticketProvideFilterValue,
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
-
   return (
     <>
       <TableFilters>

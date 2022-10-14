@@ -1,16 +1,15 @@
-
 import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
 import { styled } from '@mui/material/styles';
-import CreateUserModal from './CreateUserModal'
+import CreateUserModal from './CreateUserModal';
 import { ToastContainer, toast } from 'react-toastify';
 import { useMutation } from 'react-query';
-import { getUsers, createUser, deleteUser, getTicketProviders, updateUser } from '../../services/app/users-services'
+import { getUsers, createUser, deleteUser, getTicketProviders, updateUser } from '../../services/app/users-services';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
-import { debounce } from 'lodash'
+import { debounce } from 'lodash';
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
@@ -20,8 +19,16 @@ export interface DashboardProps {}
 interface CreateTicketProviderProps {
   name: string;
   email: string;
-  phoneNumber: string
-  ticketProviderId: number
+  phoneNumber: string;
+  ticketProviderId: number;
+}
+
+interface CreateUserProps {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  ticketProviderId: number;
+  status: 'creating' | 'active' | '';
 }
 
 const Users: FC<DashboardProps> = () => {
@@ -29,69 +36,87 @@ const Users: FC<DashboardProps> = () => {
   const [users, setUsers] = useState({
     data: [],
     cursor: {
-      afterCursor: "",
-      beforeCursor: ""
+      afterCursor: '',
+      beforeCursor: '',
     },
   });
   const [currentCursor, setCurrentCursor] = useState({
-    name: "",
-    value: ""
-  })
+    name: '',
+    value: '',
+  });
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState('');
   const [tableSize, setTableSize] = useState({
     default: 5,
-    list: [5, 10, 25]
-  })
-  const [searchText, setSearchText] = useState("")
-  const [ticketProviders, setTicketProviders] = useState([])
-  const [selectedProviderId, setSelectedProviderId] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    ticketProviderId: 0,
-    status: "",
-  })
-  const [userIdForUpdation, setUserIdForUpdation] = useState("")
-  const [shouldUpdateUser, setShouldUpdateUser ] = useState(false)
-  const [userStatus, setUserStatus] = useState({
-    default: "",
-    list: ["Creating", "Active"]
-  })
-  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState("")
-
-  const getUsersQuery = useQuery(['users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue], () => getUsers({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", searchText: searchText, ticketProviderId: ticketProvideFilterValue }), {
-    onSuccess: (data) => {
-      setUsers(data);
-    },
-    refetchOnWindowFocus: true 
+    list: [5, 10, 25],
   });
+  const [searchText, setSearchText] = useState('');
+  const [ticketProviders, setTicketProviders] = useState([]);
+  const [selectedProviderId, setSelectedProviderId] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    ticketProviderId: 0,
+    status: '',
+  });
+  const [userIdForUpdation, setUserIdForUpdation] = useState('');
+  const [shouldUpdateUser, setShouldUpdateUser] = useState(false);
+  const [userStatus, setUserStatus] = useState({
+    default: '',
+    list: ['Creating', 'Active'],
+  });
+  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState('');
+  const [userValues, setUserValues] = useState<CreateUserProps>({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    ticketProviderId: 0,
+    status: '',
+  });
+
+  const getUsersQuery = useQuery(
+    ['users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
+    () =>
+      getUsers({
+        limit: tableSize.default,
+        afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
+        beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
+        searchText: searchText,
+        ticketProviderId: ticketProvideFilterValue,
+      }),
+    {
+      onSuccess: (data) => {
+        setUsers(data);
+      },
+      refetchOnWindowFocus: true,
+    },
+  );
 
   useQuery(['ticket_providers'], () => getTicketProviders(), {
     onSuccess: (data) => {
-      let ticketProviders = [...data]
+      let ticketProviders = [...data];
       ticketProviders.unshift({
-        name: "None",
-        id: 0
-      })
-      setTicketProviders(ticketProviders as any)
+        name: 'None',
+        id: 0,
+      });
+      setTicketProviders(ticketProviders as any);
       setSelectedProviderId({
         ...selectedProviderId,
-        ticketProviderId: parseInt(data[0].id)
-      })
+        ticketProviderId: parseInt(data[0].id),
+      });
     },
-    refetchOnWindowFocus: true 
+    refetchOnWindowFocus: true,
   });
 
-  const createMutation = useMutation((data: CreateTicketProviderProps) => createUser(data), {
+  const createMutation = useMutation((data: CreateUserProps) => createUser(data), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
       closeModal();
     },
     onError: (err) => {
-      const { response }: any = err || {}
-      const { data } = response || {}
-      const { message } = data || {}
+      const { response }: any = err || {};
+      const { data } = response || {};
+      const { message } = data || {};
       toast.error(`${message[0]}`, {
         position: 'top-right',
         autoClose: 3000,
@@ -102,7 +127,7 @@ const Users: FC<DashboardProps> = () => {
         progress: undefined,
         theme: 'light',
       });
-    }
+    },
   });
 
   const deleteMutation = useMutation((data: string) => deleteUser(data), {
@@ -111,27 +136,31 @@ const Users: FC<DashboardProps> = () => {
     },
   });
 
-  const updateMutation = useMutation((data: CreateTicketProviderProps) => updateUser({...selectedProviderId, status: userStatus?.default}, userIdForUpdation), {
-    onSuccess: (data) => {
-      getUsersQuery.refetch();
-      closeModal();
+  const updateMutation = useMutation(
+    (data: CreateTicketProviderProps) =>
+      updateUser({ ...selectedProviderId, status: userStatus?.default }, userIdForUpdation),
+    {
+      onSuccess: (data) => {
+        getUsersQuery.refetch();
+        closeModal();
+      },
+      onError: (err) => {
+        const { response }: any = err || {};
+        const { data } = response || {};
+        const { message } = data || {};
+        toast.error(`${message[0]}`, {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      },
     },
-    onError: (err) => {
-      const { response }: any = err || {}
-      const { data } = response || {}
-      const { message } = data || {}
-      toast.error(`${message[0]}`, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
-    }
-  });
+  );
 
   const openModal = () => {
     setOpenTicketProviderModal(true);
@@ -140,53 +169,32 @@ const Users: FC<DashboardProps> = () => {
   const closeModal = () => {
     setOpenTicketProviderModal(false);
     setSelectedProviderId({
-      name: "",
-      email: "",
-      phoneNumber: "",
+      name: '',
+      email: '',
+      phoneNumber: '',
       ticketProviderId: 0,
-      status: ""
-    })
-    setShouldUpdateUser(false)
+      status: '',
+    });
+    setShouldUpdateUser(false);
   };
 
-  const createUserFormValuesHandler = (field: string, value: string, update?: boolean) => {
-    if (field === 'name') {
-      setSelectedProviderId({
-        ...selectedProviderId,
-        name: value,
-      });
-    } else if( field === "email"){
-      setSelectedProviderId({
-        ...selectedProviderId,
-        email: value,
-      });
-    } else if( field === "phoneNumber"){
-      setSelectedProviderId({
-        ...selectedProviderId,
-        phoneNumber: value,
-      });
-    }else if( field === "userStatus"){
-      if(update){
-        setUserStatus({
-          ...userStatus,
-          default: value
-        })
-      }else {
-        setSelectedProviderId({
-          ...selectedProviderId,
-          status: value,
-        });
-      }
-    }else {
-      setSelectedProviderId({
-        ...selectedProviderId,
-        ticketProviderId: parseInt(value),
-      });
-    }
+  const createUserFormValuesHandler = (field: string, value: string | number, update?: boolean) => {
+    setUserValues((prevState) => {
+      return {
+        ...prevState,
+        [field]: value,
+      };
+    });
   };
 
   const createUserHandler = () => {
-    if (selectedProviderId['name'] === '' || selectedProviderId['email'] === '' || selectedProviderId['phoneNumber'] === '' || !selectedProviderId['ticketProviderId'] ) {
+    if (
+      userValues.name === '' ||
+      userValues.email === '' ||
+      userValues.phoneNumber === '' ||
+      userValues.ticketProviderId === 0 ||
+      userValues.status === ''
+    ) {
       toast.error('Please Fill all the fields', {
         position: 'top-right',
         autoClose: 3000,
@@ -199,7 +207,7 @@ const Users: FC<DashboardProps> = () => {
       });
       return;
     }
-    createMutation.mutate(selectedProviderId);
+    createMutation.mutate(userValues);
   };
 
   const openConfirmationModalHandler = (id: string) => {
@@ -231,59 +239,58 @@ const Users: FC<DashboardProps> = () => {
   };
 
   const searchHandler = debounce((value: string) => {
-    setSearchText(value)
-    getUsersQuery.refetch()
-  }, 1000)
-
+    setSearchText(value);
+    getUsersQuery.refetch();
+  }, 1000);
 
   const pageSizeHandler = (pageSize: number) => {
     setTableSize({
       ...tableSize,
-      default: pageSize
-    })
-    getUsersQuery.refetch()
-  }
+      default: pageSize,
+    });
+    getUsersQuery.refetch();
+  };
 
   const changePageHandler = (changePage: string) => {
-    const { cursor } = users || {}
-    const { afterCursor, beforeCursor } = cursor || {}
-    if(changePage === "go_back" && beforeCursor !== ""){
+    const { cursor } = users || {};
+    const { afterCursor, beforeCursor } = cursor || {};
+    if (changePage === 'go_back' && beforeCursor !== '') {
       setCurrentCursor({
-        name: "previous",
-        value: beforeCursor
-      })
-    }else {
-      if(afterCursor !== ""){
+        name: 'previous',
+        value: beforeCursor,
+      });
+    } else {
+      if (afterCursor !== '') {
         setCurrentCursor({
-          name: "next",
-          value: afterCursor
-        })
+          name: 'next',
+          value: afterCursor,
+        });
       }
     }
-    getUsersQuery.refetch()
-  }
+    getUsersQuery.refetch();
+  };
 
   const editUserHandler = (userId: string) => {
-    const user: any = users?.data?.find(({ id }: any) =>  id === userId)
+    const user: any = users?.data?.find(({ id }: any) => id === userId);
 
     setSelectedProviderId({
       ...selectedProviderId,
       name: user.name,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      ticketProviderId: user.ticketProviderId
-    })
+      ticketProviderId: user.ticketProviderId,
+    });
     setUserStatus({
       ...userStatus,
-      default: user?.status
-    })
-    setUserIdForUpdation(userId)
-    setShouldUpdateUser(true)
-    setOpenTicketProviderModal(true)
-  }
+      default: user?.status,
+    });
+    setUserIdForUpdation(userId);
+    setShouldUpdateUser(true);
+    setOpenTicketProviderModal(true);
+  };
   const tickProviderHandler = (ticketProviderId: string) => {
-    setTicketProviderFilterValue(`${ticketProviderId}`)
-  }
+    setTicketProviderFilterValue(`${ticketProviderId}`);
+  };
   return (
     <>
       <PageContent>

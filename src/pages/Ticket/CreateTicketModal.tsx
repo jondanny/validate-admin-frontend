@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Autocomplete, Box, Button, Grid, Modal, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -46,7 +46,7 @@ interface CreateTicketModalProps {
   users: any;
 }
 
-const CreateTicketModal: FC<CreateTicketModalProps> = ({
+const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   title,
   openModal,
   closeModal,
@@ -75,7 +75,7 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
             </Grid>
             <Grid item xs={12} sm={6}>
               <Autocomplete
-                options={ticketProviders}
+                options={ticketProviders.filter((provider: any) => provider.id)}
                 getOptionLabel={(option: ticketProviderOptionType) => option.name}
                 autoComplete
                 includeInputInList

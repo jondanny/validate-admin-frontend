@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import network from '../../utils/network';
 
-export interface createTicketProviderInterface {
+export interface createUserInterface {
   name: string;
   email: string;
   ticketProviderId: number;
@@ -47,12 +47,12 @@ export const getUsers = async ({
   return response.data;
 };
 
-export const createUser = async (data: createTicketProviderInterface) => {
+export const createUser = async (data: createUserInterface) => {
   const response = await network.post(`/users`, data);
   return response.data;
 };
 
-export const updateUser = async (data: createTicketProviderInterface, userId: string) => {
+export const updateUser = async (data: createUserInterface, userId: string) => {
   const response = await network.patch(`/users/${userId}`, data);
   return response.data;
 };
