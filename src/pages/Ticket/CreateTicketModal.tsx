@@ -26,12 +26,7 @@ const style = {
   borderRadius: 2,
 };
 
-interface ticketProviderOptionType {
-  id: number;
-  name: string;
-}
-
-interface userOptionType {
+interface optionType {
   id: number;
   name: string;
 }
@@ -104,10 +99,10 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
             <Grid item xs={12} sm={6}>
               <Autocomplete
                 options={users}
-                getOptionLabel={(option: userOptionType) => option.name}
+                getOptionLabel={(option: optionType) => option.name}
                 autoComplete
                 includeInputInList
-                onChange={(e: any, newValue: userOptionType | null) => {
+                onChange={(e: any, newValue: optionType | null) => {
                   inputValueHandler('userId', newValue ? newValue?.id : 0);
                 }}
                 renderInput={(params) => <TextField {...params} label="User *" fullWidth variant="standard" />}
@@ -116,10 +111,10 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
             <Grid item xs={12} sm={6}>
               <Autocomplete
                 options={ticketProviders.filter((provider: any) => provider.id)}
-                getOptionLabel={(option: ticketProviderOptionType) => option.name}
+                getOptionLabel={(option: optionType) => option.name}
                 autoComplete
                 includeInputInList
-                onChange={(e: any, newValue: ticketProviderOptionType | null) => {
+                onChange={(e: any, newValue: optionType | null) => {
                   inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
                 }}
                 renderInput={(params) => (
