@@ -45,7 +45,7 @@ interface CreateTicketProviderModalProps {
   ticketProviders: any[];
   selectedProviderId: any;
   userObject: any;
-  updateUser: () => void;
+  updateUser?: () => void;
   shouldUpdateUser: boolean;
   userStatus: any;
 }
@@ -108,6 +108,21 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
                 variant="standard"
                 defaultValue={userObject?.phoneNumber || ''}
                 onChange={(e) => inputValueHandler('phoneNumber', e.target.value)}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                required
+                id="photoUrl"
+                name="photoUrl"
+                label="Photo URL"
+                fullWidth
+                autoComplete="given-photo-url"
+                variant="standard"
+                defaultValue={userObject?.photoUrl || ''}
+                onChange={(e) => inputValueHandler('photoUrl', e.target.value)}
               />
             </Grid>
           </Grid>

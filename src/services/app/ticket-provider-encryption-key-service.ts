@@ -3,8 +3,6 @@ import network from '../../utils/network';
 
 export interface createTicketProviderEncryptionKeyInterface {
   ticketProviderId: number;
-  secretKey: string;
-  version: number;
 }
 
 interface getTicketProviderEncryptionKeyParams {

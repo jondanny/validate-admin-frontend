@@ -1,9 +1,9 @@
-import moment from "moment";
+import moment from 'moment';
 export interface Column {
   id: string;
   label: string;
   minWidth?: number;
-  name?:boolean
+  name?: boolean;
   align?: 'center';
   format?: (value: number) => string;
   dateFormater?: (value: string) => string;
@@ -16,15 +16,15 @@ const dateConversionHandler = (date: string) => {
 export const columns: Column[] = [
   { id: 'id', label: 'Id', minWidth: 80 },
   {
-    id: "ticketProvider",
-    label: "Ticket Provider",
-    align: "center",
-    name: true
+    id: 'ticketProvider',
+    label: 'Ticket Provider',
+    align: 'center',
+    name: true,
   },
   {
-    id: "token",
-    label: "Token",
-    align: "center"
+    id: 'token',
+    label: 'Token',
+    align: 'center',
   },
   {
     id: 'createdAt',
@@ -34,9 +34,9 @@ export const columns: Column[] = [
     dateFormater: (value: string) => dateConversionHandler(value),
   },
   {
-    id: '',
-    label: 'Actions',
+    id: 'delete',
+    label: 'Action',
     align: 'center',
     minWidth: 10,
-  }
+  },
 ];

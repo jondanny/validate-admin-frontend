@@ -21,11 +21,7 @@ const PageContent = styled('div')(({ theme }) => ({
 const TicketProviderEncryptionKey: React.FC = () => {
   const [openTicketProviderEncryptionKeyModal, setOpenTicketProviderEncryptionKeyModal] = useState<boolean>(false);
   const [ticketProviderEncryptionKeyValues, setTicketProviderEncryptionKeyValues] =
-    useState<createTicketProviderEncryptionKeyInterface>({
-      ticketProviderId: 0,
-      secretKey: '',
-      version: 0,
-    });
+    useState<createTicketProviderEncryptionKeyInterface>({ ticketProviderId: 0 });
   const [ticketProviderEncryptionKey, setTicketProviderEncryptionKey] = useState({
     data: [],
     cursor: {
@@ -79,6 +75,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
     {
       onSuccess: (data) => {
         query.refetch();
+        setTicketProviderEncryptionKeyValues({ ticketProviderId: 0 });
         closeModal();
       },
       onError: (err) => {
@@ -117,11 +114,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
   };
 
   const createTicketProvider = () => {
-    if (
-      ticketProviderEncryptionKeyValues['ticketProviderId'] === 0 ||
-      ticketProviderEncryptionKeyValues['secretKey'] === '' ||
-      ticketProviderEncryptionKeyValues['version'] === 0
-    ) {
+    if (ticketProviderEncryptionKeyValues['ticketProviderId'] === 0) {
       toast.error('Please Fill all the fields', {
         position: 'top-right',
         autoClose: 3000,

@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { Modal, Box, TextField, Button, Grid, Select, MenuItem, InputLabel } from '@mui/material';
+import React from 'react';
+import { Autocomplete, Modal, Box, TextField, Button, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const ModalTitle = styled('h2')(({ theme }) => ({
@@ -26,24 +26,27 @@ const style = {
   borderRadius: 2,
 };
 
+interface optionType {
+  id: number;
+  name: string;
+}
+
 interface CreateTicketProviderModalProps {
   title: string;
   openModal: boolean;
   closeModal: () => any;
   submitForm: () => any;
-  inputValueHandler: (field: string, value: string) => any;
-  ticketProviders: any[]
-  ticketProviderApiTokenValues: any
+  inputValueHandler: (field: string, value: string | number) => any;
+  ticketProviders: any[];
 }
 
-const CreateTicketProviderApiTokenModal: FC<CreateTicketProviderModalProps> = ({
+const CreateTicketProviderApiTokenModal: React.FC<CreateTicketProviderModalProps> = ({
   title,
   openModal,
   closeModal,
   submitForm,
   inputValueHandler,
   ticketProviders,
-  ticketProviderApiTokenValues
 }) => {
   return (
     <>
@@ -64,22 +67,18 @@ const CreateTicketProviderApiTokenModal: FC<CreateTicketProviderModalProps> = ({
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <InputLabel id="ProviderId">Ticket Provider</InputLabel>
-              <Select
-                value={ ticketProviderApiTokenValues?.ticketProviderId }
-                onChange={(e) => inputValueHandler('ticketProvider', e.target.value)}
-                style={{ width: '100%' }}
-                size="small"
-                labelId="ProviderId"
-              >
-                {
-                  ticketProviders?.map((provider: any) => {
-                    return (
-                      <MenuItem value={provider.id}>{provider.name}</MenuItem>
-                    )
-                  })
-                }
-              </Select>
+              <Autocomplete
+                options={ticketProviders.filter((provider: any) => provider.id)}
+                getOptionLabel={(option: optionType) => option.name}
+                autoComplete
+                includeInputInList
+                onChange={(e: any, newValue: optionType | null) => {
+                  inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Ticket Provider *" fullWidth variant="standard" />
+                )}
+              />
             </Grid>
           </Grid>
           <ButtonDiv>

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
@@ -10,6 +10,7 @@ import { getUsers, createUser, deleteUser, getTicketProviders, updateUser } from
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import { debounce } from 'lodash';
+import { createUserInterface } from '../../services/app/users-services';
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
@@ -23,15 +24,7 @@ interface CreateTicketProviderProps {
   ticketProviderId: number;
 }
 
-interface CreateUserProps {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  ticketProviderId: number;
-  status: 'creating' | 'active' | '';
-}
-
-const Users: FC<DashboardProps> = () => {
+const Users: React.FC<DashboardProps> = () => {
   const [openTicketProviderModal, setOpenTicketProviderModal] = useState<boolean>(false);
   const [users, setUsers] = useState({
     data: [],
@@ -66,9 +59,10 @@ const Users: FC<DashboardProps> = () => {
     list: ['Creating', 'Active'],
   });
   const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState('');
-  const [userValues, setUserValues] = useState<CreateUserProps>({
+  const [userValues, setUserValues] = useState<createUserInterface>({
     name: '',
     email: '',
+    photoUrl: '',
     phoneNumber: '',
     ticketProviderId: 0,
     status: '',
@@ -108,7 +102,7 @@ const Users: FC<DashboardProps> = () => {
     refetchOnWindowFocus: true,
   });
 
-  const createMutation = useMutation((data: CreateUserProps) => createUser(data), {
+  const createMutation = useMutation((data: createUserInterface) => createUser(data), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
       closeModal();
@@ -138,7 +132,7 @@ const Users: FC<DashboardProps> = () => {
 
   const updateMutation = useMutation(
     (data: CreateTicketProviderProps) =>
-      updateUser({ ...selectedProviderId, status: userStatus?.default }, userIdForUpdation),
+      updateUser({ ...selectedProviderId, photoUrl: '', status: '' }, userIdForUpdation),
     {
       onSuccess: (data) => {
         getUsersQuery.refetch();

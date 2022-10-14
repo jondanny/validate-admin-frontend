@@ -80,8 +80,8 @@ export const columns: Column[] = [
     dateFormater: (value: string) => dateConversionHandler(value),
   },
   {
-    id: '',
-    label: 'Delete',
+    id: 'delete',
+    label: 'Action',
     align: 'center',
     minWidth: 10,
   },
