@@ -4,10 +4,7 @@ import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
 import { styled } from '@mui/material/styles';
 import { ToastContainer } from 'react-toastify';
-import {
-  getTicketTranser,
-  getTicketProviders
-} from '../../services/app/ticket-transfer-service'
+import { getTicketTranser, getTicketProviders } from '../../services/app/ticket-transfer-service';
 import { columns } from './table-columns';
 
 const PageContent = styled('div')(({ theme }) => ({
@@ -20,72 +17,81 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
   const [ticketTransfer, setTicketTransfer] = useState({
     data: [],
     cursor: {
-      afterCursor: "",
-      beforeCursor: ""
+      afterCursor: '',
+      beforeCursor: '',
     },
   });
   const [currentCursor, setCurrentCursor] = useState({
-    name: "",
-    value: ""
-  })
-  
-  const [tableSize, setTableSize] = useState({
-    default: 5,
-    list: [5, 10, 25]
-  })
-  const [ticketProviders, setTicketProviders] = useState([])
-  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState("")
-
-  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue], () => getTicketTranser({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", ticketProviderId: ticketProvideFilterValue }), {
-    onSuccess: (data) => {
-        setTicketTransfer(data);
-    },
-    refetchOnWindowFocus: true
+    name: '',
+    value: '',
   });
 
+  const [tableSize, setTableSize] = useState({
+    default: 10,
+    list: [5, 10, 25],
+  });
+  const [ticketProviders, setTicketProviders] = useState([]);
+  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState('');
+
+  const query = useQuery(
+    ['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue],
+    () =>
+      getTicketTranser({
+        limit: tableSize.default,
+        afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
+        beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
+        ticketProviderId: ticketProvideFilterValue,
+      }),
+    {
+      onSuccess: (data) => {
+        setTicketTransfer(data);
+      },
+      refetchOnWindowFocus: true,
+    },
+  );
 
   const pageSizeHandler = (pageSize: number) => {
     setTableSize({
       ...tableSize,
-      default: pageSize
-    })
-    query.refetch()
-  }
+      default: pageSize,
+    });
+    query.refetch();
+  };
 
   const changePageHandler = (changePage: string) => {
-    const { cursor } = ticketTransfer || {}
-    const { afterCursor, beforeCursor } = cursor || {}
-    if(changePage === "go_back" && beforeCursor !== ""){
+    const { cursor } = ticketTransfer || {};
+    const { afterCursor, beforeCursor } = cursor || {};
+    if (changePage === 'go_back' && beforeCursor !== '') {
       setCurrentCursor({
-        name: "previous",
-        value: beforeCursor
-      })
-    }else {
-      if(afterCursor !== ""){
+        name: 'previous',
+        value: beforeCursor,
+      });
+    } else {
+      if (afterCursor !== '') {
         setCurrentCursor({
-          name: "next",
-          value: afterCursor
-        })
+          name: 'next',
+          value: afterCursor,
+        });
       }
     }
-    query.refetch()
-  }
+    query.refetch();
+  };
 
   useQuery(['ticket_providers'], () => getTicketProviders(), {
     onSuccess: (data) => {
-      let ticketProviders = [...data]
+      let ticketProviders = [...data];
       ticketProviders.unshift({
-        name: "None",
-        id: 0
-      })
-      setTicketProviders(ticketProviders as any)
+        name: 'All',
+        id: 0,
+      });
+      setTicketProviders(ticketProviders as any);
     },
-    refetchOnWindowFocus: true 
+    refetchOnWindowFocus: true,
   });
 
   const ticketProviderChangeHandler = (ticketProviderId: string) => {
-    setTicketProviderFilterValue(`${ticketProviderId}`)
-  }
+    setTicketProviderFilterValue(`${ticketProviderId}`);
+  };
 
   return (
     <>

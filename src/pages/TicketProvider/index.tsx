@@ -45,7 +45,7 @@ const TicketProvider: FC<DashboardProps> = () => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketProviderId, setDeleteTicketProviderId] = useState('');
   const [tableSize, setTableSize] = useState({
-    default: 5,
+    default: 10,
     list: [5, 10, 25],
   });
   const [searchText, setSearchText] = useState('');

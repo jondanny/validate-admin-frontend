@@ -73,20 +73,6 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                 onChange={(e) => inputValueHandler('name', e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Autocomplete
-                options={ticketProviders.filter((provider: any) => provider.id)}
-                getOptionLabel={(option: ticketProviderOptionType) => option.name}
-                autoComplete
-                includeInputInList
-                onChange={(e: any, newValue: ticketProviderOptionType | null) => {
-                  inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Ticket Provider *" fullWidth variant="standard" />
-                )}
-              />
-            </Grid>
           </Grid>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
@@ -125,6 +111,20 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                   inputValueHandler('userId', newValue ? newValue?.id : 0);
                 }}
                 renderInput={(params) => <TextField {...params} label="User *" fullWidth variant="standard" />}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                options={ticketProviders.filter((provider: any) => provider.id)}
+                getOptionLabel={(option: ticketProviderOptionType) => option.name}
+                autoComplete
+                includeInputInList
+                onChange={(e: any, newValue: ticketProviderOptionType | null) => {
+                  inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Ticket Provider *" fullWidth variant="standard" />
+                )}
               />
             </Grid>
           </Grid>

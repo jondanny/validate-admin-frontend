@@ -72,7 +72,7 @@ const Ticket: FC<TicketInterface> = () => {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({
-        name: 'None',
+        name: 'All',
         id: 0,
       });
       setTicketProviders(ticketProviders as any);

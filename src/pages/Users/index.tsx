@@ -47,7 +47,7 @@ const Users: FC<DashboardProps> = () => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState('');
   const [tableSize, setTableSize] = useState({
-    default: 5,
+    default: 10,
     list: [5, 10, 25],
   });
   const [searchText, setSearchText] = useState('');
@@ -96,7 +96,7 @@ const Users: FC<DashboardProps> = () => {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({
-        name: 'None',
+        name: 'All',
         id: 0,
       });
       setTicketProviders(ticketProviders as any);

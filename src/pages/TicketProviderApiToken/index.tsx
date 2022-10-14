@@ -10,8 +10,8 @@ import {
   getTicketProviderApiToken,
   getTicketProviders,
   createTicketProviderApiToken,
-  deleteTicketProviderApiToken
-} from '../../services/app/ticket-provider-api-token-service'
+  deleteTicketProviderApiToken,
+} from '../../services/app/ticket-provider-api-token-service';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 
@@ -34,52 +34,62 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
   const [ticketProviderApiToken, setTicketProviderApiToken] = useState({
     data: [],
     cursor: {
-      afterCursor: "",
-      beforeCursor: ""
+      afterCursor: '',
+      beforeCursor: '',
     },
   });
   const [currentCursor, setCurrentCursor] = useState({
-    name: "",
-    value: ""
-  })
+    name: '',
+    value: '',
+  });
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [deleteTicketProviderApiTokenId, setDeleteTicketProviderApiTokenId] = useState('');
-  const [ticketProviders, setTicketProviders] = useState([])
-  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState("")
-  
-  const [tableSize, setTableSize] = useState({
-    default: 5,
-    list: [5, 10, 25]
-  })
+  const [ticketProviders, setTicketProviders] = useState([]);
+  const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState('');
 
-  const query = useQuery(['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue], () => getTicketProviderApiToken({limit: tableSize.default, afterCursor: currentCursor.name === "next" ? currentCursor.value : "" , beforeCursor: currentCursor.name === "previuous" ? currentCursor.value : "", ticketProviderId: ticketProvideFilterValue }), {
-    onSuccess: (data) => {
-      setTicketProviderApiToken(data);
-    },
-    refetchOnWindowFocus: true
+  const [tableSize, setTableSize] = useState({
+    default: 10,
+    list: [5, 10, 25],
   });
+
+  const query = useQuery(
+    ['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue],
+    () =>
+      getTicketProviderApiToken({
+        limit: tableSize.default,
+        afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
+        beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
+        ticketProviderId: ticketProvideFilterValue,
+      }),
+    {
+      onSuccess: (data) => {
+        setTicketProviderApiToken(data);
+      },
+      refetchOnWindowFocus: true,
+    },
+  );
 
   useQuery(['ticket_providers'], () => getTicketProviders(), {
     onSuccess: (data) => {
-      let ticketProviders = [...data]
+      let ticketProviders = [...data];
       ticketProviders.unshift({
-        name: "None",
-        id: 0
-      })
-      setTicketProviders(ticketProviders as any)
+        name: 'All',
+        id: 0,
+      });
+      setTicketProviders(ticketProviders as any);
     },
-    refetchOnWindowFocus: true 
+    refetchOnWindowFocus: true,
   });
-  
+
   const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderApiToken(data), {
     onSuccess: (data) => {
       query.refetch();
       closeModal();
     },
     onError: (err) => {
-      const { response }: any = err || {}
-      const { data } = response || {}
-      const { message } = data || {}
+      const { response }: any = err || {};
+      const { data } = response || {};
+      const { message } = data || {};
       toast.error(`${message[0]}`, {
         position: 'top-right',
         autoClose: 3000,
@@ -90,7 +100,7 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
         progress: undefined,
         theme: 'light',
       });
-    }
+    },
   });
 
   const deleteMutation = useMutation((data: string) => deleteTicketProviderApiToken(data), {
@@ -166,37 +176,36 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
     }
   };
 
-
   const pageSizeHandler = (pageSize: number) => {
     setTableSize({
       ...tableSize,
-      default: pageSize
-    })
-    query.refetch()
-  }
+      default: pageSize,
+    });
+    query.refetch();
+  };
 
   const changePageHandler = (changePage: string) => {
-    const { cursor } = ticketProviderApiToken || {}
-    const { afterCursor, beforeCursor } = cursor || {}
-    if(changePage === "go_back" && beforeCursor !== ""){
+    const { cursor } = ticketProviderApiToken || {};
+    const { afterCursor, beforeCursor } = cursor || {};
+    if (changePage === 'go_back' && beforeCursor !== '') {
       setCurrentCursor({
-        name: "previous",
-        value: beforeCursor
-      })
-    }else {
-      if(afterCursor !== ""){
+        name: 'previous',
+        value: beforeCursor,
+      });
+    } else {
+      if (afterCursor !== '') {
         setCurrentCursor({
-          name: "next",
-          value: afterCursor
-        })
+          name: 'next',
+          value: afterCursor,
+        });
       }
     }
-    query.refetch()
-  }
+    query.refetch();
+  };
 
   const ticketProviderChangeHandler = (ticketProviderId: string) => {
-    setTicketProviderFilterValue(`${ticketProviderId}`)
-  }
+    setTicketProviderFilterValue(`${ticketProviderId}`);
+  };
 
   return (
     <>
