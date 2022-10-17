@@ -50,9 +50,9 @@ const CreateTicketProviderModal: FC<CreateTicketProviderModalProps> = ({
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="firstName"
-                name="firstName"
-                label="First name"
+                id="name"
+                name="name"
+                label="Name"
                 fullWidth
                 autoComplete="given-name"
                 variant="standard"

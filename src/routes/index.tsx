@@ -4,6 +4,7 @@ import Login from '../pages/Login';
 import Users from '../pages/Users';
 import TicketProviderApiToken from '../pages/TicketProviderApiToken';
 import TicketTransfer from '../pages/TicketTransfer';
+import TicketProviderEncryptionKey from '../pages/TicketProviderEncryptionKey';
 
 export const protectedRoutes = [
   {
@@ -29,6 +30,10 @@ export const protectedRoutes = [
   {
     path: '/ticket-transfer',
     element: TicketTransfer,
+  },
+  {
+    path: '/ticket-provider-encryption-key',
+    element: TicketProviderEncryptionKey,
   },
 ];
 

@@ -43,10 +43,4 @@ export const columns: Column[] = [
     align: 'center',
     dateFormater: (value: string) => dateConversionHandler(value),
   },
-  {
-    id: 'delete',
-    label: 'Delete',
-    align: 'center',
-    minWidth: 10,
-  },
 ];

@@ -112,6 +112,15 @@ const Ticket: FC<TicketInterface> = () => {
   const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data), {
     onSuccess: (data) => {
       query.refetch();
+      setTicketValues({
+        name: '',
+        ticketProviderId: 0,
+        contractId: '',
+        tokenId: 0,
+        userId: 0,
+        imageUrl: '',
+        ipfsUri: '',
+      });
       closeModal();
     },
     onError: (err) => {

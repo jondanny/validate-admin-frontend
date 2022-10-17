@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Autocomplete, Modal, Box, TextField, Button, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -26,27 +26,29 @@ const style = {
   borderRadius: 2,
 };
 
-interface optionType {
-  id: number;
-  name: string;
-}
-
-interface CreateTicketProviderModalProps {
+interface CreateModalProps {
   title: string;
   openModal: boolean;
   closeModal: () => any;
   submitForm: () => any;
   inputValueHandler: (field: string, value: string | number) => any;
   ticketProviders: any[];
+  ticketProviderEncryptionKeyValues: any;
 }
 
-const CreateTicketProviderApiTokenModal: React.FC<CreateTicketProviderModalProps> = ({
+interface optionType {
+  id: number;
+  name: string;
+}
+
+const CreateTicketProviderEncryptionKeyModal: FC<CreateModalProps> = ({
   title,
   openModal,
   closeModal,
   submitForm,
   inputValueHandler,
   ticketProviders,
+  ticketProviderEncryptionKeyValues,
 }) => {
   return (
     <>
@@ -54,19 +56,7 @@ const CreateTicketProviderApiTokenModal: React.FC<CreateTicketProviderModalProps
         <Box sx={style}>
           <ModalTitle id="modal-title">{title}</ModalTitle>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="token"
-                name="token"
-                label="Token"
-                fullWidth
-                autoComplete="given-name"
-                variant="standard"
-                onChange={(e) => inputValueHandler('token', e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <Autocomplete
                 options={ticketProviders.filter((provider: any) => provider.id)}
                 getOptionLabel={(option: optionType) => option.name}
@@ -95,4 +85,4 @@ const CreateTicketProviderApiTokenModal: React.FC<CreateTicketProviderModalProps
   );
 };
 
-export default CreateTicketProviderApiTokenModal;
+export default CreateTicketProviderEncryptionKeyModal;

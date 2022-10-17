@@ -15,18 +15,18 @@ const dateConversionHandler = (date: string) => {
 
 export const columns: Column[] = [
   { id: 'id', label: 'Id', minWidth: 30 },
-  { id: 'uuid', label: 'UUID', minWidth: 200 },
+  { id: 'uuid', label: 'UUID', minWidth: 160 },
   {
     id: 'name',
     label: 'Name',
-    minWidth: 130,
+    minWidth: 30,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'email',
     label: 'Email',
-    minWidth: 170,
+    minWidth: 100,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
@@ -49,6 +49,18 @@ export const columns: Column[] = [
     name: true,
   },
   {
+    id: 'seedPhrase',
+    label: 'Seed Phrase',
+    align: 'center',
+    minWidth: 150,
+  },
+  {
+    id: 'photoUrl',
+    label: 'Photo Url',
+    align: 'center',
+    minWidth: 100,
+  },
+  {
     id: 'status',
     label: 'Status',
     minWidth: 80,
@@ -61,11 +73,5 @@ export const columns: Column[] = [
     minWidth: 150,
     align: 'center',
     dateFormater: (value: string) => dateConversionHandler(value),
-  },
-  {
-    id: '',
-    label: 'Actions',
-    align: 'center',
-    minWidth: 10,
   },
 ];

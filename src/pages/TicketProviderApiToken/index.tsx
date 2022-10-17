@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
@@ -8,10 +8,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useMutation } from 'react-query';
 import {
   getTicketProviderApiToken,
-  getTicketProviders,
   createTicketProviderApiToken,
   deleteTicketProviderApiToken,
+  createTicketProviderInterface,
 } from '../../services/app/ticket-provider-api-token-service';
+import { getTicketProviders } from '../../services/app/users-services';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 
@@ -19,15 +20,9 @@ const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
 }));
 
-export interface DashboardProps {}
-interface CreateTicketProviderProps {
-  token: string;
-  ticketProviderId: number;
-}
-
-const TicketProviderApiToken: FC<DashboardProps> = () => {
+const TicketProviderApiToken: React.FC = () => {
   const [openTicketProviderApiTokenModal, setOpenTicketProviderApiTokenModal] = useState<boolean>(false);
-  const [ticketProviderApiTokenValues, setTicketProviderApiTokenValues] = useState<CreateTicketProviderProps>({
+  const [ticketProviderApiTokenValues, setTicketProviderApiTokenValues] = useState<createTicketProviderInterface>({
     token: '',
     ticketProviderId: 0,
   });
@@ -81,9 +76,13 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
     refetchOnWindowFocus: true,
   });
 
-  const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderApiToken(data), {
+  const createMutation = useMutation((data: createTicketProviderInterface) => createTicketProviderApiToken(data), {
     onSuccess: (data) => {
       query.refetch();
+      setTicketProviderApiTokenValues({
+        token: '',
+        ticketProviderId: 0,
+      });
       closeModal();
     },
     onError: (err) => {
@@ -231,7 +230,6 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
         submitForm={createTicketProvider}
         inputValueHandler={createTicketProviderApiTokenFormValuesHandler}
         ticketProviders={ticketProviders}
-        ticketProviderApiTokenValues={ticketProviderApiTokenValues}
       />
       <ConfirmationModal
         title="Delete Ticket Provider Api Token"

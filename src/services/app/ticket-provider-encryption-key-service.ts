@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import network from '../../utils/network';
 
-export interface createTicketProviderInterface {
-  token: string;
+export interface createTicketProviderEncryptionKeyInterface {
   ticketProviderId: number;
 }
 
-interface getTicketProviderParams {
+interface getTicketProviderEncryptionKeyParams {
   limit?: number;
   afterCursor?: string;
   beforeCursor?: string;
@@ -14,13 +13,13 @@ interface getTicketProviderParams {
   ticketProviderId?: string;
 }
 
-export const getTicketProviderApiToken = async ({
+export const getTicketProviderEncryptionKey = async ({
   limit,
   afterCursor,
   beforeCursor,
   searchText,
   ticketProviderId,
-}: getTicketProviderParams) => {
+}: getTicketProviderEncryptionKeyParams) => {
   let params: { [key: string]: any } = {};
 
   params.limit = limit;
@@ -31,7 +30,7 @@ export const getTicketProviderApiToken = async ({
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
   const response = await network.get({
-    path: `/ticket-provider-api-tokens`,
+    path: `/ticket-provider-encryption-keys`,
     options: {
       params,
     },
@@ -39,17 +38,7 @@ export const getTicketProviderApiToken = async ({
   return response.data;
 };
 
-export const createTicketProviderApiToken = async (data: createTicketProviderInterface) => {
-  const response = await network.post(`/ticket-provider-api-tokens`, data);
-  return response.data;
-};
-
-export const updateTicketProviderApiToken = async (data: createTicketProviderInterface, userId: string) => {
-  const response = await network.patch(`/users/${userId}`, data);
-  return response.data;
-};
-
-export const deleteTicketProviderApiToken = async (id: string) => {
-  const response = await network.delete(`/ticket-provider-api-tokens/${id}`);
+export const createTicketProviderEncryptionKey = async (data: createTicketProviderEncryptionKeyInterface) => {
+  const response = await network.post(`/ticket-provider-encryption-keys`, data);
   return response.data;
 };

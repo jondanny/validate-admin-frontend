@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -62,7 +62,7 @@ interface DataTableProps {
   ticketProvideFilterValue?: string;
 }
 
-const DataTable: FC<DataTableProps> = ({
+const DataTable: React.FC<DataTableProps> = ({
   data,
   deleteHandler,
   columns,
@@ -146,7 +146,11 @@ const DataTable: FC<DataTableProps> = ({
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   {columns.map((column: any) => {
-                    const value = column?.name ? row[column.id]?.name || 'N/A' : row[column.id] || 'N/A';
+                    const value = column?.name
+                      ? row[column.id]?.name || 'N/A'
+                      : column.id === 'delete' || column.id === 'update' || column.id === 'delete/update'
+                      ? column.id
+                      : row[column.id] || 'N/A';
                     return (
                       <>
                         <TableCell
@@ -154,12 +158,14 @@ const DataTable: FC<DataTableProps> = ({
                           key={column.id}
                           align={column.align}
                         >
-                          {!value && value !== null ? (
+                          {typeof value === 'string' && (value.includes('delete') || value.includes('update')) ? (
                             <ButtonGroup size="small">
-                              <IconButton style={{ padding: '0.5rem' }} onClick={() => deleteHandler?.(row.id)}>
-                                <DeleteIcon fontSize="inherit" />
-                              </IconButton>
-                              {updateAble && (
+                              {value.includes('delete') && (
+                                <IconButton style={{ padding: '0.5rem' }} onClick={() => deleteHandler?.(row.id)}>
+                                  <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                              )}
+                              {value.includes('update') && (
                                 <IconButton style={{ padding: '0.5rem' }} onClick={() => editRecordHandler?.(row.id)}>
                                   <EditIcon fontSize="inherit" />
                                 </IconButton>

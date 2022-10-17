@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
@@ -10,6 +10,7 @@ import {
   createTicketProviderService,
   deleteTicketProvider,
   getTicketProviders,
+  createTicketProviderInterface,
 } from '../../services/app/ticket-provider-service';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
@@ -19,15 +20,9 @@ const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
 }));
 
-export interface DashboardProps {}
-interface CreateTicketProviderProps {
-  name: string;
-  email: string;
-}
-
-const TicketProvider: FC<DashboardProps> = () => {
+const TicketProvider: React.FC = () => {
   const [openTicketProviderModal, setOpenTicketProviderModal] = useState<boolean>(false);
-  const [ticketProviderValues, setTicketProviderValues] = useState<CreateTicketProviderProps>({
+  const [ticketProviderValues, setTicketProviderValues] = useState<createTicketProviderInterface>({
     name: '',
     email: '',
   });
@@ -66,9 +61,10 @@ const TicketProvider: FC<DashboardProps> = () => {
       refetchOnWindowFocus: true,
     },
   );
-  const createMutation = useMutation((data: CreateTicketProviderProps) => createTicketProviderService(data), {
+  const createMutation = useMutation((data: createTicketProviderInterface) => createTicketProviderService(data), {
     onSuccess: (data) => {
       query.refetch();
+      setTicketProviderValues({ name: '', email: '' });
       closeModal();
     },
     onError: (err) => {
@@ -103,17 +99,12 @@ const TicketProvider: FC<DashboardProps> = () => {
   };
 
   const createTicketProviderFormValuesHandler = (field: string, value: string) => {
-    if (field === 'name') {
-      setTicketProviderValues({
-        ...ticketProviderValues,
-        name: value,
-      });
-    } else {
-      setTicketProviderValues({
-        ...ticketProviderValues,
-        email: value,
-      });
-    }
+    setTicketProviderValues((prevState) => {
+      return {
+        ...prevState,
+        [field]: value,
+      };
+    });
   };
 
   const createTicketProvider = () => {

@@ -1,8 +1,8 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import { styled } from '@mui/material/styles';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
-import { styled } from '@mui/material/styles';
 import { ToastContainer } from 'react-toastify';
 import { getTicketTranser, getTicketProviders } from '../../services/app/ticket-transfer-service';
 import { columns } from './table-columns';
@@ -11,9 +11,7 @@ const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
 }));
 
-export interface DashboardProps {}
-
-const TicketProviderApiToken: FC<DashboardProps> = () => {
+const TicketProviderApiToken: React.FC = () => {
   const [ticketTransfer, setTicketTransfer] = useState({
     data: [],
     cursor: {
@@ -96,7 +94,7 @@ const TicketProviderApiToken: FC<DashboardProps> = () => {
   return (
     <>
       <PageContent>
-        <Title title="Ticket Transfer" />
+        <Title title="Ticket Transfer Log" />
       </PageContent>
       <DataTable
         data={ticketTransfer?.data.length ? ticketTransfer : []}

@@ -22,8 +22,13 @@ export const columns: Column[] = [
     name: true,
   },
   {
-    id: 'token',
-    label: 'Token',
+    id: 'secretKey',
+    label: 'Secret Key',
+    align: 'center',
+  },
+  {
+    id: 'version',
+    label: 'Version',
     align: 'center',
   },
   {
@@ -32,11 +37,5 @@ export const columns: Column[] = [
     minWidth: 150,
     align: 'center',
     dateFormater: (value: string) => dateConversionHandler(value),
-  },
-  {
-    id: 'delete',
-    label: 'Action',
-    align: 'center',
-    minWidth: 10,
   },
 ];
