@@ -21,3 +21,11 @@ export const deleteRefreshToken = () => {
 export const getRefreshToken = () => {
   return localStorage.getItem('refreshToken');
 };
+
+export const setFingerprint = (fingerprint: string) => {
+  return localStorage.setItem('fingerprint', fingerprint);
+};
+
+export const getFingerprint = () => {
+  return localStorage.getItem('fingerprint');
+};

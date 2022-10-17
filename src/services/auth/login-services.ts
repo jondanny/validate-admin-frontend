@@ -1,4 +1,6 @@
+import { getFingerprintHandler } from './fingerprint-service';
 import network from '../../utils/network';
+import { getFingerprint } from '../../utils/auth';
 
 export interface LoginDataInterface {
   email: string;
@@ -6,6 +8,9 @@ export interface LoginDataInterface {
 }
 
 export const loginServiceHandler = async (data: LoginDataInterface) => {
-  const response = await network.post(`/auth/login`, data);
+  const fingerprint = getFingerprint() || (await getFingerprintHandler());
+
+  const response = await network.post(`/auth/login`, { ...data, fingerprint });
+
   return response;
 };

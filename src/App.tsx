@@ -11,10 +11,11 @@ function App() {
       queries: {
         refetchOnWindowFocus: false,
         // refetchOnReconnect: false,
-        staleTime: 1000
-      }
-    }
+        staleTime: 1000,
+      },
+    },
   });
+
   return (
     <ColorContext.Provider value={{ ...initialUserState }}>
       <QueryClientProvider client={queryClient}>
