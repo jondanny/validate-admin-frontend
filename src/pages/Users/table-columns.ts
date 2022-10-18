@@ -68,6 +68,12 @@ export const columns: Column[] = [
     format: (value: number) => value.toFixed(2),
   },
   {
+    id: "errorData",
+    label: "Error Data",
+    minWidth: 120,
+    align: "center",
+  },
+  {
     id: 'createdAt',
     label: 'Created At',
     minWidth: 150,

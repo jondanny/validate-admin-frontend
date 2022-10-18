@@ -46,6 +46,12 @@ export const columns: Column[] = [
     align: "center"
   },
   {
+    id: "errorData",
+    label: "Error Data",
+    minWidth: 120,
+    align: "center",
+  },
+  {
     id: 'createdAt',
     label: 'Created At',
     minWidth: 150,
