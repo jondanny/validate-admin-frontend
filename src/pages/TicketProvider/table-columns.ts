@@ -37,6 +37,13 @@ export const columns: Column[] = [
     format: (value: number) => value.toFixed(2),
   },
   {
+    id:'securityLevel',
+    label: 'Security Level',
+    minWidth: 120,
+    align: 'center',
+    format: (value: number) => value.toFixed(0)
+  },
+  {
     id: 'createdAt',
     label: 'Created At',
     minWidth: 150,
