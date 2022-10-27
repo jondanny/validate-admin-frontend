@@ -19,6 +19,12 @@ interface getTicketParams {
   ticketProviderId?: string;
 }
 
+export interface retryMintingTicketInterface {
+  userId: number;
+  ticketId: number;
+  ticketProviderId: number
+}
+
 export const getTickets = async ({
   limit,
   afterCursor,
@@ -58,3 +64,9 @@ export const deleteTicket = async (id: string) => {
   const response = await network.delete(`/tickets/${id}`);
   return response.data;
 };
+
+
+export const retryTicketMinting = async (obj: retryMintingTicketInterface) => {
+  const response = await network.post('/tickets/retry-minting', obj)
+  return response.data;
+}

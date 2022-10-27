@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ReplayIcon from '@mui/icons-material/Replay';
 import { styled } from '@mui/material/styles';
 import Pagination from './pagination';
 
@@ -60,6 +61,7 @@ interface DataTableProps {
   tickProviderHandler?: (ticketProviderId: string) => void;
   ticketProviders?: any;
   ticketProvideFilterValue?: string;
+  retryButtonClickHandler?: (data: any) => void
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -77,6 +79,7 @@ const DataTable: React.FC<DataTableProps> = ({
   tickProviderHandler,
   ticketProviders,
   ticketProvideFilterValue,
+  retryButtonClickHandler
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
   return (
@@ -168,6 +171,11 @@ const DataTable: React.FC<DataTableProps> = ({
                               {value.includes('update') && (
                                 <IconButton style={{ padding: '0.5rem' }} onClick={() => editRecordHandler?.(row.id)}>
                                   <EditIcon fontSize="inherit" />
+                                </IconButton>
+                              )}
+                              {row?.errorData && retryButtonClickHandler && (
+                                <IconButton onClick={() => retryButtonClickHandler({userId: row?.userId, ticketId: row?.id, ticketProviderId: row?.ticketProviderId})}>
+                                  <ReplayIcon fontSize="inherit"/>
                                 </IconButton>
                               )}
                             </ButtonGroup>

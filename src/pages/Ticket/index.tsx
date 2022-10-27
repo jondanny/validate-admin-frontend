@@ -6,7 +6,7 @@ import { debounce } from 'lodash';
 import Title from '../../components/Title/index';
 import DataTable from '../../components/DataTable/index';
 import { columns } from './table-columns';
-import { createTicketService, deleteTicket, getTickets } from '../../services/app/ticket-service';
+import { createTicketService, deleteTicket, getTickets, retryTicketMinting, retryMintingTicketInterface } from '../../services/app/ticket-service';
 import { getTicketProviders } from '../../services/app/users-services';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
@@ -140,6 +140,25 @@ const Ticket: FC<TicketInterface> = () => {
     },
   });
 
+  const retryMintingMutation = useMutation((data: retryMintingTicketInterface) => retryTicketMinting(data), {
+    onError: (err) => {
+      const { response }: any = err || {};
+      const { data } = response || {};
+      const { message } = data || {};
+      toast.error(`${message[0]}`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+    }
+
+  })
+
   const deleteMutation = useMutation((data: string) => deleteTicket(data), {
     onSuccess: (data) => {
       query.refetch();
@@ -251,6 +270,9 @@ const Ticket: FC<TicketInterface> = () => {
   const tickProviderHandler = (ticketProviderId: string) => {
     setTicketProviderFilterValue(`${ticketProviderId}`);
   };
+  const retryButtonHandler = (data: retryMintingTicketInterface) => {
+    retryMintingMutation.mutate(data)
+  }
 
   return (
     <>
@@ -270,6 +292,7 @@ const Ticket: FC<TicketInterface> = () => {
         tickProviderHandler={tickProviderHandler}
         ticketProviders={ticketProviders}
         ticketProvideFilterValue={ticketProvideFilterValue}
+        retryButtonClickHandler={retryButtonHandler}
       />
       <CreateTicketModal
         title="Create Ticket"
