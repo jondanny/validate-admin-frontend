@@ -1,16 +1,19 @@
 import axios, { AxiosRequestHeaders } from 'axios';
 import { appConfig } from '../../config/app-config';
-import { setUpInterceptor } from './axios-interceptor'
+import { deleteAccessToken } from '../auth';
+import { setUpInterceptor } from './axios-interceptor';
 
 class Network {
-  axios = setUpInterceptor(axios)
+  axios = setUpInterceptor(axios);
   baseUrl = appConfig.apiUrl;
 
-  public async get({path, headers, options}: {path: string, headers?: AxiosRequestHeaders, options?: any}) {
+  public async get({ path, headers, options }: { path: string; headers?: AxiosRequestHeaders; options?: any }) {
     const response = await axios.get(this.baseUrl + path, {
       headers,
       ...options,
     });
+
+    if (response.status === 401) deleteAccessToken();
 
     return response;
   }
@@ -21,6 +24,8 @@ class Network {
       ...options,
     });
 
+    if (response.status === 401) deleteAccessToken();
+
     return response;
   }
 
@@ -30,6 +35,8 @@ class Network {
       ...options,
     });
 
+    if (response.status === 401) deleteAccessToken();
+
     return response;
   }
 
@@ -38,6 +45,8 @@ class Network {
       headers,
       ...options,
     });
+
+    if (response.status === 401) deleteAccessToken();
 
     return response;
   }
