@@ -10,10 +10,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useMutation } from 'react-query';
-import { loginServiceHandler, LoginDataInterface } from '../../services/auth/login-services';
-import { setAccessToken } from '../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { loginServiceHandler, LoginDataInterface } from '../../services/auth/login-services';
+import { setAccessToken } from '../../utils/auth';
 
 const theme = createTheme();
 
@@ -35,9 +35,9 @@ export default function Login() {
       navigate('/');
     },
     onError: (err) => {
-      const { response }: any = err || {}
-      const { data } = response || {}
-      const { message } = data || {}
+      const { response }: any = err || {};
+      const { data } = response || {};
+      const { message } = data || {};
       toast.error(`${message}`, {
         position: 'top-right',
         autoClose: 3000,
@@ -48,7 +48,7 @@ export default function Login() {
         progress: undefined,
         theme: 'light',
       });
-    }
+    },
   });
 
   const inputChangeHandler = ({ field, value }: LoginFunctionProps) => {

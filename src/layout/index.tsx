@@ -129,7 +129,6 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
             <ListItem key={index} disablePadding>
               <ListItemButton
                 onClick={() => {
-                  handleDrawerClose();
                   navigate(menu.path);
                 }}
               >

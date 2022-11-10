@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { styled } from '@mui/material/styles';
+import { debounce } from 'lodash';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
-import { styled } from '@mui/material/styles';
 import CreateUserModal from './CreateUserModal';
-import { ToastContainer, toast } from 'react-toastify';
-import { useMutation } from 'react-query';
 import { getUsers, createUser, deleteUser, getTicketProviders, updateUser } from '../../services/app/users-services';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
-import { debounce } from 'lodash';
 import { createUserInterface } from '../../services/app/users-services';
+import { errorHandler } from '../../utils/network/error-handler';
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
@@ -68,6 +70,8 @@ const Users: React.FC<DashboardProps> = () => {
     status: '',
   });
 
+  const navigate = useNavigate();
+
   const getUsersQuery = useQuery(
     ['users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
     () =>
@@ -107,27 +111,14 @@ const Users: React.FC<DashboardProps> = () => {
       getUsersQuery.refetch();
       closeModal();
     },
-    onError: (err) => {
-      const { response }: any = err || {};
-      const { data } = response || {};
-      const { message } = data || {};
-      toast.error(`${message[0]}`, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
-    },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
   const deleteMutation = useMutation((data: string) => deleteUser(data), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
   const updateMutation = useMutation(
@@ -138,21 +129,7 @@ const Users: React.FC<DashboardProps> = () => {
         getUsersQuery.refetch();
         closeModal();
       },
-      onError: (err) => {
-        const { response }: any = err || {};
-        const { data } = response || {};
-        const { message } = data || {};
-        toast.error(`${message[0]}`, {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-        });
-      },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
     },
   );
 

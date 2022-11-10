@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { debounce } from 'lodash';
+import { styled } from '@mui/material/styles';
+import { AxiosError } from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import CreateTicketProviderModal from './CreateTicketProviderModal';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
-import { styled } from '@mui/material/styles';
-import CreateTicketProviderModal from './CreateTicketProviderModal';
-import { ToastContainer, toast } from 'react-toastify';
-import { useMutation } from 'react-query';
 import {
   createTicketProviderService,
   deleteTicketProvider,
@@ -14,7 +16,7 @@ import {
 } from '../../services/app/ticket-provider-service';
 import { columns } from './table-columns';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
-import { debounce } from 'lodash';
+import { errorHandler } from '../../utils/network/error-handler';
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
@@ -45,6 +47,8 @@ const TicketProvider: React.FC = () => {
   });
   const [searchText, setSearchText] = useState('');
 
+  const navigate = useNavigate();
+
   const query = useQuery(
     ['ticket_providers', tableSize.default, currentCursor.value, searchText],
     () =>
@@ -67,27 +71,14 @@ const TicketProvider: React.FC = () => {
       setTicketProviderValues({ name: '', email: '' });
       closeModal();
     },
-    onError: (err) => {
-      const { response }: any = err || {};
-      const { data } = response || {};
-      const { message } = data || {};
-      toast.error(`${message[0]}`, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
-    },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
   const deleteMutation = useMutation((data: string) => deleteTicketProvider(data), {
     onSuccess: (data) => {
       query.refetch();
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
   const openModal = () => {
