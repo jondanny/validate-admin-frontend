@@ -1,6 +1,5 @@
 import axios, { AxiosRequestHeaders } from 'axios';
 import { appConfig } from '../../config/app-config';
-import { deleteAccessToken } from '../auth';
 import { setUpInterceptor } from './axios-interceptor';
 
 class Network {
@@ -13,8 +12,6 @@ class Network {
       ...options,
     });
 
-    if (response.status === 401) deleteAccessToken();
-
     return response;
   }
 
@@ -23,8 +20,6 @@ class Network {
       headers,
       ...options,
     });
-
-    if (response.status === 401) deleteAccessToken();
 
     return response;
   }
@@ -35,8 +30,6 @@ class Network {
       ...options,
     });
 
-    if (response.status === 401) deleteAccessToken();
-
     return response;
   }
 
@@ -45,8 +38,6 @@ class Network {
       headers,
       ...options,
     });
-
-    if (response.status === 401) deleteAccessToken();
 
     return response;
   }
