@@ -7,5 +7,5 @@ export interface LoginDataInterface {
 
 export const loginServiceHandler = async (data: LoginDataInterface) => {
   const response = await network.post(`/auth/login`, data);
-  return response.data;
+  return response;
 };

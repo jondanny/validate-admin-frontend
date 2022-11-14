@@ -1,13 +1,11 @@
 import axios, { AxiosRequestHeaders } from 'axios';
-import { appConfig } from '../../config/app-config';
 import { setUpInterceptor } from './axios-interceptor';
 
 class Network {
   axios = setUpInterceptor(axios);
-  baseUrl = appConfig.apiUrl;
 
   public async get({ path, headers, options }: { path: string; headers?: AxiosRequestHeaders; options?: any }) {
-    const response = await axios.get(this.baseUrl + path, {
+    const response = await axios.get(path, {
       headers,
       ...options,
     });
@@ -15,8 +13,8 @@ class Network {
     return response;
   }
 
-  public async post(path: string, data: any, headers?: AxiosRequestHeaders, options?: any) {
-    const response = await axios.post(this.baseUrl + path, data, {
+  public async post(path: string, data?: any, headers?: AxiosRequestHeaders, options?: any) {
+    const response = await axios.post(path, data, {
       headers,
       ...options,
     });
@@ -25,7 +23,7 @@ class Network {
   }
 
   public async patch(path: string, data: any, headers?: AxiosRequestHeaders, options?: any) {
-    const response = await axios.patch(this.baseUrl + path, data, {
+    const response = await axios.patch(path, data, {
       headers,
       ...options,
     });
@@ -34,7 +32,7 @@ class Network {
   }
 
   public async delete(path: string, data?: any, headers?: AxiosRequestHeaders, options?: any) {
-    const response = await axios.delete(this.baseUrl + path, {
+    const response = await axios.delete(path, {
       headers,
       ...options,
     });

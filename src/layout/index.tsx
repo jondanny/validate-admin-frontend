@@ -20,6 +20,9 @@ import { sideBarMenu } from './side-bar-menu';
 import { useNavigate } from 'react-router-dom';
 import { deleteAccessToken } from '../utils/auth';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { logoutServiceHandler } from '../services/auth/logout-services';
+import { useMutation } from 'react-query';
+import { toast } from 'react-toastify';
 
 const drawerWidth = 240;
 
@@ -77,6 +80,28 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+
+  const mutation = useMutation(() => logoutServiceHandler(), {
+    onSuccess: (data) => {
+      deleteAccessToken();
+      navigate('/login');
+    },
+    onError: (err) => {
+      const { response }: any = err || {};
+      const { data } = response || {};
+      const { message } = data || {};
+      toast.error(`${message}`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+    },
+  });
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -138,12 +163,7 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
             </ListItem>
           ))}
           <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                deleteAccessToken();
-                navigate('/login');
-              }}
-            >
+            <ListItemButton onClick={() => mutation.mutate()}>
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>

@@ -30,8 +30,8 @@ export default function Login() {
   });
 
   const mutation = useMutation((data: LoginDataInterface) => loginServiceHandler(data), {
-    onSuccess: (data) => {
-      setAccessToken(data.accessToken);
+    onSuccess: (res) => {
+      setAccessToken(res.data.accessToken);
       navigate('/');
     },
     onError: (err) => {
