@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import { debounce } from 'lodash';
@@ -11,6 +13,7 @@ import { getTicketProviders } from '../../services/app/users-services';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
 import { getUsers } from '../../services/app/users-services';
+import { errorHandler } from '../../utils/network/error-handler';
 
 export interface TicketInterface {}
 
@@ -68,6 +71,8 @@ const Ticket: FC<TicketInterface> = () => {
     status: '',
   });
 
+  const navigate = useNavigate();
+
   useQuery(['ticket_provider'], () => getTicketProviders(), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
@@ -123,21 +128,7 @@ const Ticket: FC<TicketInterface> = () => {
       });
       closeModal();
     },
-    onError: (err) => {
-      const { response }: any = err || {};
-      const { data } = response || {};
-      const { message } = data || {};
-      toast.error(`${message[0]}`, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
-    },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
   const retryMintingMutation = useMutation((data: retryMintingTicketInterface) => retryTicketMinting(data), {

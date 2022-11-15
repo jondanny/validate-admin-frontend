@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { styled } from '@mui/material/styles';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
-import { styled } from '@mui/material/styles';
 import CreateTicketProviderEncryptionKeyModal from './CreateTicketProviderEncryptionKeyModal';
-import { ToastContainer, toast } from 'react-toastify';
-import { useMutation } from 'react-query';
 import {
   getTicketProviderEncryptionKey,
   createTicketProviderEncryptionKey,
@@ -13,6 +14,7 @@ import {
 } from '../../services/app/ticket-provider-encryption-key-service';
 import { getTicketProviders } from '../../services/app/users-services';
 import { columns } from './table-columns';
+import { errorHandler } from '../../utils/network/error-handler';
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
@@ -35,11 +37,12 @@ const TicketProviderEncryptionKey: React.FC = () => {
   });
   const [ticketProviders, setTicketProviders] = useState([]);
   const [ticketProviderFilterValue, setTicketProviderFilterValue] = useState('');
-
   const [tableSize, setTableSize] = useState({
     default: 10,
     list: [5, 10, 25],
   });
+
+  const navigate = useNavigate();
 
   const query = useQuery(
     ['ticket_provider_encryption_keys', tableSize.default, currentCursor.value, ticketProviderFilterValue],
@@ -78,21 +81,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
         setTicketProviderEncryptionKeyValues({ ticketProviderId: 0 });
         closeModal();
       },
-      onError: (err) => {
-        const { response }: any = err || {};
-        const { data } = response || {};
-        const { message } = data || {};
-        toast.error(`${message[0]}`, {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-        });
-      },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
     },
   );
 

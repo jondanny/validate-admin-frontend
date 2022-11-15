@@ -125,7 +125,7 @@ const DataTable: React.FC<DataTableProps> = ({
           </Button>
         )}
       </TableFilters>
-      <TableContainer sx={{ maxHeight: 1440 }} style={{ width: '97vw' }}>
+      <TableContainer sx={{ maxHeight: 1440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

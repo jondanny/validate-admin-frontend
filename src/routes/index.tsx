@@ -5,11 +5,12 @@ import Users from '../pages/Users';
 import TicketProviderApiToken from '../pages/TicketProviderApiToken';
 import TicketTransfer from '../pages/TicketTransfer';
 import TicketProviderEncryptionKey from '../pages/TicketProviderEncryptionKey';
+import Landing from '../pages/Landing';
 
 export const protectedRoutes = [
   {
     path: '/',
-    element: TicketProvider,
+    element: Landing,
   },
   {
     path: '/ticket-provider',

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import { ToastContainer } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
-import { ToastContainer } from 'react-toastify';
 import { getTicketTranser, getTicketProviders } from '../../services/app/ticket-transfer-service';
 import { columns } from './table-columns';
 
@@ -23,7 +23,6 @@ const TicketProviderApiToken: React.FC = () => {
     name: '',
     value: '',
   });
-
   const [tableSize, setTableSize] = useState({
     default: 10,
     list: [5, 10, 25],
