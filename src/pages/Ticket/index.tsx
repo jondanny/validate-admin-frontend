@@ -24,11 +24,8 @@ const PageContent = styled('div')(({ theme }) => ({
 interface CreateTicketProps {
   name: string;
   ticketProviderId: number;
-  contractId: string;
-  tokenId: number;
   userId: number;
-  imageUrl: string;
-  ipfsUri: string;
+  imageUrl: string | null;
 }
 
 const Ticket: FC<TicketInterface> = () => {
@@ -45,11 +42,8 @@ const Ticket: FC<TicketInterface> = () => {
   const [ticketValues, setTicketValues] = useState<CreateTicketProps>({
     name: '',
     ticketProviderId: 0,
-    contractId: '',
-    tokenId: 0,
     userId: 0,
-    imageUrl: '',
-    ipfsUri: '',
+    imageUrl: null,
   });
   const [currentCursor, setCurrentCursor] = useState({
     name: '',
@@ -120,11 +114,8 @@ const Ticket: FC<TicketInterface> = () => {
       setTicketValues({
         name: '',
         ticketProviderId: 0,
-        contractId: '',
-        tokenId: 0,
         userId: 0,
-        imageUrl: '',
-        ipfsUri: '',
+        imageUrl: null,
       });
       closeModal();
     },

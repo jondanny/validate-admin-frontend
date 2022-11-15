@@ -4,11 +4,8 @@ import network from '../../utils/network';
 export interface createTicketInterface {
   name: string;
   ticketProviderId: number;
-  contractId: string;
-  tokenId: number;
   userId: number;
-  imageUrl: string;
-  ipfsUri: string;
+  imageUrl: string | null;
 }
 
 interface getTicketParams {
