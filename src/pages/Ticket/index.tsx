@@ -21,11 +21,21 @@ const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
 }));
 
+interface NewUserInterface {
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  userId?: number | undefined;
+}
 interface CreateTicketProps {
   name: string;
   ticketProviderId: number;
-  userId: number;
-  imageUrl: string | null;
+  userId?: number;
+  imageUrl?: string | null;
+  newUserName?: string;
+  newUserEmail?: string;
+  newUserPhoneNumber?: string;
+  user?: NewUserInterface
 }
 
 const Ticket: FC<TicketInterface> = () => {
@@ -63,6 +73,15 @@ const Ticket: FC<TicketInterface> = () => {
     phoneNumber: '',
     ticketProviderId: 0,
     status: '',
+  });
+
+  const [ newUser, setNewUser ] = useState({
+    userFieldsValues: {
+      name: '',
+      email: '',
+      phoneNumber: '',
+    },
+    newUserExists: false
   });
 
   const navigate = useNavigate();
@@ -117,6 +136,15 @@ const Ticket: FC<TicketInterface> = () => {
         userId: 0,
         imageUrl: null,
       });
+      setNewUser({
+        newUserExists: false,
+        userFieldsValues: {
+          name: '',
+          email: '',
+          phoneNumber: ''
+        }
+
+      })
       closeModal();
     },
     onError: (err: AxiosError) => errorHandler(err, navigate),
@@ -174,7 +202,9 @@ const Ticket: FC<TicketInterface> = () => {
   };
 
   const createTicket = () => {
-    if (ticketValues.name === '' || !ticketValues['ticketProviderId'] || !ticketValues['userId']) {
+    const { userFieldsValues } = newUser;
+    const { name, email, phoneNumber } = userFieldsValues;
+    if (ticketValues.name === '' || !ticketValues['ticketProviderId']) {
       toast.error('Please Fill all the fields', {
         position: 'top-right',
         autoClose: 3000,
@@ -187,7 +217,33 @@ const Ticket: FC<TicketInterface> = () => {
       });
       return;
     }
-    createMutation.mutate(ticketValues);
+    if(!ticketValues['userId']){
+
+      if(!name || !email || !phoneNumber){
+        toast.error('Please Fill all the new user fields', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+        return;
+      }
+    }
+    ticketValues.userId === 0 ? 
+      createMutation.mutate({
+        name: ticketValues.name,
+        ticketProviderId: ticketValues.ticketProviderId,
+        imageUrl: ticketValues.imageUrl, 
+        user: { name,  email,  phoneNumber},
+      }) 
+      : 
+      createMutation.mutate({...ticketValues, user: {
+        userId: ticketValues.userId,
+      }});
   };
 
   const searchHandler = debounce((value: string) => {
@@ -226,6 +282,23 @@ const Ticket: FC<TicketInterface> = () => {
     setTicketProviderFilterValue(`${ticketProviderId}`);
   };
 
+  const newUserChangeHandler = (field: string, value: any, update?: boolean) => {
+    const newValues = {...newUser.userFieldsValues}
+    if(field === 'name'){
+      newValues.name = value
+    }else if(field === 'email'){
+      newValues.email = value
+    }else {
+      newValues.phoneNumber = value
+    }
+    setNewUser((prevState) => {
+      return {
+        ...prevState,
+        userFieldsValues: {...newValues}
+      }
+    })
+  };
+
   return (
     <>
       <PageContent>
@@ -253,6 +326,9 @@ const Ticket: FC<TicketInterface> = () => {
         inputValueHandler={(field: string, value: string | number) => createTicketFormValuesHandler(field, value)}
         ticketProviders={ticketProviders}
         users={users}
+        newUserHandler={(value) => setNewUser({...newUser, newUserExists: value})}
+        newUser={newUser}
+        newUserChangeHandler={newUserChangeHandler}
       />
       <ConfirmationModal
         title="Create Ticket"
