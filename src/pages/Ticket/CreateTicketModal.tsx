@@ -71,32 +71,6 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           </Grid>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="contractId"
-                name="contractId"
-                label="Contract ID"
-                fullWidth
-                autoComplete="given-contract-id"
-                variant="standard"
-                onChange={(e) => inputValueHandler('contractId', e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="tokenId"
-                name="tokenId"
-                label="Token Id"
-                fullWidth
-                autoComplete="given-token-id"
-                variant="standard"
-                onChange={(e) => inputValueHandler('tokenId', e.target.value)}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
               <Autocomplete
                 options={users}
                 getOptionLabel={(option: optionType) => option.name}
@@ -126,7 +100,6 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12}>
               <TextField
-                required
                 id="imageUrl"
                 name="imageUrl"
                 label="Image URL"
@@ -137,20 +110,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               />
             </Grid>
           </Grid>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                required
-                id="ipfsUri"
-                name="ipfsUri"
-                label="IPFS URI"
-                fullWidth
-                autoComplete="given-ipfs-uri"
-                variant="standard"
-                onChange={(e) => inputValueHandler('ipfsUri', e.target.value)}
-              />
-            </Grid>
-          </Grid>
+
           <ButtonDiv>
             <Button variant="contained" onClick={closeModal} sx={{ mt: 3, ml: 1 }} color="inherit">
               Close

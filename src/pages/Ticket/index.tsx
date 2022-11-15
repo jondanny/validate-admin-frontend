@@ -183,15 +183,7 @@ const Ticket: FC<TicketInterface> = () => {
   };
 
   const createTicket = () => {
-    if (
-      ticketValues.name === '' ||
-      ticketValues['contractId'] === '' ||
-      ticketValues['imageUrl'] === '' ||
-      ticketValues['ipfsUri'] === '' ||
-      !ticketValues['ticketProviderId'] ||
-      !ticketValues['userId'] ||
-      !ticketValues['tokenId']
-    ) {
+    if (ticketValues.name === '' || !ticketValues['ticketProviderId'] || !ticketValues['userId']) {
       toast.error('Please Fill all the fields', {
         position: 'top-right',
         autoClose: 3000,
