@@ -90,5 +90,5 @@ export const columns: Column[] = [
     label: 'Action',
     align: 'center',
     minWidth: 10,
-  },
+  }
 ];
