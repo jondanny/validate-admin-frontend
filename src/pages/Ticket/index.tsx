@@ -8,7 +8,13 @@ import { debounce } from 'lodash';
 import Title from '../../components/Title/index';
 import DataTable from '../../components/DataTable/index';
 import { columns } from './table-columns';
-import { createTicketService, deleteTicket, getTickets, retryTicketMinting, retryMintingTicketInterface } from '../../services/app/ticket-service';
+import {
+  createTicketService,
+  deleteTicket,
+  getTickets,
+  retryTicketMinting,
+  retryMintingTicketInterface,
+} from '../../services/app/ticket-service';
 import { getTicketProviders } from '../../services/app/users-services';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
@@ -111,6 +117,16 @@ const Ticket: FC<TicketInterface> = () => {
   const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data), {
     onSuccess: (data) => {
       query.refetch();
+      toast.success('Ticket is created', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       setTicketValues({
         name: '',
         ticketProviderId: 0,
@@ -137,9 +153,8 @@ const Ticket: FC<TicketInterface> = () => {
         progress: undefined,
         theme: 'light',
       });
-    }
-
-  })
+    },
+  });
 
   const deleteMutation = useMutation((data: string) => deleteTicket(data), {
     onSuccess: (data) => {
@@ -177,6 +192,16 @@ const Ticket: FC<TicketInterface> = () => {
   const deleteTicketHandler = () => {
     if (deleteTicketId !== '') {
       deleteMutation.mutate(deleteTicketId);
+      toast.success('Ticket is successfully deleted', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       setOpenConfirmationModal(false);
     } else {
       toast.error('No ticket is selected', {
@@ -245,8 +270,8 @@ const Ticket: FC<TicketInterface> = () => {
     setTicketProviderFilterValue(`${ticketProviderId}`);
   };
   const retryButtonHandler = (data: retryMintingTicketInterface) => {
-    retryMintingMutation.mutate(data)
-  }
+    retryMintingMutation.mutate(data);
+  };
 
   return (
     <>
