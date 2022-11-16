@@ -1,11 +1,17 @@
 import React from 'react';
-import { Autocomplete, Box, Button, Grid, Modal, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, Grid, Modal, TextField, Switch, FormControlLabel, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const ModalTitle = styled('h2')(({ theme }) => ({
   overflow: 'hidden',
   textAlign: 'center',
   marginTop: '0px',
+}));
+
+const ModalSubTitle = styled('h3')(({ theme }) => ({
+  overflow: 'hidden',
+  textAlign: 'center',
+  marginTop: '2rem',
 }));
 
 const ButtonDiv = styled('div')(({ theme }) => ({
@@ -37,8 +43,11 @@ interface CreateTicketModalProps {
   closeModal: () => any;
   submitForm: () => any;
   inputValueHandler: (field: string, value: string | number) => any;
+  newUserHandler: (value: boolean) => any;
   ticketProviders: any;
   users: any;
+  newUser: any,
+  newUserChangeHandler: (field: string, value: string | number) => any
 }
 
 const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
@@ -49,12 +58,22 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   inputValueHandler,
   ticketProviders,
   users,
+  newUserHandler,
+  newUser,
+  newUserChangeHandler
 }) => {
   return (
     <>
       <Modal open={openModal} onClose={closeModal} aria-labelledby="modal-title">
         <Box sx={style}>
           <ModalTitle id="modal-title">{title}</ModalTitle>
+          <FormControlLabel
+            value="start"
+            control={<Switch color="primary" onChange={(e) => newUserHandler(e.target.checked)}/>}
+            label={<strong>New User</strong>}
+            labelPlacement="start"
+            style={{display: 'flex'}}
+          />
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -71,16 +90,17 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           </Grid>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <Autocomplete
-                options={users}
-                getOptionLabel={(option: optionType) => option.name}
-                autoComplete
-                includeInputInList
-                onChange={(e: any, newValue: optionType | null) => {
-                  inputValueHandler('userId', newValue ? newValue?.id : 0);
-                }}
-                renderInput={(params) => <TextField {...params} label="User *" fullWidth variant="standard" />}
-              />
+                <Autocomplete
+                  disabled={newUser?.newUserExists}
+                  options={users}
+                  getOptionLabel={(option: optionType) => option.name}
+                  autoComplete
+                  includeInputInList
+                  onChange={(e: any, newValue: optionType | null) => {
+                    inputValueHandler('userId', newValue ? newValue?.id : 0);
+                  }}
+                  renderInput={(params) => <TextField {...params} label="User *" fullWidth variant="standard" />}
+                />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Autocomplete
@@ -110,6 +130,56 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               />
             </Grid>
           </Grid>
+
+          <div style={{display: newUser.newUserExists ? 'block' : 'none'}}>
+            <Divider />
+
+            <ModalSubTitle>New User</ModalSubTitle>
+
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="name"
+                  name="name"
+                  label="Name"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.name || ''}
+                  onChange={(e) => newUserChangeHandler('name', e.target.value)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="email"
+                  name="email"
+                  label="Email"
+                  fullWidth
+                  autoComplete="given-email"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.email || ''}
+                  onChange={(e) => newUserChangeHandler('email', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  label="Contact Number"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.phoneNumber || ''}
+                  onChange={(e) => newUserChangeHandler('phoneNumber', e.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </div> 
 
           <ButtonDiv>
             <Button variant="contained" onClick={closeModal} sx={{ mt: 3, ml: 1 }} color="inherit">
