@@ -28,6 +28,10 @@ export default function Login() {
     email: '',
     password: '',
   });
+  const [touched, setTouched] = useState({
+    email: false,
+    password: false,
+  });
 
   const mutation = useMutation((data: LoginDataInterface) => loginServiceHandler(data), {
     onSuccess: (data) => {
@@ -52,17 +56,12 @@ export default function Login() {
   });
 
   const inputChangeHandler = ({ field, value }: LoginFunctionProps) => {
-    if (field === 'email') {
-      setLoginData({
-        ...loginData,
-        email: value,
-      });
-    } else {
-      setLoginData({
-        ...loginData,
-        password: value,
-      });
-    }
+    setTouched((prevState) => {
+      return { ...prevState, [field]: true };
+    });
+    setLoginData((prevState) => {
+      return { ...prevState, [field]: value };
+    });
   };
 
   return (
@@ -106,7 +105,7 @@ export default function Login() {
             <Box component="form" noValidate sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
-                error={loginData['email'] === ''}
+                error={touched['email'] && loginData['email'] === ''}
                 required
                 fullWidth
                 id="email"
@@ -118,7 +117,7 @@ export default function Login() {
               />
               <TextField
                 margin="normal"
-                error={loginData['password'] === ''}
+                error={touched['password'] && loginData['password'] === ''}
                 required
                 fullWidth
                 name="password"
@@ -127,6 +126,9 @@ export default function Login() {
                 id="password"
                 onChange={(e: any) => inputChangeHandler({ field: 'password', value: e.target.value })}
                 autoComplete="current-password"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') mutation.mutate(loginData);
+                }}
               />
               <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={() => mutation.mutate(loginData)}>
                 Sign In
