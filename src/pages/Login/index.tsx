@@ -13,7 +13,7 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { loginServiceHandler, LoginDataInterface } from '../../services/auth/login-services';
-import { setAccessToken } from '../../utils/auth';
+import { setAccessToken, setRefreshToken } from '../../utils/auth';
 
 const theme = createTheme();
 
@@ -22,7 +22,7 @@ interface LoginFunctionProps {
   value: string;
 }
 
-export default function Login() {
+const Login: React.FC = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState<LoginDataInterface>({
     email: '',
@@ -31,6 +31,7 @@ export default function Login() {
 
   const mutation = useMutation((data: LoginDataInterface) => loginServiceHandler(data), {
     onSuccess: (res) => {
+      setRefreshToken(document.cookie.split('=')[1]);
       setAccessToken(res.data.accessToken);
       navigate('/');
     },
@@ -138,4 +139,6 @@ export default function Login() {
       </Grid>
     </ThemeProvider>
   );
-}
+};
+
+export default Login;

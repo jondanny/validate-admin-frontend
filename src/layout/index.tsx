@@ -18,7 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { sideBarMenu } from './side-bar-menu';
 import { useNavigate } from 'react-router-dom';
-import { deleteAccessToken } from '../utils/auth';
+import { deleteAccessToken, deleteRefreshToken } from '../utils/auth';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { logoutServiceHandler } from '../services/auth/logout-services';
 import { useMutation } from 'react-query';
@@ -84,6 +84,7 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
   const mutation = useMutation(() => logoutServiceHandler(), {
     onSuccess: (data) => {
       deleteAccessToken();
+      deleteRefreshToken();
       navigate('/login');
     },
     onError: (err) => {
