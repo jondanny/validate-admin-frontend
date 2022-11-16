@@ -3,7 +3,6 @@ import { NavigateFunction } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export function errorHandler(err: AxiosError, navigate: NavigateFunction) {
-  console.log(err);
   const { response }: any = err || {};
   const { data, status, statusText } = response || {};
   const { message } = data || {};
