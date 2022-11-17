@@ -66,7 +66,7 @@ export default function Login() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ width: '80%', margin: 'auto', borderRadius: '11px' }}>
+      <Grid container component="main" sx={{ width: '80%', height: '50rem', margin: 'auto', borderRadius: '11px' }}>
         <CssBaseline />
         <Grid
           item
@@ -83,14 +83,21 @@ export default function Login() {
             borderBottomLeftRadius: '12px',
           }}
         />
-        {/* <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} > */}
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6}>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={6}
+          sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+        >
           <Box
             sx={{
-              my: 8,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
               borderTopRightRadius: '12px',
               borderBottomRightRadius: '12px',
