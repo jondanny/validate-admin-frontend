@@ -10,6 +10,9 @@ export interface Column {
 }
 
 const dateConversionHandler = (date: string) => {
+  return moment(date).format('DD-MM-YYYY');
+};
+const dateTimeConversionHandler = (date: string) => {
   return moment(date).format('DD-MM-YYYY hh:mm:ss');
 };
 
@@ -73,22 +76,42 @@ export const columns: Column[] = [
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'createdAt',
-    label: 'Created At',
+    id: 'type',
+    label: 'Type',
+    minWidth: 150,
+    align: 'center',
+  },
+  {
+    id: 'dateStart',
+    label: 'Started At',
     minWidth: 150,
     align: 'center',
     dateFormater: (value: string) => dateConversionHandler(value),
   },
   {
-    id: "errorData",
-    label: "Error Data",
+    id: 'dateEnd',
+    label: 'ended At',
+    minWidth: 150,
+    align: 'center',
+    dateFormater: (value: string) => dateConversionHandler(value),
+  },
+  {
+    id: 'createdAt',
+    label: 'Created At',
+    minWidth: 150,
+    align: 'center',
+    dateFormater: (value: string) => dateTimeConversionHandler(value),
+  },
+  {
+    id: 'errorData',
+    label: 'Error Data',
     minWidth: 120,
-    align: "center",
+    align: 'center',
   },
   {
     id: 'delete',
     label: 'Action',
     align: 'center',
     minWidth: 10,
-  }
+  },
 ];
