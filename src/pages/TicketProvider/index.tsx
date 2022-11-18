@@ -128,6 +128,16 @@ const TicketProvider: React.FC = () => {
   const deleteTicketProviderHandler = () => {
     if (deleteTicketProviderId !== '') {
       deleteMutation.mutate(deleteTicketProviderId);
+      toast.success('Ticket provider is deleted', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       setOpenConfirmationModal(false);
     } else {
       toast.error('No ticket Provider is selected', {

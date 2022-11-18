@@ -1,11 +1,20 @@
-import React from 'react';
-import { Autocomplete, Box, Button, Grid, Modal, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Autocomplete, Box, Button, Grid, Modal, TextField, Switch, FormControlLabel, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
 
 const ModalTitle = styled('h2')(({ theme }) => ({
   overflow: 'hidden',
   textAlign: 'center',
   marginTop: '0px',
+}));
+
+const ModalSubTitle = styled('h3')(({ theme }) => ({
+  overflow: 'hidden',
+  textAlign: 'center',
+  marginTop: '2rem',
 }));
 
 const ButtonDiv = styled('div')(({ theme }) => ({
@@ -37,8 +46,11 @@ interface CreateTicketModalProps {
   closeModal: () => any;
   submitForm: () => any;
   inputValueHandler: (field: string, value: string | number) => any;
+  newUserHandler: (value: boolean) => any;
   ticketProviders: any;
   users: any;
+  newUser: any;
+  newUserChangeHandler: (field: string, value: string | number) => any;
 }
 
 const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
@@ -49,12 +61,24 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   inputValueHandler,
   ticketProviders,
   users,
+  newUserHandler,
+  newUser,
+  newUserChangeHandler,
 }) => {
+  const [dateStart, setDateStart] = useState<Dayjs | null>(dayjs(new Date()));
+  const [dateEnd, setDateEnd] = useState<Dayjs | null>(dayjs(new Date()));
   return (
     <>
       <Modal open={openModal} onClose={closeModal} aria-labelledby="modal-title">
         <Box sx={style}>
           <ModalTitle id="modal-title">{title}</ModalTitle>
+          <FormControlLabel
+            value="start"
+            control={<Switch color="primary" onChange={(e) => newUserHandler(e.target.checked)} />}
+            label={<strong>New User</strong>}
+            labelPlacement="start"
+            style={{ display: 'flex' }}
+          />
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -68,10 +92,24 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                 onChange={(e) => inputValueHandler('name', e.target.value)}
               />
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required
+                id="ticketType"
+                name="type"
+                label="Ticket Type"
+                fullWidth
+                autoComplete="given-name"
+                variant="standard"
+                onChange={(e) => inputValueHandler('type', e.target.value)}
+              />
+            </Grid>
           </Grid>
+          <br />
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Autocomplete
+                disabled={newUser?.newUserExists}
                 options={users}
                 getOptionLabel={(option: optionType) => option.name}
                 autoComplete
@@ -97,6 +135,36 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               />
             </Grid>
           </Grid>
+          <br />
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Start Date*"
+                  value={dateStart}
+                  onChange={(newValue: Dayjs | null) => {
+                    setDateStart(newValue);
+                    inputValueHandler('dateStart', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="End Date"
+                  value={dateEnd}
+                  onChange={(newValue: Dayjs | null) => {
+                    setDateEnd(newValue);
+                    inputValueHandler('dateEnd', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
+          <br />
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12}>
               <TextField
@@ -110,6 +178,56 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               />
             </Grid>
           </Grid>
+
+          <div style={{ display: newUser.newUserExists ? 'block' : 'none' }}>
+            <Divider />
+
+            <ModalSubTitle>New User</ModalSubTitle>
+
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="name"
+                  name="name"
+                  label="Name"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.name || ''}
+                  onChange={(e) => newUserChangeHandler('name', e.target.value)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="email"
+                  name="email"
+                  label="Email"
+                  fullWidth
+                  autoComplete="given-email"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.email || ''}
+                  onChange={(e) => newUserChangeHandler('email', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  label="Contact Number"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.phoneNumber || ''}
+                  onChange={(e) => newUserChangeHandler('phoneNumber', e.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </div>
 
           <ButtonDiv>
             <Button variant="contained" onClick={closeModal} sx={{ mt: 3, ml: 1 }} color="inherit">

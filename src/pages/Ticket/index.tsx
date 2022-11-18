@@ -8,12 +8,19 @@ import { debounce } from 'lodash';
 import Title from '../../components/Title/index';
 import DataTable from '../../components/DataTable/index';
 import { columns } from './table-columns';
-import { createTicketService, deleteTicket, getTickets, retryTicketMinting, retryMintingTicketInterface } from '../../services/app/ticket-service';
+import {
+  createTicketService,
+  deleteTicket,
+  getTickets,
+  retryTicketMinting,
+  retryMintingTicketInterface,
+} from '../../services/app/ticket-service';
 import { getTicketProviders } from '../../services/app/users-services';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
 import { getUsers } from '../../services/app/users-services';
 import { errorHandler } from '../../utils/network/error-handler';
+import dayjs from 'dayjs';
 
 export interface TicketInterface {}
 
@@ -21,11 +28,24 @@ const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
 }));
 
+interface NewUserInterface {
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  userId?: number | undefined;
+}
 interface CreateTicketProps {
   name: string;
   ticketProviderId: number;
-  userId: number;
-  imageUrl: string | null;
+  userId?: number;
+  imageUrl?: string | null;
+  newUserName?: string;
+  newUserEmail?: string;
+  newUserPhoneNumber?: string;
+  type: string;
+  user?: NewUserInterface;
+  dateStart: string | null;
+  dateEnd?: string | null;
 }
 
 const Ticket: FC<TicketInterface> = () => {
@@ -44,6 +64,8 @@ const Ticket: FC<TicketInterface> = () => {
     ticketProviderId: 0,
     userId: 0,
     imageUrl: null,
+    type: '',
+    dateStart: dayjs(new Date()).format('YYYY-MM-DD'),
   });
   const [currentCursor, setCurrentCursor] = useState({
     name: '',
@@ -63,6 +85,15 @@ const Ticket: FC<TicketInterface> = () => {
     phoneNumber: '',
     ticketProviderId: 0,
     status: '',
+  });
+
+  const [newUser, setNewUser] = useState({
+    userFieldsValues: {
+      name: '',
+      email: '',
+      phoneNumber: '',
+    },
+    newUserExists: false,
   });
 
   const navigate = useNavigate();
@@ -111,11 +142,31 @@ const Ticket: FC<TicketInterface> = () => {
   const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data), {
     onSuccess: (data) => {
       query.refetch();
+      toast.success('Ticket is created', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       setTicketValues({
         name: '',
         ticketProviderId: 0,
         userId: 0,
         imageUrl: null,
+        type: '',
+        dateStart: dayjs(new Date()).format('YYYY-MM-DD'),
+      });
+      setNewUser({
+        newUserExists: false,
+        userFieldsValues: {
+          name: '',
+          email: '',
+          phoneNumber: '',
+        },
       });
       closeModal();
     },
@@ -137,9 +188,8 @@ const Ticket: FC<TicketInterface> = () => {
         progress: undefined,
         theme: 'light',
       });
-    }
-
-  })
+    },
+  });
 
   const deleteMutation = useMutation((data: string) => deleteTicket(data), {
     onSuccess: (data) => {
@@ -177,6 +227,16 @@ const Ticket: FC<TicketInterface> = () => {
   const deleteTicketHandler = () => {
     if (deleteTicketId !== '') {
       deleteMutation.mutate(deleteTicketId);
+      toast.success('Ticket is successfully deleted', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       setOpenConfirmationModal(false);
     } else {
       toast.error('No ticket is selected', {
@@ -193,8 +253,10 @@ const Ticket: FC<TicketInterface> = () => {
   };
 
   const createTicket = () => {
-    if (ticketValues.name === '' || !ticketValues['ticketProviderId'] || !ticketValues['userId']) {
-      toast.error('Please Fill all the fields', {
+    const { userFieldsValues } = newUser;
+    const { name, email, phoneNumber } = userFieldsValues;
+    if (ticketValues.name === '' || !ticketValues['ticketProviderId'] || ticketValues['dateStart'] === '') {
+      toast.error('Please Fill all the required fields', {
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,
@@ -206,7 +268,50 @@ const Ticket: FC<TicketInterface> = () => {
       });
       return;
     }
-    createMutation.mutate(ticketValues);
+    if (!ticketValues['userId']) {
+      if (!name || !email || !phoneNumber) {
+        toast.error('Please Fill all the new user fields', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+        return;
+      }
+    }
+    if (ticketValues.userId === 0) {
+      const mutationParam: CreateTicketProps = {
+        name: ticketValues.name,
+        ticketProviderId: ticketValues.ticketProviderId,
+        imageUrl: ticketValues.imageUrl,
+        type: ticketValues.type,
+        user: { name, email, phoneNumber },
+        dateStart: ticketValues.dateStart,
+      };
+      if (ticketValues.dateEnd !== '') {
+        mutationParam.dateEnd = ticketValues.dateEnd;
+      }
+      createMutation.mutate(mutationParam);
+    } else {
+      const mutationParam: CreateTicketProps = {
+        name: ticketValues.name,
+        ticketProviderId: ticketValues.ticketProviderId,
+        imageUrl: ticketValues.imageUrl,
+        type: ticketValues.type,
+        dateStart: ticketValues.dateStart,
+        user: {
+          userId: ticketValues.userId,
+        },
+      };
+      if (ticketValues.dateEnd !== '') {
+        mutationParam.dateEnd = ticketValues.dateEnd;
+      }
+      createMutation.mutate(mutationParam);
+    }
   };
 
   const searchHandler = debounce((value: string) => {
@@ -245,8 +350,25 @@ const Ticket: FC<TicketInterface> = () => {
     setTicketProviderFilterValue(`${ticketProviderId}`);
   };
   const retryButtonHandler = (data: retryMintingTicketInterface) => {
-    retryMintingMutation.mutate(data)
-  }
+    retryMintingMutation.mutate(data);
+  };
+
+  const newUserChangeHandler = (field: string, value: any, update?: boolean) => {
+    const newValues = { ...newUser.userFieldsValues };
+    if (field === 'name') {
+      newValues.name = value;
+    } else if (field === 'email') {
+      newValues.email = value;
+    } else {
+      newValues.phoneNumber = value;
+    }
+    setNewUser((prevState) => {
+      return {
+        ...prevState,
+        userFieldsValues: { ...newValues },
+      };
+    });
+  };
 
   return (
     <>
@@ -276,6 +398,9 @@ const Ticket: FC<TicketInterface> = () => {
         inputValueHandler={(field: string, value: string | number) => createTicketFormValuesHandler(field, value)}
         ticketProviders={ticketProviders}
         users={users}
+        newUserHandler={(value) => setNewUser({ ...newUser, newUserExists: value })}
+        newUser={newUser}
+        newUserChangeHandler={newUserChangeHandler}
       />
       <ConfirmationModal
         title="Create Ticket"

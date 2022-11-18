@@ -82,6 +82,16 @@ const TicketProviderApiToken: React.FC = () => {
   const createMutation = useMutation((data: createTicketProviderInterface) => createTicketProviderApiToken(data), {
     onSuccess: (data) => {
       query.refetch();
+      toast.success('Ticket provider api token is created', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       setTicketProviderApiTokenValues({
         token: '',
         ticketProviderId: 0,
@@ -94,6 +104,16 @@ const TicketProviderApiToken: React.FC = () => {
   const deleteMutation = useMutation((data: string) => deleteTicketProviderApiToken(data), {
     onSuccess: (data) => {
       query.refetch();
+      toast.success('Ticket provider api token deleted', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
     },
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });

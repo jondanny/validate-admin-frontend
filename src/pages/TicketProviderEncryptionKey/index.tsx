@@ -78,6 +78,16 @@ const TicketProviderEncryptionKey: React.FC = () => {
     {
       onSuccess: (data) => {
         query.refetch();
+        toast.success('Ticket provider encryption key is created', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
         setTicketProviderEncryptionKeyValues({ ticketProviderId: 0 });
         closeModal();
       },
