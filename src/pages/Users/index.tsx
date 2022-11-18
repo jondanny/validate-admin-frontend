@@ -109,6 +109,16 @@ const Users: React.FC<DashboardProps> = () => {
   const createMutation = useMutation((data: createUserInterface) => createUser(data), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
+      toast.success('User is created', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       closeModal();
     },
     onError: (err: AxiosError) => errorHandler(err, navigate),
@@ -127,6 +137,16 @@ const Users: React.FC<DashboardProps> = () => {
     {
       onSuccess: (data) => {
         getUsersQuery.refetch();
+        toast.success('User info is updated', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
         closeModal();
       },
       onError: (err: AxiosError) => errorHandler(err, navigate),
@@ -194,6 +214,16 @@ const Users: React.FC<DashboardProps> = () => {
   const deleteTicketProviderHandler = () => {
     if (deleteUserId !== '') {
       deleteMutation.mutate(deleteUserId);
+      toast.success('User is deleted', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
       setOpenConfirmationModal(false);
     } else {
       toast.error('No ticket Provider is selected', {

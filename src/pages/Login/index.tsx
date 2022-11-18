@@ -28,6 +28,10 @@ const Login: React.FC = () => {
     email: '',
     password: '',
   });
+  const [touched, setTouched] = useState({
+    email: false,
+    password: false,
+  });
 
   const mutation = useMutation((data: LoginDataInterface) => loginServiceHandler(data), {
     onSuccess: (res) => {
@@ -53,22 +57,17 @@ const Login: React.FC = () => {
   });
 
   const inputChangeHandler = ({ field, value }: LoginFunctionProps) => {
-    if (field === 'email') {
-      setLoginData({
-        ...loginData,
-        email: value,
-      });
-    } else {
-      setLoginData({
-        ...loginData,
-        password: value,
-      });
-    }
+    setTouched((prevState) => {
+      return { ...prevState, [field]: true };
+    });
+    setLoginData((prevState) => {
+      return { ...prevState, [field]: value };
+    });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ width: '80%', margin: 'auto', borderRadius: '11px' }}>
+      <Grid container component="main" sx={{ height: '100vh', margin: 'auto', borderRadius: '11px' }}>
         <CssBaseline />
         <Grid
           item
@@ -78,21 +77,28 @@ const Login: React.FC = () => {
           sx={{
             backgroundImage: 'url(/loginLogo.png)',
             backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) => (t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]),
-            backgroundSize: 'cover',
+            backgroundColor: 'rgb(232,232,232)',
+            backgroundSize: 'contain',
             backgroundPosition: 'center',
             borderTopLeftRadius: '12px',
             borderBottomLeftRadius: '12px',
           }}
         />
-        {/* <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} > */}
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6}>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={6}
+          sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+        >
           <Box
             sx={{
-              my: 8,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
               borderTopRightRadius: '12px',
               borderBottomRightRadius: '12px',
@@ -107,7 +113,7 @@ const Login: React.FC = () => {
             <Box component="form" noValidate sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
-                error={loginData['email'] === ''}
+                error={touched['email'] && loginData['email'] === ''}
                 required
                 fullWidth
                 id="email"
@@ -119,7 +125,7 @@ const Login: React.FC = () => {
               />
               <TextField
                 margin="normal"
-                error={loginData['password'] === ''}
+                error={touched['password'] && loginData['password'] === ''}
                 required
                 fullWidth
                 name="password"
@@ -128,6 +134,9 @@ const Login: React.FC = () => {
                 id="password"
                 onChange={(e: any) => inputChangeHandler({ field: 'password', value: e.target.value })}
                 autoComplete="current-password"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') mutation.mutate(loginData);
+                }}
               />
               <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={() => mutation.mutate(loginData)}>
                 Sign In
