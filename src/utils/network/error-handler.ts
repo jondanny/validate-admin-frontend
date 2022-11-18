@@ -1,10 +1,11 @@
 import { AxiosError } from 'axios';
 import { NavigateFunction } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { getAccessTokenHandler } from '../../services/auth/access-token-service';
 
-export function errorHandler(err: AxiosError, navigate: NavigateFunction) {
+export async function errorHandler(err: AxiosError, navigate: NavigateFunction) {
   const { response }: any = err || {};
-  const { data, status, statusText } = response || {};
+  const { data, status } = response || {};
   const { message } = data || {};
 
   let errorMessage;
@@ -14,28 +15,26 @@ export function errorHandler(err: AxiosError, navigate: NavigateFunction) {
       break;
 
     case 401:
-      errorMessage = `Session expired. Please login again.`;
+      errorMessage = `Session expired. Trying to extend session...`;
       break;
 
     default:
-      errorMessage = statusText;
+      errorMessage = message;
       break;
   }
 
-  toast.error(errorMessage, {
-    position: 'top-right',
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: 'light',
-  });
-
   if (status === 401) {
-    setTimeout(() => {
-      navigate('/login');
-    }, 1500);
+    await getAccessTokenHandler(navigate);
+  } else {
+    toast.error(errorMessage, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
   }
 }

@@ -14,6 +14,7 @@ function App() {
       }
     }
   });
+
   return (
     <ColorContext.Provider value={{ ...initialUserState }}>
       <QueryClientProvider client={queryClient}>
