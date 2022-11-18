@@ -4,11 +4,11 @@ import network from '../../utils/network';
 export interface createTicketInterface {
   name: string;
   ticketProviderId: number;
-  contractId: string;
-  tokenId: number;
-  userId: number;
-  imageUrl: string;
-  ipfsUri: string;
+  userId?: number;
+  imageUrl?: string | null;
+  newUserName?: string;
+  newUserEmail?: string;
+  newUserPhoneNumber?: string;
 }
 
 interface getTicketParams {
@@ -17,6 +17,12 @@ interface getTicketParams {
   beforeCursor?: string;
   searchText?: string;
   ticketProviderId?: string;
+}
+
+export interface retryMintingTicketInterface {
+  userId: number;
+  ticketId: number;
+  ticketProviderId: number
 }
 
 export const getTickets = async ({
@@ -58,3 +64,9 @@ export const deleteTicket = async (id: string) => {
   const response = await network.delete(`/tickets/${id}`);
   return response.data;
 };
+
+
+export const retryTicketMinting = async (obj: retryMintingTicketInterface) => {
+  const response = await network.post('/tickets/retry-minting', obj)
+  return response.data;
+}
