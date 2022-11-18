@@ -66,7 +66,7 @@ export default function Login() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ width: '80%', height: '50rem', margin: 'auto', borderRadius: '11px' }}>
+      <Grid container component="main" sx={{ height: '100vh', margin: 'auto', borderRadius: '11px' }}>
         <CssBaseline />
         <Grid
           item
@@ -76,8 +76,8 @@ export default function Login() {
           sx={{
             backgroundImage: 'url(/loginLogo.png)',
             backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) => (t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]),
-            backgroundSize: 'cover',
+            backgroundColor: 'rgb(232,232,232)',
+            backgroundSize: 'contain',
             backgroundPosition: 'center',
             borderTopLeftRadius: '12px',
             borderBottomLeftRadius: '12px',
