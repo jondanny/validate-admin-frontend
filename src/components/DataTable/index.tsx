@@ -194,14 +194,15 @@ const DataTable: React.FC<DataTableProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <PaginationDiv>
+
+      { tableSize &&  <PaginationDiv>
         <Pagination
           pageSizeChangeHandler={(value: number) => pageSizeChangeHandler?.(value)}
           tableSize={tableSize}
           changePageHandler={(changePage: string) => changePageHandler?.(changePage)}
           cursors={data.cursor}
         />
-      </PaginationDiv>
+      </PaginationDiv>}
     </>
   );
 };
