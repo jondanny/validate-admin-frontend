@@ -13,7 +13,7 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { loginServiceHandler, LoginDataInterface } from '../../services/auth/login-services';
-import { setAccessToken, setRefreshToken } from '../../utils/auth';
+import { setAccessToken, setRefreshToken, setRefreshTokenCookie } from '../../utils/auth';
 
 const theme = createTheme();
 
@@ -35,8 +35,9 @@ const Login: React.FC = () => {
 
   const mutation = useMutation((data: LoginDataInterface) => loginServiceHandler(data), {
     onSuccess: (res) => {
+      setRefreshTokenCookie(res?.data.refreshToken);
       setRefreshToken(document.cookie.split('=')[1]);
-      setAccessToken(res.data.accessToken);
+      setAccessToken(res?.data.accessToken);
       navigate('/');
     },
     onError: (err) => {

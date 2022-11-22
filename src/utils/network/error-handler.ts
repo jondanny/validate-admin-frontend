@@ -3,7 +3,7 @@ import { NavigateFunction } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getAccessTokenHandler } from '../../services/auth/access-token-service';
 
-export async function errorHandler(err: AxiosError, navigate: NavigateFunction) {
+export async function errorHandler(err: AxiosError, navigate?: NavigateFunction) {
   const { response }: any = err || {};
   const { data, status } = response || {};
   const { message } = data || {};

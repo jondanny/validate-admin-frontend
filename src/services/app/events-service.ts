@@ -17,12 +17,12 @@ export const getEvents = async ( { limit, ticketProviderId }: getEventsParams ) 
       params,
     },
   });
-  return response.data;
+  return response?.data;
 }
 
 export const getTicketProviders = async () => {
   const response = await network.get({
     path: `/ticket-providers/get-all`,
   });
-  return response.data;
+  return response?.data;
 };

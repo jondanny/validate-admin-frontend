@@ -27,15 +27,15 @@ export const getTicketTranser = async ({ limit, afterCursor, beforeCursor, ticke
   const response = await network.get({path: `/ticket-transfers`, options: {
     params
   }});
-  return response.data;
+  return response?.data;
 }
 
 export const createTicketTransfer = async (data: createTicketTransferInterface) => {
   const response = await network.post(`/ticket-transfers`, data);
-  return response.data
+  return response?.data
 }
 
 export const getTicketProviders = async () => {
   const response = await network.get({path: `/ticket-providers/get-all`});
-  return response.data;
+  return response?.data;
 }

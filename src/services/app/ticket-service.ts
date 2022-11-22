@@ -52,21 +52,21 @@ export const getTickets = async ({
       params,
     },
   });
-  return response.data;
+  return response?.data;
 };
 
 export const createTicketService = async (data: createTicketInterface) => {
   const response = await network.post(`/tickets`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const deleteTicket = async (id: string) => {
   const response = await network.delete(`/tickets/${id}`);
-  return response.data;
+  return response?.data;
 };
 
 
 export const retryTicketMinting = async (obj: retryMintingTicketInterface) => {
   const response = await network.post('/tickets/retry-minting', obj)
-  return response.data;
+  return response?.data;
 }

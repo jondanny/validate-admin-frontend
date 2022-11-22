@@ -35,10 +35,10 @@ export const getTicketProviderEncryptionKey = async ({
       params,
     },
   });
-  return response.data;
+  return response?.data;
 };
 
 export const createTicketProviderEncryptionKey = async (data: createTicketProviderEncryptionKeyInterface) => {
   const response = await network.post(`/ticket-provider-encryption-keys`, data);
-  return response.data;
+  return response?.data;
 };

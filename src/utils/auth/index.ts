@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie'
+
 export const setAccessToken = (accessToken: string) => {
   localStorage.setItem('accessToken', accessToken);
 };
@@ -14,12 +16,17 @@ export const setRefreshToken = (refreshToken: string) => {
   localStorage.setItem('refreshToken', refreshToken);
 };
 
+export const setRefreshTokenCookie = (refreshToken: string) => {
+  Cookies.set('refreshToken', refreshToken)
+}
+
 export const deleteRefreshToken = () => {
   localStorage.removeItem('refreshToken');
 };
 
 export const getRefreshToken = () => {
-  return localStorage.getItem('refreshToken');
+  console.log(Cookies.get('refreshToken'))
+  return Cookies.get('refreshToken');
 };
 
 export const setFingerprint = (fingerprint: string) => {
