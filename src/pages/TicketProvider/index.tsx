@@ -62,6 +62,7 @@ const TicketProvider: React.FC = () => {
       onSuccess: (data) => {
         setTickerProviders(data);
       },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
       refetchOnWindowFocus: true,
     },
   );

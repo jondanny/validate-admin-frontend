@@ -57,6 +57,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
       onSuccess: (data) => {
         setTicketProviderEncryptionKey(data);
       },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
       refetchOnWindowFocus: true,
     },
   );
@@ -70,6 +71,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
       });
       setTicketProviders(ticketProviders as any);
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
     refetchOnWindowFocus: true,
   });
 
