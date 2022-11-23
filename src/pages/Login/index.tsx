@@ -36,7 +36,7 @@ const Login: React.FC = () => {
   const mutation = useMutation((data: LoginDataInterface) => loginServiceHandler(data), {
     onSuccess: (res) => {
       setRefreshToken(document.cookie.split('=')[1]);
-      setAccessToken(res.data.accessToken);
+      setAccessToken(res?.data.accessToken);
       navigate('/');
     },
     onError: (err) => {

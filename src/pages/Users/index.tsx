@@ -86,6 +86,7 @@ const Users: React.FC<DashboardProps> = () => {
       onSuccess: (data) => {
         setUsers(data);
       },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
       refetchOnWindowFocus: true,
     },
   );
@@ -103,6 +104,7 @@ const Users: React.FC<DashboardProps> = () => {
         ticketProviderId: parseInt(data[0].id),
       });
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
     refetchOnWindowFocus: true,
   });
 

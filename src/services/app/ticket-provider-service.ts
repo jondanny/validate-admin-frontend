@@ -21,15 +21,15 @@ export const getTicketProviders = async ({ limit, afterCursor, beforeCursor, sea
       searchText
     }
   }});
-  return response.data;
+  return response?.data;
 }
 
 export const createTicketProviderService = async (data: createTicketProviderInterface) => {
   const response = await network.post(`/ticket-providers`, data);
-  return response.data
+  return response?.data
 }
 
 export const deleteTicketProvider = async (id: string) => {
   const response = await network.delete(`/ticket-providers/${id}`);
-  return response.data;
+  return response?.data;
 }

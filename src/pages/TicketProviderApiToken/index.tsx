@@ -63,6 +63,7 @@ const TicketProviderApiToken: React.FC = () => {
       onSuccess: (data) => {
         setTicketProviderApiToken(data);
       },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
       refetchOnWindowFocus: true,
     },
   );
@@ -76,6 +77,7 @@ const TicketProviderApiToken: React.FC = () => {
       });
       setTicketProviders(ticketProviders as any);
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
     refetchOnWindowFocus: true,
   });
 
@@ -115,6 +117,7 @@ const TicketProviderApiToken: React.FC = () => {
         theme: 'light',
       });
     },
+    
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 

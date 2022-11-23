@@ -36,20 +36,20 @@ export const getTicketProviderApiToken = async ({
       params,
     },
   });
-  return response.data;
+  return response?.data;
 };
 
 export const createTicketProviderApiToken = async (data: createTicketProviderInterface) => {
   const response = await network.post(`/ticket-provider-api-tokens`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const updateTicketProviderApiToken = async (data: createTicketProviderInterface, userId: string) => {
   const response = await network.patch(`/users/${userId}`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const deleteTicketProviderApiToken = async (id: string) => {
   const response = await network.delete(`/ticket-provider-api-tokens/${id}`);
-  return response.data;
+  return response?.data;
 };

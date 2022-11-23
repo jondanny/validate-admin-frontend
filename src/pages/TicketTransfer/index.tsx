@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import DataTable from '../../components/DataTable/index';
 import Title from '../../components/Title/index';
 import { getTicketTranser, getTicketProviders } from '../../services/app/ticket-transfer-service';
+import { errorHandler } from '../../utils/network/error-handler'
 import { columns } from './table-columns';
+import { AxiosError } from 'axios'
 
 const PageContent = styled('div')(({ theme }) => ({
   marginBottom: '3rem',
 }));
 
 const TicketProviderApiToken: React.FC = () => {
+  const navigate = useNavigate();
   const [ticketTransfer, setTicketTransfer] = useState({
     data: [],
     cursor: {
@@ -43,6 +47,7 @@ const TicketProviderApiToken: React.FC = () => {
       onSuccess: (data) => {
         setTicketTransfer(data);
       },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
       refetchOnWindowFocus: true,
     },
   );
@@ -83,6 +88,7 @@ const TicketProviderApiToken: React.FC = () => {
       });
       setTicketProviders(ticketProviders as any);
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
     refetchOnWindowFocus: true,
   });
 

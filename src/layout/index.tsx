@@ -23,6 +23,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { logoutServiceHandler } from '../services/auth/logout-services';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
+
 
 const drawerWidth = 240;
 
@@ -81,7 +83,7 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
-  const mutation = useMutation(() => logoutServiceHandler(), {
+  const mutation = useMutation(() => logoutServiceHandler({refreshToken: Cookies.get('refreshToken')}), {
     onSuccess: (data) => {
       deleteAccessToken();
       deleteRefreshToken();

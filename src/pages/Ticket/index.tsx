@@ -111,6 +111,7 @@ const Ticket: FC<TicketInterface> = () => {
         ticketProviderId: parseInt(data[0].id),
       });
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
     refetchOnWindowFocus: true,
   });
 
@@ -135,6 +136,7 @@ const Ticket: FC<TicketInterface> = () => {
       onSuccess: (data) => {
         setTickets(data);
       },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
       refetchOnWindowFocus: true,
     },
   );
@@ -195,6 +197,7 @@ const Ticket: FC<TicketInterface> = () => {
     onSuccess: (data) => {
       query.refetch();
     },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
   const closeModal = () => {

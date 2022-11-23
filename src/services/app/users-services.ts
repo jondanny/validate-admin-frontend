@@ -45,27 +45,27 @@ export const getUsers = async ({
       params,
     },
   });
-  return response.data;
+  return response?.data;
 };
 
 export const createUser = async (data: createUserInterface) => {
   const response = await network.post(`/users`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const updateUser = async (data: createUserInterface, userId: string) => {
   const response = await network.patch(`/users/${userId}`, data);
-  return response.data;
+  return response?.data;
 };
 
 export const deleteUser = async (id: string) => {
   const response = await network.delete(`/users/${id}`);
-  return response.data;
+  return response?.data;
 };
 
 export const getTicketProviders = async () => {
   const response = await network.get({
     path: `/ticket-providers/get-all`,
   });
-  return response.data;
+  return response?.data;
 };
