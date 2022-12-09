@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
@@ -97,8 +97,9 @@ const Ticket: FC<TicketInterface> = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  useQuery(['ticket_provider'], () => getTicketProviders(), {
+  useQuery(['ticket_provider'], () => getTicketProviders(location), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({
@@ -141,7 +142,7 @@ const Ticket: FC<TicketInterface> = () => {
     },
   );
 
-  const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data), {
+  const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data, location), {
     onSuccess: (data) => {
       query.refetch();
       toast.success('Ticket is created', {
@@ -175,7 +176,7 @@ const Ticket: FC<TicketInterface> = () => {
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
-  const retryMintingMutation = useMutation((data: retryMintingTicketInterface) => retryTicketMinting(data), {
+  const retryMintingMutation = useMutation((data: retryMintingTicketInterface) => retryTicketMinting(data, location), {
     onError: (err) => {
       const { response }: any = err || {};
       const { data } = response || {};
@@ -193,7 +194,7 @@ const Ticket: FC<TicketInterface> = () => {
     },
   });
 
-  const deleteMutation = useMutation((data: string) => deleteTicket(data), {
+  const deleteMutation = useMutation((data: string) => deleteTicket(data, location), {
     onSuccess: (data) => {
       query.refetch();
     },

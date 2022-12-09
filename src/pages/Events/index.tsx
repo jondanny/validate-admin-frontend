@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Title from '../../components/Title/index';
 import DataTable from '../../components/DataTable/index';
@@ -17,6 +17,8 @@ const PageContent = styled('div')(({ theme }) => ({
 
 const Events: FC<EventsInterface> = () => {
   const navigate = useNavigate();
+  const location = useLocation()
+
   const [ticketProviders, setTicketProviders] = useState([]);
   const [ticketProvideFilterValue, setTicketProviderFilterValue] = useState('');
   const [events, setEvents] = useState({
@@ -27,7 +29,7 @@ const Events: FC<EventsInterface> = () => {
     },
   });
 
-  useQuery(['ticket_provider'], () => getTicketProviders(), {
+  useQuery(['ticket_provider'], () => getTicketProviders({location}), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       setTicketProviderFilterValue(`${data[0]?.id}`);
@@ -37,7 +39,7 @@ const Events: FC<EventsInterface> = () => {
     refetchOnWindowFocus: true,
   });
 
-  const getEventsQuery = useQuery(['events', ticketProvideFilterValue], async () => getEvents({limit: 10, ticketProviderId: ticketProvideFilterValue}),{
+  const getEventsQuery = useQuery(['events', ticketProvideFilterValue], async () => getEvents({limit: 10, ticketProviderId: ticketProvideFilterValue, location}),{
     onSuccess: (data) => {
       setEvents(data)
     },

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import { styled } from '@mui/material/styles';
@@ -49,6 +49,7 @@ const TicketProviderApiToken: React.FC = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const query = useQuery(
     ['ticket_providers', tableSize.default, currentCursor.value, ticketProvideFilterValue],
@@ -58,6 +59,7 @@ const TicketProviderApiToken: React.FC = () => {
         afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
         ticketProviderId: ticketProvideFilterValue,
+        location
       }),
     {
       onSuccess: (data) => {
@@ -68,7 +70,7 @@ const TicketProviderApiToken: React.FC = () => {
     },
   );
 
-  useQuery(['ticket_providers'], () => getTicketProviders(), {
+  useQuery(['ticket_providers'], () => getTicketProviders(location), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({
@@ -81,7 +83,7 @@ const TicketProviderApiToken: React.FC = () => {
     refetchOnWindowFocus: true,
   });
 
-  const createMutation = useMutation((data: createTicketProviderInterface) => createTicketProviderApiToken(data), {
+  const createMutation = useMutation((data: createTicketProviderInterface) => createTicketProviderApiToken(data, location), {
     onSuccess: (data) => {
       query.refetch();
       toast.success('Ticket provider api token is created', {
@@ -103,7 +105,7 @@ const TicketProviderApiToken: React.FC = () => {
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
-  const deleteMutation = useMutation((data: string) => deleteTicketProviderApiToken(data), {
+  const deleteMutation = useMutation((data: string) => deleteTicketProviderApiToken(data, location), {
     onSuccess: (data) => {
       query.refetch();
       toast.success('Ticket provider api token deleted', {

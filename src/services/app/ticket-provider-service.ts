@@ -10,10 +10,18 @@ interface getTicketProviderParams {
   afterCursor?: string
   beforeCursor?: string
   searchText?: string
+  location?: any
 }
 
-export const getTicketProviders = async ({ limit, afterCursor, beforeCursor, searchText }: getTicketProviderParams) => {
-  const response = await network.get({path: `/ticket-providers`, options: {
+export const getTicketProviders = async ({ limit, afterCursor, beforeCursor, searchText, location }: getTicketProviderParams) => {
+  
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+  
+  const response = await network.get({path: `/${path}/ticket-providers`, options: {
     params: {
       limit,
       afterCursor,
@@ -24,12 +32,26 @@ export const getTicketProviders = async ({ limit, afterCursor, beforeCursor, sea
   return response?.data;
 }
 
-export const createTicketProviderService = async (data: createTicketProviderInterface) => {
-  const response = await network.post(`/ticket-providers`, data);
+export const createTicketProviderService = async (data: createTicketProviderInterface, location: any) => {
+
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.post(`/${path}/ticket-providers`, data);
   return response?.data
 }
 
-export const deleteTicketProvider = async (id: string) => {
-  const response = await network.delete(`/ticket-providers/${id}`);
+export const deleteTicketProvider = async (id: string, location: any) => {
+
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.delete(`/${path}/ticket-providers/${id}`);
   return response?.data;
 }

@@ -12,11 +12,15 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import WebIcon from '@mui/icons-material/Web';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Collapse from '@mui/material/Collapse';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { sideBarMenu } from './side-bar-menu';
+import { sideBarWebMenu, sideBarBackendMenu } from './side-bar-menu';
 import { useNavigate } from 'react-router-dom';
 import { deleteAccessToken, deleteRefreshToken } from '../utils/auth';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -82,6 +86,7 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [openMenu, setOpenMenu] = React.useState({web:false, backend: false})
 
   const mutation = useMutation(() => logoutServiceHandler({refreshToken: Cookies.get('refreshToken')}), {
     onSuccess: (data) => {
@@ -153,18 +158,54 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
         </DrawerHeader>
         <Divider />
         <List>
-          {sideBarMenu.map((menu, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  navigate(menu.path);
-                }}
-              >
-                <ListItemIcon>{<menu.icon />}</ListItemIcon>
-                <ListItemText primary={menu.title} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          <ListItemButton onClick={() => setOpenMenu({...openMenu, web: !openMenu.web})}>
+            <ListItemIcon>
+              <WebIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Web" />
+            {openMenu.web ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.web} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {sideBarWebMenu.map((menu, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      navigate(menu.path);
+                    }}
+                    sx={{ pl: 4 }}
+                  >
+                    <ListItemIcon>{<menu.icon />}</ListItemIcon>
+                    <ListItemText primary={menu.title} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
+          <ListItemButton onClick={() => setOpenMenu({...openMenu, backend: !openMenu.backend})}>
+            <ListItemIcon>
+              <WebIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Backend" />
+            {openMenu.backend ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.backend} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>    
+              {sideBarBackendMenu.map((menu, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      navigate(menu.path);
+                    }}
+                    sx={{ pl: 4 }}
+                  >
+                    <ListItemIcon>{<menu.icon />}</ListItemIcon>
+                    <ListItemText primary={menu.title} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
           <ListItem disablePadding>
             <ListItemButton onClick={() => mutation.mutate()}>
               <ListItemIcon>

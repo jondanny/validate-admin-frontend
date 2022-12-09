@@ -17,6 +17,7 @@ interface getTicketParams {
   beforeCursor?: string;
   searchText?: string;
   ticketProviderId?: string;
+  location?: any
 }
 
 export interface retryMintingTicketInterface {
@@ -31,6 +32,7 @@ export const getTickets = async ({
   beforeCursor,
   searchText,
   ticketProviderId,
+  location
 }: getTicketParams) => {
   let params: { [key: string]: any } = {};
 
@@ -46,8 +48,14 @@ export const getTickets = async ({
   searchText ? (params.searchText = searchText) : '';
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
   const response = await network.get({
-    path: `/tickets`,
+    path: `/${path}/tickets`,
     options: {
       params,
     },
@@ -55,18 +63,39 @@ export const getTickets = async ({
   return response?.data;
 };
 
-export const createTicketService = async (data: createTicketInterface) => {
-  const response = await network.post(`/tickets`, data);
+export const createTicketService = async (data: createTicketInterface, location: any) => {
+
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.post(`/${path}/tickets`, data);
   return response?.data;
 };
 
-export const deleteTicket = async (id: string) => {
-  const response = await network.delete(`/tickets/${id}`);
+export const deleteTicket = async (id: string, location: any) => {
+
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.delete(`/${path}/tickets/${id}`);
   return response?.data;
 };
 
 
-export const retryTicketMinting = async (obj: retryMintingTicketInterface) => {
-  const response = await network.post('/tickets/retry-minting', obj)
+export const retryTicketMinting = async (obj: retryMintingTicketInterface, location: any) => {
+
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.post(`/${path}tickets/retry-minting`, obj)
   return response?.data;
 }

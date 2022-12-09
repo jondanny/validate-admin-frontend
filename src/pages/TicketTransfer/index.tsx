@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import DataTable from '../../components/DataTable/index';
@@ -16,6 +16,7 @@ const PageContent = styled('div')(({ theme }) => ({
 
 const TicketProviderApiToken: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [ticketTransfer, setTicketTransfer] = useState({
     data: [],
     cursor: {
@@ -42,6 +43,7 @@ const TicketProviderApiToken: React.FC = () => {
         afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
         ticketProviderId: ticketProvideFilterValue,
+        location
       }),
     {
       onSuccess: (data) => {
@@ -79,7 +81,7 @@ const TicketProviderApiToken: React.FC = () => {
     query.refetch();
   };
 
-  useQuery(['ticket_providers'], () => getTicketProviders(), {
+  useQuery(['ticket_providers'], () => getTicketProviders({location}), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({

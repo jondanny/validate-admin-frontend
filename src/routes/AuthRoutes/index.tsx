@@ -7,10 +7,25 @@ import AdminLayout from '../../layout';
 const AuthRoutes: FC = () => {
   return (
     <Routes>
-      {protectedRoutes?.map(({ path, element: Component }: any, index) => {
+      {protectedRoutes?.map(({ element: Component, webPath, path }: any, index) => {
         return (
           <Route
-            path={path}
+            path={webPath }
+            element={
+              <AuthGuard>
+                <AdminLayout>
+                  <Component />
+                </AdminLayout>
+              </AuthGuard>
+            }
+            key={index}
+          />
+        );
+      })}
+      {protectedRoutes?.map(({ element: Component, backendPath }: any, index) => {
+        return (
+          <Route
+            path={backendPath}
             element={
               <AuthGuard>
                 <AdminLayout>
