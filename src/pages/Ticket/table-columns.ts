@@ -108,10 +108,4 @@ export const columns: Column[] = [
     minWidth: 120,
     align: 'center',
   },
-  {
-    id: 'delete',
-    label: 'Action',
-    align: 'center',
-    minWidth: 10,
-  },
 ];

@@ -15,39 +15,51 @@ export const protectedRoutes = [
   },
   {
     webPath: '/validate-backend/ticket-provider',
-    backendPath: '/validate-web-backend/ticket-provider',
     element: TicketProvider,
   },
   {
     webPath: '/validate-backend/ticket',
-    backendPath: '/validate-web-backend/ticket',
     element: Ticket,
   },
   {
     webPath: '/validate-backend/users',
+    element: Users,
+  },
+
+  {
+    webPath: '/validate-backend/events',
+    element: Events
+  }
+];
+export const protectedBackendRoutes = [
+  {
+    backendPath: '/validate-web-backend/ticket-provider',
+    element: TicketProvider,
+  },
+  {
+    backendPath: '/validate-web-backend/ticket',
+    element: Ticket,
+  },
+  {
     backendPath: '/validate-web-backend/users',
     element: Users,
   },
   {
-    webPath: '/validate-backend/ticket-provider-api-token',
+    backendPath: '/validate-web-backend/events',
+    element: Events
+  },
+  {
     backendPath: '/validate-web-backend/ticket-provider-api-token',
     element: TicketProviderApiToken,
   },
   {
-    webPath: '/validate-backend/ticket-transfer',
     backendPath: '/validate-web-backend/ticket-transfer',
     element: TicketTransfer,
   },
   {
-    webPath: '/validate-backend/ticket-provider-encryption-key',
     backendPath: '/validate-web-backend/ticket-provider-encryption-key',
     element: TicketProviderEncryptionKey,
   },
-  {
-    webPath: '/validate-backend/events',
-    backendPath: '/validate-web-backend/events',
-    element: Events
-  }
 ];
 
 export const publicRoutes = [
