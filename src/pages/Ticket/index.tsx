@@ -34,6 +34,12 @@ interface NewUserInterface {
   phoneNumber?: string;
   userId?: number | undefined;
 }
+interface TicketTypeInterface {
+  amount: string;
+  ticketDateStart: string | null;
+  ticketDateEnd: string | null;
+
+}
 interface CreateTicketProps {
   name: string;
   ticketProviderId: number;
@@ -46,6 +52,7 @@ interface CreateTicketProps {
   user?: NewUserInterface;
   dateStart: string | null;
   dateEnd?: string | null;
+  ticketType?: TicketTypeInterface | undefined
 }
 
 const Ticket: FC<TicketInterface> = () => {
@@ -98,6 +105,15 @@ const Ticket: FC<TicketInterface> = () => {
     newUserExists: false,
   });
 
+  const [saleEnabled, setSaleEnabled] = useState({
+    saleFieldsValues: {
+      amount: '',
+      ticketDateStart: '',
+      ticketDateEnd: '',
+    },
+    saleEnable: false,
+  });
+
   useQuery(['ticket_provider'], () => getTicketProviders(location), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
@@ -142,7 +158,7 @@ const Ticket: FC<TicketInterface> = () => {
     },
   );
 
-  const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data, location), {
+  const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data, location, saleEnabled), {
     onSuccess: (data) => {
       query.refetch();
       toast.success('Ticket is created', {
@@ -288,7 +304,7 @@ const Ticket: FC<TicketInterface> = () => {
       }
     }
     if (ticketValues.userId === 0) {
-      const mutationParam: CreateTicketProps = {
+      let mutationParam: CreateTicketProps = {
         name: ticketValues.name,
         ticketProviderId: ticketValues.ticketProviderId,
         imageUrl: ticketValues.imageUrl,
@@ -373,6 +389,23 @@ const Ticket: FC<TicketInterface> = () => {
       };
     });
   };
+  
+  const saleEnableChangeHandler = (field: string, value: any, update?: boolean) => {
+    const newValues = { ...saleEnabled.saleFieldsValues };
+    if (field === 'amount') {
+      newValues.amount = value;
+    } else if (field === 'start_date') {
+      newValues.ticketDateStart = value;
+    } else {
+      newValues.ticketDateEnd = value;
+    }
+    setSaleEnabled((prevState) => {
+      return {
+        ...prevState,
+        saleFieldsValues: { ...newValues },
+      };
+    });
+  };
 
   return (
     <>
@@ -405,6 +438,9 @@ const Ticket: FC<TicketInterface> = () => {
         newUserHandler={(value) => setNewUser({ ...newUser, newUserExists: value })}
         newUser={newUser}
         newUserChangeHandler={newUserChangeHandler}
+        saleEnabled={saleEnabled}
+        saleEnabledHandler = {(value) => setSaleEnabled({...saleEnabled, saleEnable: value})}
+        saleEnableChangeHandler = {saleEnableChangeHandler}
       />
       <ConfirmationModal
         title="Create Ticket"

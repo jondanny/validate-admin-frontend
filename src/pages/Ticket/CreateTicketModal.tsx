@@ -35,6 +35,11 @@ const style = {
   borderRadius: 2,
 };
 
+const SwitchesDiv = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end'
+}))
+
 interface optionType {
   id: number;
   name: string;
@@ -51,6 +56,9 @@ interface CreateTicketModalProps {
   users: any;
   newUser: any;
   newUserChangeHandler: (field: string, value: string | number) => any;
+  saleEnableChangeHandler: (field: string, value: string | number) => any;
+  saleEnabled: any;
+  saleEnabledHandler: (value: boolean) => any;
 }
 
 const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
@@ -64,28 +72,43 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   newUserHandler,
   newUser,
   newUserChangeHandler,
+  saleEnabled,
+  saleEnabledHandler,
+  saleEnableChangeHandler
 }) => {
   const [dateStart, setDateStart] = useState<Dayjs | null>(dayjs(new Date()));
   const [dateEnd, setDateEnd] = useState<Dayjs | null>(dayjs(new Date()));
+
+  const [saleEnabledateStart, setSaleEnableDateStart] = useState<Dayjs | null>(dayjs(new Date()));
+  const [saleEnabledateEnd, setSaleEnableDateEnd] = useState<Dayjs | null>(dayjs(new Date()));
   return (
     <>
       <Modal open={openModal} onClose={closeModal} aria-labelledby="modal-title">
         <Box sx={style}>
           <ModalTitle id="modal-title">{title}</ModalTitle>
-          <FormControlLabel
-            value="start"
-            control={<Switch color="primary" onChange={(e) => newUserHandler(e.target.checked)} />}
-            label={<strong>New User</strong>}
-            labelPlacement="start"
-            style={{ display: 'flex' }}
-          />
+          <SwitchesDiv>
+            <FormControlLabel
+              value="start"
+              control={<Switch color="primary" onChange={(e) => newUserHandler(e.target.checked)} />}
+              label={<strong>New User</strong>}
+              labelPlacement="start"
+              style={{ display: 'flex' }}
+            />
+            <FormControlLabel
+              value="start"
+              control={<Switch color="primary" onChange={(e) => saleEnabledHandler(e.target.checked)} />}
+              label={<strong>Sale Enable</strong>}
+              labelPlacement="start"
+              style={{ display: 'flex' }}
+            />
+          </SwitchesDiv>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="ticketName"
-                name="ticketName"
-                label="Ticket Name"
+                id="eventName"
+                name="eventName"
+                label="Event Name"
                 fullWidth
                 autoComplete="given-name"
                 variant="standard"
@@ -225,6 +248,57 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                   defaultValue={newUser?.userFieldsValues?.phoneNumber || ''}
                   onChange={(e) => newUserChangeHandler('phoneNumber', e.target.value)}
                 />
+              </Grid>
+            </Grid>
+          </div>
+
+
+          <div style={{ display: saleEnabled.saleEnable ? 'block' : 'none' }}>
+            <Divider />
+
+            <ModalSubTitle>Sale Enable Data</ModalSubTitle>
+
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="saleAmountPrice"
+                  name="saleAmountPrice"
+                  label="Sale Amount"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.amount || ''}
+                  onChange={(e) => saleEnableChangeHandler('amount', e.target.value)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={3} mt={3}>
+              <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Start Date*"
+                  value={saleEnabledateStart}
+                  onChange={(newValue: Dayjs | null) => {
+                    setSaleEnableDateStart(newValue);
+                    saleEnableChangeHandler('start_date', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="End Date*"
+                  value={saleEnabledateEnd}
+                  onChange={(newValue: Dayjs | null) => {
+                    setSaleEnableDateEnd(newValue);
+                    saleEnableChangeHandler('end_date', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
               </Grid>
             </Grid>
           </div>

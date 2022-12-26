@@ -9,6 +9,10 @@ export interface createTicketInterface {
   newUserName?: string;
   newUserEmail?: string;
   newUserPhoneNumber?: string;
+  type?: string;
+  dateStart?: any,
+  dateEnd?: any,
+  user?: any;
 }
 
 interface getTicketParams {
@@ -63,7 +67,40 @@ export const getTickets = async ({
   return response?.data;
 };
 
-export const createTicketService = async (data: createTicketInterface, location: any) => {
+export const createTicketService = async (data: createTicketInterface, location: any, saleEnabled?: any) => {
+  let user: {[key: string | number]: any} = {};
+  let ticketType: {[key: string | number]: any} = {};
+  if(data.userId){
+    user['userId'] = data.userId
+  }else {
+    user.name = data.newUserName;
+    user.email = data.newUserEmail;
+    user.phoneNumber = data.newUserPhoneNumber;
+  }
+
+  if(saleEnabled.saleEnable){ 
+    ticketType.saleAmount = parseInt(saleEnabled.saleFieldsValues.amount)
+    ticketType.saleEnabledFromDate = saleEnabled.saleFieldsValues.ticketDateStart
+    ticketType.saleEnabledToDate = saleEnabled.saleFieldsValues.ticketDateEnd
+  }
+
+
+  const ticket = {
+    event: {
+      name: data.name
+    },
+    ticketType: {
+      ...ticketType,
+      name: data.type,
+      ticketDateStart: data.dateStart,
+      ticketDateEnd: data.dateEnd
+    },
+    ticketProviderId: data.ticketProviderId,
+    user: {
+      ...data.user
+    },
+    imageUrl: data.imageUrl ? data.imageUrl : ''
+  };
 
   const { pathname } = location;
   let path = 'validate-admin-backend';
@@ -71,7 +108,7 @@ export const createTicketService = async (data: createTicketInterface, location:
     path = 'validate-web-backend'
   }
 
-  const response = await network.post(`/${path}/tickets`, data);
+  const response = await network.post(`/${path}/tickets`, ticket);
   return response?.data;
 };
 
