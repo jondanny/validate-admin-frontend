@@ -12,6 +12,7 @@ interface getTicketProviderParams {
   beforeCursor?: string;
   searchText?: string;
   ticketProviderId?: string;
+  location?: any
 }
 
 export const getTicketProviderApiToken = async ({
@@ -20,6 +21,7 @@ export const getTicketProviderApiToken = async ({
   beforeCursor,
   searchText,
   ticketProviderId,
+  location,
 }: getTicketProviderParams) => {
   let params: { [key: string]: any } = {};
 
@@ -30,8 +32,14 @@ export const getTicketProviderApiToken = async ({
   searchText ? (params.searchText = searchText) : '';
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
   const response = await network.get({
-    path: `/ticket-provider-api-tokens`,
+    path: `/${path}/ticket-provider-api-tokens`,
     options: {
       params,
     },
@@ -39,17 +47,37 @@ export const getTicketProviderApiToken = async ({
   return response?.data;
 };
 
-export const createTicketProviderApiToken = async (data: createTicketProviderInterface) => {
-  const response = await network.post(`/ticket-provider-api-tokens`, data);
+export const createTicketProviderApiToken = async (data: createTicketProviderInterface, location: any) => {
+  
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.post(`/${path}/ticket-provider-api-tokens`, data);
   return response?.data;
 };
 
-export const updateTicketProviderApiToken = async (data: createTicketProviderInterface, userId: string) => {
-  const response = await network.patch(`/users/${userId}`, data);
+export const updateTicketProviderApiToken = async (data: createTicketProviderInterface, userId: string, location: any) => {
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+  
+  const response = await network.patch(`/${path}/users/${userId}`, data);
   return response?.data;
 };
 
-export const deleteTicketProviderApiToken = async (id: string) => {
-  const response = await network.delete(`/ticket-provider-api-tokens/${id}`);
+export const deleteTicketProviderApiToken = async (id: string, location: any) => {
+  
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.delete(`/${path}/ticket-provider-api-tokens/${id}`);
   return response?.data;
 };

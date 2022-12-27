@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { styled } from '@mui/material/styles';
@@ -43,6 +43,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const query = useQuery(
     ['ticket_provider_encryption_keys', tableSize.default, currentCursor.value, ticketProviderFilterValue],
@@ -52,6 +53,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
         afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
         ticketProviderId: ticketProviderFilterValue,
+        location
       }),
     {
       onSuccess: (data) => {
@@ -62,7 +64,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
     },
   );
 
-  useQuery(['ticket_providers'], () => getTicketProviders(), {
+  useQuery(['ticket_providers'], () => getTicketProviders(location), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({
@@ -76,7 +78,7 @@ const TicketProviderEncryptionKey: React.FC = () => {
   });
 
   const createMutation = useMutation(
-    (data: createTicketProviderEncryptionKeyInterface) => createTicketProviderEncryptionKey(data),
+    (data: createTicketProviderEncryptionKeyInterface) => createTicketProviderEncryptionKey({...data, location}),
     {
       onSuccess: (data) => {
         query.refetch();

@@ -14,7 +14,6 @@ const dateConversionHandler = (date: string) => {
 };
 
 export const columns: Column[] = [
-//   { id: 'id', label: 'Id', minWidth: 40 },
   { id: 'uuid', label: 'UUID', minWidth: 100 },
   {
     id: 'name',

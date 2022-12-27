@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { styled } from '@mui/material/styles';
@@ -71,6 +71,7 @@ const Users: React.FC<DashboardProps> = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const getUsersQuery = useQuery(
     ['users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
@@ -81,6 +82,7 @@ const Users: React.FC<DashboardProps> = () => {
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
         searchText: searchText,
         ticketProviderId: ticketProvideFilterValue,
+        location
       }),
     {
       onSuccess: (data) => {
@@ -91,7 +93,7 @@ const Users: React.FC<DashboardProps> = () => {
     },
   );
 
-  useQuery(['ticket_providers'], () => getTicketProviders(), {
+  useQuery(['ticket_providers'], () => getTicketProviders(location), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({
@@ -108,7 +110,7 @@ const Users: React.FC<DashboardProps> = () => {
     refetchOnWindowFocus: true,
   });
 
-  const createMutation = useMutation((data: createUserInterface) => createUser(data), {
+  const createMutation = useMutation((data: createUserInterface) => createUser(data, location), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
       toast.success('User is created', {
@@ -126,7 +128,7 @@ const Users: React.FC<DashboardProps> = () => {
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
-  const deleteMutation = useMutation((data: string) => deleteUser(data), {
+  const deleteMutation = useMutation((data: string) => deleteUser(data, location), {
     onSuccess: (data) => {
       getUsersQuery.refetch();
     },
@@ -135,7 +137,7 @@ const Users: React.FC<DashboardProps> = () => {
 
   const updateMutation = useMutation(
     (data: CreateTicketProviderProps) =>
-      updateUser({ ...selectedProviderId, photoUrl: '', status: '' }, userIdForUpdation),
+      updateUser({ ...selectedProviderId, photoUrl: '', status: '' }, userIdForUpdation, location),
     {
       onSuccess: (data) => {
         getUsersQuery.refetch();

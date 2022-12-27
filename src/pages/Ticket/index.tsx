@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
@@ -49,6 +49,8 @@ interface CreateTicketProps {
 }
 
 const Ticket: FC<TicketInterface> = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [tickets, setTickets] = useState({
     data: [],
     cursor: {
@@ -96,9 +98,7 @@ const Ticket: FC<TicketInterface> = () => {
     newUserExists: false,
   });
 
-  const navigate = useNavigate();
-
-  useQuery(['ticket_provider'], () => getTicketProviders(), {
+  useQuery(['ticket_provider'], () => getTicketProviders(location), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
       ticketProviders.unshift({
@@ -131,6 +131,7 @@ const Ticket: FC<TicketInterface> = () => {
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
         searchText: searchText,
         ticketProviderId: ticketProvideFilterValue,
+        location
       }),
     {
       onSuccess: (data) => {
@@ -141,7 +142,7 @@ const Ticket: FC<TicketInterface> = () => {
     },
   );
 
-  const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data), {
+  const createMutation = useMutation((data: CreateTicketProps) => createTicketService(data, location), {
     onSuccess: (data) => {
       query.refetch();
       toast.success('Ticket is created', {
@@ -175,7 +176,7 @@ const Ticket: FC<TicketInterface> = () => {
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
-  const retryMintingMutation = useMutation((data: retryMintingTicketInterface) => retryTicketMinting(data), {
+  const retryMintingMutation = useMutation((data: retryMintingTicketInterface) => retryTicketMinting(data, location), {
     onError: (err) => {
       const { response }: any = err || {};
       const { data } = response || {};
@@ -193,7 +194,7 @@ const Ticket: FC<TicketInterface> = () => {
     },
   });
 
-  const deleteMutation = useMutation((data: string) => deleteTicket(data), {
+  const deleteMutation = useMutation((data: string) => deleteTicket(data, location), {
     onSuccess: (data) => {
       query.refetch();
     },
@@ -383,7 +384,7 @@ const Ticket: FC<TicketInterface> = () => {
         deleteHandler={(id: string) => openConfirmationModalHandler(id)}
         columns={columns}
         createClickHandler={openModal}
-        buttonText="Create"
+        buttonText={location.pathname.split('/')[1] === 'validate-backend' ? '' : "Create"}
         searchHandler={(value) => searchHandler(value)}
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}

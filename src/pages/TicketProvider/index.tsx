@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
@@ -48,6 +48,7 @@ const TicketProvider: React.FC = () => {
   const [searchText, setSearchText] = useState('');
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const query = useQuery(
     ['ticket_providers', tableSize.default, currentCursor.value, searchText],
@@ -57,6 +58,7 @@ const TicketProvider: React.FC = () => {
         afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',
         searchText: searchText,
+        location
       }),
     {
       onSuccess: (data) => {
@@ -66,7 +68,7 @@ const TicketProvider: React.FC = () => {
       refetchOnWindowFocus: true,
     },
   );
-  const createMutation = useMutation((data: createTicketProviderInterface) => createTicketProviderService(data), {
+  const createMutation = useMutation((data: createTicketProviderInterface) => createTicketProviderService(data, location), {
     onSuccess: (data) => {
       query.refetch();
       setTicketProviderValues({ name: '', email: '' });
@@ -75,7 +77,7 @@ const TicketProvider: React.FC = () => {
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
 
-  const deleteMutation = useMutation((data: string) => deleteTicketProvider(data), {
+  const deleteMutation = useMutation((data: string) => deleteTicketProvider(data, location), {
     onSuccess: (data) => {
       query.refetch();
     },

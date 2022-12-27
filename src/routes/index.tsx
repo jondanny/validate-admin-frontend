@@ -10,37 +10,56 @@ import Landing from '../pages/Landing';
 
 export const protectedRoutes = [
   {
-    path: '/',
+    webPath: '/',
     element: Landing,
   },
   {
-    path: '/ticket-provider',
+    webPath: '/validate-backend/ticket-provider',
     element: TicketProvider,
   },
   {
-    path: '/ticket',
+    webPath: '/validate-backend/ticket',
     element: Ticket,
   },
   {
-    path: '/users',
+    webPath: '/validate-backend/users',
+    element: Users,
+  },
+
+  {
+    webPath: '/validate-backend/events',
+    element: Events
+  }
+];
+export const protectedBackendRoutes = [
+  {
+    backendPath: '/validate-web-backend/ticket-provider',
+    element: TicketProvider,
+  },
+  {
+    backendPath: '/validate-web-backend/ticket',
+    element: Ticket,
+  },
+  {
+    backendPath: '/validate-web-backend/users',
     element: Users,
   },
   {
-    path: '/ticket-provider-api-token',
+    backendPath: '/validate-web-backend/events',
+    element: Events
+  },
+  {
+    backendPath: '/validate-web-backend/ticket-provider-api-token',
     element: TicketProviderApiToken,
   },
   {
-    path: '/ticket-transfer',
+    backendPath: '/validate-web-backend/ticket-transfer',
     element: TicketTransfer,
   },
   {
-    path: '/ticket-provider-encryption-key',
+    backendPath: '/validate-web-backend/ticket-provider-encryption-key',
     element: TicketProviderEncryptionKey,
   },
-  {
-    path: '/events',
-    element: Events
-  }
 ];
 
 export const publicRoutes = [

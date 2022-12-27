@@ -3,6 +3,7 @@ import network from '../../utils/network';
 
 export interface createTicketProviderEncryptionKeyInterface {
   ticketProviderId: number;
+  location ?: any
 }
 
 interface getTicketProviderEncryptionKeyParams {
@@ -11,6 +12,7 @@ interface getTicketProviderEncryptionKeyParams {
   beforeCursor?: string;
   searchText?: string;
   ticketProviderId?: string;
+  location ?: any
 }
 
 export const getTicketProviderEncryptionKey = async ({
@@ -19,8 +21,15 @@ export const getTicketProviderEncryptionKey = async ({
   beforeCursor,
   searchText,
   ticketProviderId,
+  location
 }: getTicketProviderEncryptionKeyParams) => {
   let params: { [key: string]: any } = {};
+
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
 
   params.limit = limit;
 
@@ -30,7 +39,7 @@ export const getTicketProviderEncryptionKey = async ({
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
   const response = await network.get({
-    path: `/ticket-provider-encryption-keys`,
+    path: `/${path}/ticket-provider-encryption-keys`,
     options: {
       params,
     },
@@ -39,6 +48,13 @@ export const getTicketProviderEncryptionKey = async ({
 };
 
 export const createTicketProviderEncryptionKey = async (data: createTicketProviderEncryptionKeyInterface) => {
-  const response = await network.post(`/ticket-provider-encryption-keys`, data);
+  
+  const { pathname } = data.location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.post(`/${path}/ticket-provider-encryption-keys`, data);
   return response?.data;
 };
