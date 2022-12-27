@@ -24,6 +24,11 @@ interface getTicketParams {
   location?: any
 }
 
+interface updateTicketInterface {
+  id: any;
+  ticketType?: any
+}
+
 export interface retryMintingTicketInterface {
   userId: number;
   ticketId: number;
@@ -123,6 +128,17 @@ export const deleteTicket = async (id: string, location: any) => {
   const response = await network.delete(`/${path}/tickets/${id}`);
   return response?.data;
 };
+
+export const updateTicketService = async (data: updateTicketInterface, location: any) => {
+  const { pathname } = location;
+  let path = 'validate-admin-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-web-backend'
+  }
+
+  const response = await network.patch(`/${path}/tickets/${data.id}`, data);
+  return response;
+}
 
 
 export const retryTicketMinting = async (obj: retryMintingTicketInterface, location: any) => {

@@ -14,10 +14,12 @@ import {
   getTickets,
   retryTicketMinting,
   retryMintingTicketInterface,
+  updateTicketService,
 } from '../../services/app/ticket-service';
 import { getTicketProviders } from '../../services/app/users-services';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
+import UpdateTicketModal from './UpdateTicketModal';
 import { getUsers } from '../../services/app/users-services';
 import { errorHandler } from '../../utils/network/error-handler';
 import dayjs from 'dayjs';
@@ -53,6 +55,14 @@ interface CreateTicketProps {
   dateStart: string | null;
   dateEnd?: string | null;
   ticketType?: TicketTypeInterface | undefined
+}
+
+interface UpdateTicketProps {
+  ticketType?: any;
+  id: number;
+  eventId: number;
+  ticketTypeId: number;
+  event?: any
 }
 
 const Ticket: FC<TicketInterface> = () => {
@@ -113,6 +123,19 @@ const Ticket: FC<TicketInterface> = () => {
     },
     saleEnable: false,
   });
+
+  const [updateTicket, setUpdateTicket] = useState<any>({
+    updateTicketEnabled: false,
+    ticketData: {},
+    reSaleValues: {
+      resaleMinPrice: '',
+      resaleMaxPrice: '',
+      resaleStartDate: '',
+      resaleEndDate: '',
+      eventName: '',
+      ticketTypeName: '',
+    }
+  })
 
   useQuery(['ticket_provider'], () => getTicketProviders(location), {
     onSuccess: (data) => {
@@ -188,6 +211,35 @@ const Ticket: FC<TicketInterface> = () => {
         },
       });
       closeModal();
+    },
+    onError: (err: AxiosError) => errorHandler(err, navigate),
+  });
+
+  const updateMutation = useMutation((data: UpdateTicketProps) => updateTicketService(data, location), {
+    onSuccess: (data) => {
+      query.refetch();
+      toast.success('Ticket is Updated', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+      setUpdateTicket({
+        updateTicketEnabled: false,
+        ticketData: {},
+        reSaleValues: {
+          resaleMinPrice: '',
+          resaleMaxPrice: '',
+          resaleStartDate: '',
+          resaleEndDate: '',
+          eventName: '',
+          ticketTypeName: '',
+        }
+      });
     },
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
@@ -406,7 +458,81 @@ const Ticket: FC<TicketInterface> = () => {
       };
     });
   };
+  
+  const editRecord = (rowData: any) => {
+    setUpdateTicket({
+      ...updateTicket,
+      ticketData: rowData,
+      updateTicketEnabled: true
+    })
+  }
+  
+  const reSaleEnableChangeHandler = (field: string, value: any, update?: boolean) => {
+    const newValues = { ...updateTicket.reSaleValues };
+    if(field === 'event_name'){
+      newValues.eventName = value;
+    }else if(field === 'ticket_type_name'){
+      newValues.ticketTypeName = value;
 
+    } else if (field === 'min_amount') {
+      newValues.resaleMinPrice = value;
+    }else if(field === 'max_amount'){
+      newValues.resaleMaxPrice = value;
+    } 
+    else if (field === 'start_date') {
+      newValues.resaleStartDate = value;
+    } else {
+      newValues.resaleEndDate = value;
+    }
+
+    setUpdateTicket((prevState: any) => {
+      return {
+        ...prevState,
+        reSaleValues: { ...newValues },
+      };
+    });
+  };
+
+  const updateTicketHandler = () => {
+    const { updateTicketEnabled, ticketData, reSaleValues } = updateTicket;
+    if(updateTicketEnabled) {
+      const mutationParams: UpdateTicketProps = {
+        id: ticketData?.id,
+        eventId: ticketData?.eventId,
+        ticketTypeId: ticketData?.ticketTypeId,
+        event: {
+          name: reSaleValues.eventName
+        },
+        ticketType: {
+          resaleEnabled: 1,
+          resaleEnabledFromDate: reSaleValues.resaleStartDate,
+          resaleEnabledToDate: reSaleValues.resaleEndDate,
+          resaleMinPrice: reSaleValues.resaleMinPrice,
+          resaleMaxPrice: reSaleValues.resaleMaxPrice,
+          name: ticketData.ticket_type.name,
+          ticketTypeId: ticketData?.ticketTypeId,
+          ticketProviderId: ticketData.ticketProviderId
+        }
+      }
+      updateMutation.mutate(mutationParams);
+    }else {
+      const mutationParams: UpdateTicketProps = {
+        id: ticketData?.id,
+        eventId: ticketData?.eventId,
+        ticketTypeId: ticketData?.ticketTypeId,
+        event: {
+          name: reSaleValues.eventName
+        },
+        ticketType: {
+          name: ticketData.ticket_type.name,
+          ticketTypeId: ticketData?.ticketTypeId,
+          ticketProviderId: ticketData.ticketProviderId
+        }
+      }
+      updateMutation.mutate(mutationParams);
+    }
+  }
+  
   return (
     <>
       <PageContent>
@@ -426,6 +552,7 @@ const Ticket: FC<TicketInterface> = () => {
         ticketProviders={ticketProviders}
         ticketProvideFilterValue={ticketProvideFilterValue}
         retryButtonClickHandler={retryButtonHandler}
+        editRecordHandler={(data) => editRecord(data)}
       />
       <CreateTicketModal
         title="Create Ticket"
@@ -441,6 +568,22 @@ const Ticket: FC<TicketInterface> = () => {
         saleEnabled={saleEnabled}
         saleEnabledHandler = {(value) => setSaleEnabled({...saleEnabled, saleEnable: value})}
         saleEnableChangeHandler = {saleEnableChangeHandler}
+      />
+      <UpdateTicketModal
+        title="Update Ticket"
+        openModal={updateTicket.updateTicketEnabled}
+        closeModal={() => setUpdateTicket({...updateTicket, updateTicketEnabled: false})}
+        submitForm={updateTicketHandler}
+        inputValueHandler={(field: string, value: string | number) => createTicketFormValuesHandler(field, value)}
+        ticketProviders={ticketProviders}
+        users={users}
+        newUserHandler={(value) => setNewUser({ ...newUser, newUserExists: value })}
+        newUser={newUser}
+        newUserChangeHandler={newUserChangeHandler}
+        saleEnabled={saleEnabled}
+        saleEnabledHandler = {(value) => setSaleEnabled({...saleEnabled, saleEnable: value})}
+        saleEnableChangeHandler = {reSaleEnableChangeHandler}
+        ticketData={updateTicket.ticketData}
       />
       <ConfirmationModal
         title="Create Ticket"

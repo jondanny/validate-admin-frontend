@@ -108,4 +108,10 @@ export const columns: Column[] = [
     minWidth: 120,
     align: 'center',
   },
+  {
+    id: 'update',
+    label: 'Actions',
+    minWidth: 120,
+    align: 'center',
+  },
 ];
