@@ -271,7 +271,24 @@ const Ticket: FC<TicketInterface> = () => {
   });
 
   const closeModal = () => {
-    setOpenTicketModal(false);
+    setOpenTicketModal(false);      
+      setSaleEnabled({
+        saleFieldsValues: {
+          amount: '',
+          ticketDateStart: '',
+          ticketDateEnd: '',
+        },
+        saleEnable: false,
+      })
+      setNewUser({
+        userFieldsValues: {
+          name: '',
+          email: '',
+          phoneNumber: '',
+        },
+        newUserExists: false,
+      })
+    
   };
 
   const openModal = () => {
@@ -573,7 +590,11 @@ const Ticket: FC<TicketInterface> = () => {
       <UpdateTicketModal
         title="Update Ticket"
         openModal={updateTicket.updateTicketEnabled}
-        closeModal={() => setUpdateTicket({...updateTicket, updateTicketEnabled: false})}
+        closeModal={() => {
+          setSaleEnabled({...saleEnabled, saleEnable: false})
+          setUpdateTicket({...updateTicket, updateTicketEnabled: false})
+          return;
+        }}
         submitForm={updateTicketHandler}
         inputValueHandler={(field: string, value: string | number) => createTicketFormValuesHandler(field, value)}
         ticketProviders={ticketProviders}
