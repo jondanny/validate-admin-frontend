@@ -18,11 +18,11 @@ interface getTickettransferParams {
 
 export const getTicketTranser = async ({ limit, afterCursor, beforeCursor, ticketProviderId, location }: getTickettransferParams) => {
   let params: {[key: string]: any} = {}
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   const { pathname } = location
 
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   params.limit = limit
@@ -44,11 +44,11 @@ export const createTicketTransfer = async (data: createTicketTransferInterface) 
 }
 
 export const getTicketProviders = async ({location}: any) => {
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   const { pathname } = location
 
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.get({path: `/${path}/ticket-providers/get-all`});

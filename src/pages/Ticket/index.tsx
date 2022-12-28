@@ -154,17 +154,18 @@ const Ticket: FC<TicketInterface> = () => {
     refetchOnWindowFocus: true,
   });
 
-  useQuery(['user'], () => getUsers({}), {
+  useQuery(['users'], () => getUsers({
+    location
+  }), {
     onSuccess: (data) => {
       setUsers(data.data.map((item: any) => ({ id: item.id, name: item.name })));
     },
-    refetchOnWindowFocus: true,
   });
 
   const query = useQuery(
-    ['ticket', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
+    [location.pathname.split('/').includes('validate-backend') ? 'tickets' : 'ticket', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
     () =>
-      getTickets({
+    getTickets({
         limit: tableSize.default,
         afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
         beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '',

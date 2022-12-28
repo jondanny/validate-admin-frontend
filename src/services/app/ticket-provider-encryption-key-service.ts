@@ -26,9 +26,9 @@ export const getTicketProviderEncryptionKey = async ({
   let params: { [key: string]: any } = {};
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   params.limit = limit;
@@ -50,9 +50,9 @@ export const getTicketProviderEncryptionKey = async ({
 export const createTicketProviderEncryptionKey = async (data: createTicketProviderEncryptionKeyInterface) => {
   
   const { pathname } = data.location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.post(`/${path}/ticket-provider-encryption-keys`, data);

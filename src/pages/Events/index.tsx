@@ -39,7 +39,7 @@ const Events: FC<EventsInterface> = () => {
     refetchOnWindowFocus: true,
   });
 
-  const getEventsQuery = useQuery(['events', ticketProvideFilterValue], async () => getEvents({limit: 10, ticketProviderId: ticketProvideFilterValue, location}),{
+  const getEventsQuery = useQuery([location.pathname.split('/').includes('validate-backend') ? 'event' : 'events', ticketProvideFilterValue], async () => getEvents({limit: 10, ticketProviderId: ticketProvideFilterValue, location}),{
     onSuccess: (data) => {
       setEvents(data)
     },

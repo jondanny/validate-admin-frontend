@@ -33,9 +33,9 @@ export const getTicketProviderApiToken = async ({
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.get({
@@ -50,9 +50,9 @@ export const getTicketProviderApiToken = async ({
 export const createTicketProviderApiToken = async (data: createTicketProviderInterface, location: any) => {
   
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.post(`/${path}/ticket-provider-api-tokens`, data);
@@ -61,9 +61,9 @@ export const createTicketProviderApiToken = async (data: createTicketProviderInt
 
 export const updateTicketProviderApiToken = async (data: createTicketProviderInterface, userId: string, location: any) => {
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
   
   const response = await network.patch(`/${path}/users/${userId}`, data);
@@ -73,9 +73,9 @@ export const updateTicketProviderApiToken = async (data: createTicketProviderInt
 export const deleteTicketProviderApiToken = async (id: string, location: any) => {
   
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.delete(`/${path}/ticket-provider-api-tokens/${id}`);

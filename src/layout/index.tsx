@@ -158,14 +158,14 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItemButton onClick={() => setOpenMenu({...openMenu, web: !openMenu.web})}>
+          <ListItemButton onClick={() => setOpenMenu({...openMenu, backend: !openMenu.backend})}>
             <ListItemIcon>
               <WebIcon/>
             </ListItemIcon>
-            <ListItemText primary="Web" />
-            {openMenu.web ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText primary="Backend" />
+            {openMenu.backend ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={openMenu.web} timeout="auto" unmountOnExit>
+          <Collapse in={openMenu.backend} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {sideBarWebMenu.map((menu, index) => (
                 <ListItem key={index} disablePadding>
@@ -182,14 +182,14 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
               ))}
             </List>
           </Collapse>
-          <ListItemButton onClick={() => setOpenMenu({...openMenu, backend: !openMenu.backend})}>
+          <ListItemButton onClick={() => setOpenMenu({...openMenu, web: !openMenu.web})}>
             <ListItemIcon>
               <WebIcon/>
             </ListItemIcon>
-            <ListItemText primary="Backend" />
-            {openMenu.backend ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText primary="Web" />
+            {openMenu.web ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={openMenu.backend} timeout="auto" unmountOnExit>
+          <Collapse in={openMenu.web} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>    
               {sideBarBackendMenu.map((menu, index) => (
                 <ListItem key={index} disablePadding>

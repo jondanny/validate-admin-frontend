@@ -51,7 +51,7 @@ const TicketProvider: React.FC = () => {
   const location = useLocation();
 
   const query = useQuery(
-    ['ticket_providers', tableSize.default, currentCursor.value, searchText],
+    [location.pathname.split('/').includes('validate-backend') ? 'ticket_provider' : 'ticket_providers', tableSize.default, currentCursor.value, searchText],
     () =>
       getTicketProviders({
         limit: tableSize.default,

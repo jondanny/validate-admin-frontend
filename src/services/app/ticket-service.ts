@@ -58,9 +58,9 @@ export const getTickets = async ({
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.get({
@@ -108,9 +108,9 @@ export const createTicketService = async (data: createTicketInterface, location:
   };
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.post(`/${path}/tickets`, ticket);
@@ -120,9 +120,9 @@ export const createTicketService = async (data: createTicketInterface, location:
 export const deleteTicket = async (id: string, location: any) => {
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.delete(`/${path}/tickets/${id}`);
@@ -131,9 +131,9 @@ export const deleteTicket = async (id: string, location: any) => {
 
 export const updateTicketService = async (data: updateTicketInterface, location: any) => {
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.patch(`/${path}/tickets/${data.id}`, data);

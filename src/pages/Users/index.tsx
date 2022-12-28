@@ -74,7 +74,7 @@ const Users: React.FC<DashboardProps> = () => {
   const location = useLocation();
 
   const getUsersQuery = useQuery(
-    ['users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
+    [location.pathname.split('/').includes('validate-backend') ? 'user' : 'users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
     () =>
       getUsers({
         limit: tableSize.default,
