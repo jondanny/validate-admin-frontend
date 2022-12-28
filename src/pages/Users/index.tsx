@@ -307,7 +307,7 @@ const Users: React.FC<DashboardProps> = () => {
         editRecordHandler={editUserHandler}
         columns={columns}
         createClickHandler={openModal}
-        buttonText="Create"
+        buttonText={location.pathname.split('/')[1] === 'validate-web-backend' ? '' : "Create"}
         searchHandler={(value) => searchHandler(value)}
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}

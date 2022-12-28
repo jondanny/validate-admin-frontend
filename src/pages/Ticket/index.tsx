@@ -544,7 +544,7 @@ const Ticket: FC<TicketInterface> = () => {
         deleteHandler={(id: string) => openConfirmationModalHandler(id)}
         columns={columns}
         createClickHandler={openModal}
-        buttonText={location.pathname.split('/')[1] === 'validate-backend' ? '' : "Create"}
+        buttonText={location.pathname.split('/')[1] === 'validate-web-backend' ? '' : "Create"}
         searchHandler={(value) => searchHandler(value)}
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}
