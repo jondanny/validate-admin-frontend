@@ -74,7 +74,7 @@ const Users: React.FC<DashboardProps> = () => {
   const location = useLocation();
 
   const getUsersQuery = useQuery(
-    ['users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
+    [location.pathname.split('/').includes('validate-backend') ? 'user' : 'users', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
     () =>
       getUsers({
         limit: tableSize.default,
@@ -307,7 +307,7 @@ const Users: React.FC<DashboardProps> = () => {
         editRecordHandler={editUserHandler}
         columns={columns}
         createClickHandler={openModal}
-        buttonText="Create"
+        buttonText={location.pathname.split('/')[1] === 'validate-web-backend' ? '' : "Create"}
         searchHandler={(value) => searchHandler(value)}
         pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
         tableSize={tableSize}

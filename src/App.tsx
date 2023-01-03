@@ -7,12 +7,11 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 function App() {
   const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        staleTime: 1000
-      }
-    }
+    // defaultOptions: {
+    //   queries: {
+    //     refetchOnWindowFocus: true,
+    //   }
+    // }
   });
 
   return (

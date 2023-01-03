@@ -9,6 +9,10 @@ export interface createTicketInterface {
   newUserName?: string;
   newUserEmail?: string;
   newUserPhoneNumber?: string;
+  type?: string;
+  dateStart?: any,
+  dateEnd?: any,
+  user?: any;
 }
 
 interface getTicketParams {
@@ -18,6 +22,11 @@ interface getTicketParams {
   searchText?: string;
   ticketProviderId?: string;
   location?: any
+}
+
+interface updateTicketInterface {
+  id: any;
+  ticketType?: any
 }
 
 export interface retryMintingTicketInterface {
@@ -49,9 +58,9 @@ export const getTickets = async ({
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.get({
@@ -63,29 +72,73 @@ export const getTickets = async ({
   return response?.data;
 };
 
-export const createTicketService = async (data: createTicketInterface, location: any) => {
-
-  const { pathname } = location;
-  let path = 'validate-admin-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+export const createTicketService = async (data: createTicketInterface, location: any, saleEnabled?: any) => {
+  let user: {[key: string | number]: any} = {};
+  let ticketType: {[key: string | number]: any} = {};
+  if(data.userId){
+    user['userId'] = data.userId
+  }else {
+    user.name = data.newUserName;
+    user.email = data.newUserEmail;
+    user.phoneNumber = data.newUserPhoneNumber;
   }
 
-  const response = await network.post(`/${path}/tickets`, data);
+  if(saleEnabled.saleEnable){ 
+    ticketType.saleAmount = parseInt(saleEnabled.saleFieldsValues.amount)
+    ticketType.saleEnabledFromDate = saleEnabled.saleFieldsValues.ticketDateStart
+    ticketType.saleEnabledToDate = saleEnabled.saleFieldsValues.ticketDateEnd
+  }
+
+
+  const ticket = {
+    event: {
+      name: data.name
+    },
+    ticketType: {
+      ...ticketType,
+      name: data.type,
+      ticketDateStart: data.dateStart,
+      ticketDateEnd: data.dateEnd
+    },
+    ticketProviderId: data.ticketProviderId,
+    user: {
+      ...data.user
+    },
+    imageUrl: data.imageUrl ? data.imageUrl : ''
+  };
+
+  const { pathname } = location;
+  let path = 'validate-web-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-admin-backend'
+  }
+
+  const response = await network.post(`/${path}/tickets`, ticket);
   return response?.data;
 };
 
 export const deleteTicket = async (id: string, location: any) => {
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.delete(`/${path}/tickets/${id}`);
   return response?.data;
 };
+
+export const updateTicketService = async (data: updateTicketInterface, location: any) => {
+  const { pathname } = location;
+  let path = 'validate-web-backend';
+  if(pathname.split('/').includes('validate-backend')){
+    path = 'validate-admin-backend'
+  }
+
+  const response = await network.patch(`/${path}/tickets/${data.id}`, data);
+  return response;
+}
 
 
 export const retryTicketMinting = async (obj: retryMintingTicketInterface, location: any) => {

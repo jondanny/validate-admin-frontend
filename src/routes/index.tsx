@@ -14,50 +14,50 @@ export const protectedRoutes = [
     element: Landing,
   },
   {
-    webPath: '/validate-backend/ticket-provider',
+    webPath: '/validate-web-backend/ticket-provider',
     element: TicketProvider,
   },
   {
-    webPath: '/validate-backend/ticket',
+    webPath: '/validate-web-backend/ticket',
     element: Ticket,
   },
   {
-    webPath: '/validate-backend/users',
+    webPath: '/validate-web-backend/users',
     element: Users,
   },
 
   {
-    webPath: '/validate-backend/events',
+    webPath: '/validate-web-backend/events',
     element: Events
   }
 ];
 export const protectedBackendRoutes = [
   {
-    backendPath: '/validate-web-backend/ticket-provider',
+    backendPath: '/validate-backend/ticket-provider',
     element: TicketProvider,
   },
   {
-    backendPath: '/validate-web-backend/ticket',
+    backendPath: '/validate-backend/ticket',
     element: Ticket,
   },
   {
-    backendPath: '/validate-web-backend/users',
+    backendPath: '/validate-backend/users',
     element: Users,
   },
   {
-    backendPath: '/validate-web-backend/events',
+    backendPath: '/validate-backend/events',
     element: Events
   },
   {
-    backendPath: '/validate-web-backend/ticket-provider-api-token',
+    backendPath: '/validate-backend/ticket-provider-api-token',
     element: TicketProviderApiToken,
   },
   {
-    backendPath: '/validate-web-backend/ticket-transfer',
+    backendPath: '/validate-backend/ticket-transfer',
     element: TicketTransfer,
   },
   {
-    backendPath: '/validate-web-backend/ticket-provider-encryption-key',
+    backendPath: '/validate-backend/ticket-provider-encryption-key',
     element: TicketProviderEncryptionKey,
   },
 ];

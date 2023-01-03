@@ -59,9 +59,10 @@ interface CreateTicketModalProps {
   saleEnableChangeHandler: (field: string, value: string | number) => any;
   saleEnabled: any;
   saleEnabledHandler: (value: boolean) => any;
+  ticketData: any
 }
 
-const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
+const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
   title,
   openModal,
   closeModal,
@@ -74,7 +75,8 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   newUserChangeHandler,
   saleEnabled,
   saleEnabledHandler,
-  saleEnableChangeHandler
+  saleEnableChangeHandler,
+  ticketData,
 }) => {
   const [dateStart, setDateStart] = useState<Dayjs | null>(dayjs(new Date()));
   const [dateEnd, setDateEnd] = useState<Dayjs | null>(dayjs(new Date()));
@@ -89,15 +91,8 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           <SwitchesDiv>
             <FormControlLabel
               value="start"
-              control={<Switch color="primary" onChange={(e) => newUserHandler(e.target.checked)} />}
-              label={<strong>New User</strong>}
-              labelPlacement="start"
-              style={{ display: 'flex' }}
-            />
-            <FormControlLabel
-              value="start"
               control={<Switch color="primary" onChange={(e) => saleEnabledHandler(e.target.checked)} />}
-              label={<strong>Sale Enable</strong>}
+              label={<strong>Re-Sale Enable</strong>}
               labelPlacement="start"
               style={{ display: 'flex' }}
             />
@@ -112,19 +107,19 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                 fullWidth
                 autoComplete="given-name"
                 variant="standard"
-                onChange={(e) => inputValueHandler('name', e.target.value)}
+                onChange={(e) => saleEnableChangeHandler('event_name', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                required
                 id="ticketType"
                 name="type"
-                label="Ticket Type"
+                label={"Ticket Type"}
                 fullWidth
+                defaultValue={ticketData?.ticket_type?.name ? ticketData?.ticket_type?.name: ''}
                 autoComplete="given-name"
                 variant="standard"
-                onChange={(e) => inputValueHandler('type', e.target.value)}
+                onChange={(e) => saleEnableChangeHandler('ticket_type_name', e.target.value)}
               />
             </Grid>
           </Grid>
@@ -132,7 +127,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Autocomplete
-                disabled={newUser?.newUserExists}
+                disabled={ticketData?.user?.name}
                 options={users}
                 getOptionLabel={(option: optionType) => option.name}
                 autoComplete
@@ -140,7 +135,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                 onChange={(e: any, newValue: optionType | null) => {
                   inputValueHandler('userId', newValue ? newValue?.id : 0);
                 }}
-                renderInput={(params) => <TextField {...params} label="User *" fullWidth variant="standard" />}
+                renderInput={(params) => <TextField {...params} label={ticketData?.user?.name? ticketData?.user?.name : "User *"} fullWidth variant="standard" />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -149,11 +144,12 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                 getOptionLabel={(option: optionType) => option.name}
                 autoComplete
                 includeInputInList
+                disabled={ticketData?.ticketProvider?.name}
                 onChange={(e: any, newValue: optionType | null) => {
                   inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Ticket Provider *" fullWidth variant="standard" />
+                  <TextField {...params} label={ticketData?.ticketProvider?.name ? ticketData?.ticketProvider?.name : "Ticket Provider *"} fullWidth variant="standard" />
                 )}
               />
             </Grid>
@@ -164,11 +160,12 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Start Date*"
-                  value={dateStart}
+                  value={ticketData?.ticket_type?.ticketDateStart ? ticketData?.ticket_type?.ticketDateStart :dateStart}
                   onChange={(newValue: Dayjs | null) => {
                     setDateStart(newValue);
                     inputValueHandler('dateStart', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
                   }}
+                  disabled={ticketData?.ticket_type?.ticketDateStart}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -177,11 +174,12 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="End Date"
-                  value={dateEnd}
+                  value={ticketData?.ticket_type?.ticketDateEnd ? ticketData?.ticket_type?.ticketDateEnd :dateEnd}
                   onChange={(newValue: Dayjs | null) => {
                     setDateEnd(newValue);
                     inputValueHandler('dateEnd', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
                   }}
+                  disabled={ticketData?.ticket_type?.ticketDateEnd}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -193,8 +191,9 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               <TextField
                 id="imageUrl"
                 name="imageUrl"
-                label="Image URL"
+                label={ticketData?.imageUrl ? ticketData?.imageUrl :"Image URL"}
                 fullWidth
+                disabled={ticketData?.imageUrl}
                 autoComplete="given-image-url"
                 variant="standard"
                 onChange={(e) => inputValueHandler('imageUrl', e.target.value)}
@@ -202,74 +201,37 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
             </Grid>
           </Grid>
 
-          <div style={{ display: newUser.newUserExists ? 'block' : 'none' }}>
-            <Divider />
-
-            <ModalSubTitle>New User</ModalSubTitle>
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="name"
-                  name="name"
-                  label="Name"
-                  fullWidth
-                  autoComplete="given-name"
-                  variant="standard"
-                  defaultValue={newUser?.userFieldsValues?.name || ''}
-                  onChange={(e) => newUserChangeHandler('name', e.target.value)}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="email"
-                  name="email"
-                  label="Email"
-                  fullWidth
-                  autoComplete="given-email"
-                  variant="standard"
-                  defaultValue={newUser?.userFieldsValues?.email || ''}
-                  onChange={(e) => newUserChangeHandler('email', e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  label="Contact Number"
-                  fullWidth
-                  autoComplete="given-name"
-                  variant="standard"
-                  defaultValue={newUser?.userFieldsValues?.phoneNumber || ''}
-                  onChange={(e) => newUserChangeHandler('phoneNumber', e.target.value)}
-                />
-              </Grid>
-            </Grid>
-          </div>
-
 
           <div style={{ display: saleEnabled.saleEnable ? 'block' : 'none' }}>
             <Divider />
 
-            <ModalSubTitle>Sale Enable Data</ModalSubTitle>
+            <ModalSubTitle>Re-Sale Enable Data</ModalSubTitle>
 
             <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="reSaleMinAmountPrice"
+                  name="saleAmountPrice"
+                  label="Re-Sale Min Price"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  defaultValue={newUser?.userFieldsValues?.amount || ''}
+                  onChange={(e) => saleEnableChangeHandler('min_amount', e.target.value)}
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="saleAmountPrice"
                   name="saleAmountPrice"
-                  label="Sale Amount"
+                  label="Re-Sale Max Price"
                   fullWidth
                   autoComplete="given-name"
                   variant="standard"
                   defaultValue={newUser?.userFieldsValues?.amount || ''}
-                  onChange={(e) => saleEnableChangeHandler('amount', e.target.value)}
+                  onChange={(e) => saleEnableChangeHandler('max_amount', e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -308,7 +270,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               Close
             </Button>
             <Button variant="contained" onClick={submitForm} sx={{ mt: 3, ml: 1 }} color="primary">
-              Create
+              Update
             </Button>
           </ButtonDiv>
         </Box>
@@ -317,4 +279,4 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   );
 };
 
-export default CreateTicketModal;
+export default UpdateTicketModal;

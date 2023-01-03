@@ -169,7 +169,7 @@ const DataTable: React.FC<DataTableProps> = ({
                                 </IconButton>
                               )}
                               {value.includes('update') && (
-                                <IconButton style={{ padding: '0.5rem' }} onClick={() => editRecordHandler?.(row.id)}>
+                                <IconButton style={{ padding: '0.5rem' }} onClick={() => editRecordHandler?.(row)}>
                                   <EditIcon fontSize="inherit" />
                                 </IconButton>
                               )}

@@ -9,12 +9,12 @@ interface getEventsParams {
 export const getEvents = async ( { limit, ticketProviderId, location }: getEventsParams ) => {
   const { pathname } = location;
   let params: { [key: string]: any } = {};
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   params.limit = limit;
   ticketProviderId && (params.ticketProviderId = ticketProviderId)
 
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.get({
@@ -29,9 +29,9 @@ export const getEvents = async ( { limit, ticketProviderId, location }: getEvent
 export const getTicketProviders = async ({location}: any) => {
 
   const { pathname } = location;
-  let path = 'validate-admin-backend';
+  let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-web-backend'
+    path = 'validate-admin-backend'
   }
 
   const response = await network.get({
