@@ -59,9 +59,12 @@ interface DataTableProps {
   updateAble?: boolean;
   editRecordHandler?: (id: string) => void;
   tickProviderHandler?: (ticketProviderId: string) => void;
+  eventsHandler?: (eventUuid: string) => void;
   ticketProviders?: any;
   ticketProvideFilterValue?: string;
-  retryButtonClickHandler?: (data: any) => void
+  retryButtonClickHandler?: (data: any) => void;
+  eventsFilterValue?: string;
+  events?: any;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -79,7 +82,10 @@ const DataTable: React.FC<DataTableProps> = ({
   tickProviderHandler,
   ticketProviders,
   ticketProvideFilterValue,
-  retryButtonClickHandler
+  retryButtonClickHandler,
+  eventsHandler,
+  eventsFilterValue,
+  events,
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
   return (
@@ -118,6 +124,25 @@ const DataTable: React.FC<DataTableProps> = ({
               </Select>
             </TicketProviderFilter>
           )}
+          {eventsHandler && events && (
+            <TicketProviderFilter>
+              <InputLabel id="events" style={{ marginLeft: '2rem' }}>
+                Events
+              </InputLabel>
+              <Select
+                value={eventsFilterValue}
+                onChange={(e) => eventsHandler(e.target.value as string)}
+                style={{ marginLeft: '2rem', width: '11rem' }}
+                size="small"
+                defaultValue="All"
+                labelId="events"
+              >
+                {events?.map((event: any) => {
+                  return <MenuItem value={event.uuid}>{event.name}</MenuItem>;
+                })}
+              </Select>
+            </TicketProviderFilter>
+          )}
         </Filters>
         {buttonText && (
           <Button variant="contained" color="primary" onClick={createClickHandler}>
@@ -149,8 +174,8 @@ const DataTable: React.FC<DataTableProps> = ({
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   {columns.map((column: any) => {
-                    const value = column?.name
-                      ? row[column.id]?.name || 'N/A'
+                    let value = column?.name
+                      ? row[column.id]?.name || row?.event?.name || 'N/A'
                       : column.id === 'delete' || column.id === 'update' || column.id === 'delete/update'
                       ? column.id
                       : row[column.id] || 'N/A';

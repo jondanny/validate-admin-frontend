@@ -9,6 +9,7 @@ import EventIcon from '@mui/icons-material/Event';
 export const sideBarWebMenu = [
   { title: 'Users', icon: PeopleIcon, path: '/validate-backend/users' },
   { title: 'Tickets', icon: InboxIcon, path: '/validate-backend/ticket' },
+  { title: 'Ticket Type', icon: EventIcon, path: '/validate-backend/ticket-types'},
   { title: 'Ticket Providers', icon: BusinessIcon, path: '/validate-backend/ticket-provider' },
   { title: 'Ticket Provider Api Token', icon: ApiIcon, path: '/validate-backend/ticket-provider-api-token' },
   { title: 'Ticket Provider Encryption Key', icon: VpnKeyIcon, path: '/validate-backend/ticket-provider-encryption-key' },

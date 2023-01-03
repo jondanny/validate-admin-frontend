@@ -2,7 +2,7 @@
 import network from '../../utils/network';
 
 export interface createTicketInterface {
-  name: string;
+  name?: string;
   ticketProviderId: number;
   userId?: number;
   imageUrl?: string | null;
@@ -13,6 +13,8 @@ export interface createTicketInterface {
   dateStart?: any,
   dateEnd?: any,
   user?: any;
+  ticketTypeId?: string;
+  eventId?: number;
 }
 
 interface getTicketParams {
@@ -52,11 +54,6 @@ export const getTickets = async ({
   searchText ? (params.searchText = searchText) : '';
   ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
 
-  afterCursor ? (params.afterCursor = afterCursor) : '';
-  beforeCursor ? (params.beforeCursor = beforeCursor) : '';
-  searchText ? (params.searchText = searchText) : '';
-  ticketProviderId && parseInt(ticketProviderId) !== 0 ? (params.ticketProviderId = ticketProviderId) : '';
-
   const { pathname } = location;
   let path = 'validate-web-backend';
   if(pathname.split('/').includes('validate-backend')){
@@ -74,7 +71,6 @@ export const getTickets = async ({
 
 export const createTicketService = async (data: createTicketInterface, location: any, saleEnabled?: any) => {
   let user: {[key: string | number]: any} = {};
-  let ticketType: {[key: string | number]: any} = {};
   if(data.userId){
     user['userId'] = data.userId
   }else {
@@ -83,23 +79,10 @@ export const createTicketService = async (data: createTicketInterface, location:
     user.phoneNumber = data.newUserPhoneNumber;
   }
 
-  if(saleEnabled.saleEnable){ 
-    ticketType.saleAmount = parseInt(saleEnabled.saleFieldsValues.amount)
-    ticketType.saleEnabledFromDate = saleEnabled.saleFieldsValues.ticketDateStart
-    ticketType.saleEnabledToDate = saleEnabled.saleFieldsValues.ticketDateEnd
-  }
-
 
   const ticket = {
-    event: {
-      name: data.name
-    },
-    ticketType: {
-      ...ticketType,
-      name: data.type,
-      ticketDateStart: data.dateStart,
-      ticketDateEnd: data.dateEnd
-    },
+    eventId: data.eventId,
+    ticketTypeUuid: data.ticketTypeId,
     ticketProviderId: data.ticketProviderId,
     user: {
       ...data.user

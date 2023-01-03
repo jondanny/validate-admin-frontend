@@ -13,16 +13,16 @@ import {
   deleteTicket,
   getTickets,
   retryTicketMinting,
-  retryMintingTicketInterface,
-  updateTicketService,
+  retryMintingTicketInterface
 } from '../../services/app/ticket-service';
 import { getTicketProviders } from '../../services/app/users-services';
 import ConfirmationModal from '../../components/ConfirmationModal/index';
 import CreateTicketModal from './CreateTicketModal';
-import UpdateTicketModal from './UpdateTicketModal';
 import { getUsers } from '../../services/app/users-services';
 import { errorHandler } from '../../utils/network/error-handler';
 import dayjs from 'dayjs';
+import { getEvents } from '../../services/app/events-service';
+import { getTicketTypes } from '../../services/app/ticket-type-service';
 
 export interface TicketInterface {}
 
@@ -43,8 +43,9 @@ interface TicketTypeInterface {
 
 }
 interface CreateTicketProps {
-  name: string;
   ticketProviderId: number;
+  eventId: number;
+  ticketTypeId: string;
   userId?: number;
   imageUrl?: string | null;
   newUserName?: string;
@@ -55,14 +56,6 @@ interface CreateTicketProps {
   dateStart: string | null;
   dateEnd?: string | null;
   ticketType?: TicketTypeInterface | undefined
-}
-
-interface UpdateTicketProps {
-  ticketType?: any;
-  id: number;
-  eventId: number;
-  ticketTypeId: number;
-  event?: any
 }
 
 const Ticket: FC<TicketInterface> = () => {
@@ -79,12 +72,13 @@ const Ticket: FC<TicketInterface> = () => {
   const [users, setUsers] = useState([]);
   const [openTicketModal, setOpenTicketModal] = useState<boolean>(false);
   const [ticketValues, setTicketValues] = useState<CreateTicketProps>({
-    name: '',
+    eventId: 0,
     ticketProviderId: 0,
     userId: 0,
     imageUrl: null,
     type: '',
     dateStart: dayjs(new Date()).format('YYYY-MM-DD'),
+    ticketTypeId: '',
   });
   const [currentCursor, setCurrentCursor] = useState({
     name: '',
@@ -137,6 +131,9 @@ const Ticket: FC<TicketInterface> = () => {
     }
   })
 
+  const [ events, setEvents ] = useState([])
+  const [ ticketTypes, setTicketTypes ] = useState<any>([])
+
   useQuery(['ticket_provider'], () => getTicketProviders(location), {
     onSuccess: (data) => {
       let ticketProviders = [...data];
@@ -161,6 +158,18 @@ const Ticket: FC<TicketInterface> = () => {
       setUsers(data.data.map((item: any) => ({ id: item.id, name: item.name })));
     },
   });
+
+  useQuery(['events'], () => getEvents({location}), {
+    onSuccess: (response) => {
+      setEvents(response.data);
+    }
+  })
+
+  useQuery(['ticket-types'], () => getTicketTypes({location}), {
+    onSuccess: (response) => {
+      setTicketTypes(response.data)
+    }
+  })
 
   const query = useQuery(
     [location.pathname.split('/').includes('validate-backend') ? 'tickets' : 'ticket', tableSize.default, currentCursor.value, searchText, ticketProvideFilterValue],
@@ -196,7 +205,8 @@ const Ticket: FC<TicketInterface> = () => {
         theme: 'light',
       });
       setTicketValues({
-        name: '',
+        ticketTypeId: '',
+        eventId: 0,
         ticketProviderId: 0,
         userId: 0,
         imageUrl: null,
@@ -212,35 +222,6 @@ const Ticket: FC<TicketInterface> = () => {
         },
       });
       closeModal();
-    },
-    onError: (err: AxiosError) => errorHandler(err, navigate),
-  });
-
-  const updateMutation = useMutation((data: UpdateTicketProps) => updateTicketService(data, location), {
-    onSuccess: (data) => {
-      query.refetch();
-      toast.success('Ticket is Updated', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
-      setUpdateTicket({
-        updateTicketEnabled: false,
-        ticketData: {},
-        reSaleValues: {
-          resaleMinPrice: '',
-          resaleMaxPrice: '',
-          resaleStartDate: '',
-          resaleEndDate: '',
-          eventName: '',
-          ticketTypeName: '',
-        }
-      });
     },
     onError: (err: AxiosError) => errorHandler(err, navigate),
   });
@@ -312,6 +293,14 @@ const Ticket: FC<TicketInterface> = () => {
         [field]: value,
       };
     });
+
+    if(field === 'ticketProviderId'){
+      const updatedEvents = events.filter((event: any) => event.ticketProviderId === value)
+      setEvents(updatedEvents);
+    }else if(field === 'eventId'){
+      const updatedTicketTypes = ticketTypes.filter((ticketType: any) => ticketType.eventId === value);
+      setTicketTypes(updatedTicketTypes);
+    }
   };
 
   const deleteTicketHandler = () => {
@@ -345,7 +334,7 @@ const Ticket: FC<TicketInterface> = () => {
   const createTicket = () => {
     const { userFieldsValues } = newUser;
     const { name, email, phoneNumber } = userFieldsValues;
-    if (ticketValues.name === '' || !ticketValues['ticketProviderId'] || ticketValues['dateStart'] === '') {
+    if ( !ticketValues['ticketProviderId'] || ticketValues['dateStart'] === '') {
       toast.error('Please Fill all the required fields', {
         position: 'top-right',
         autoClose: 3000,
@@ -375,7 +364,8 @@ const Ticket: FC<TicketInterface> = () => {
     }
     if (ticketValues.userId === 0) {
       let mutationParam: CreateTicketProps = {
-        name: ticketValues.name,
+        eventId: ticketValues.eventId,
+        ticketTypeId: ticketValues.ticketTypeId,
         ticketProviderId: ticketValues.ticketProviderId,
         imageUrl: ticketValues.imageUrl,
         type: ticketValues.type,
@@ -388,7 +378,8 @@ const Ticket: FC<TicketInterface> = () => {
       createMutation.mutate(mutationParam);
     } else {
       const mutationParam: CreateTicketProps = {
-        name: ticketValues.name,
+        eventId: ticketValues.eventId,
+        ticketTypeId: ticketValues.ticketTypeId,
         ticketProviderId: ticketValues.ticketProviderId,
         imageUrl: ticketValues.imageUrl,
         type: ticketValues.type,
@@ -485,72 +476,6 @@ const Ticket: FC<TicketInterface> = () => {
     })
   }
   
-  const reSaleEnableChangeHandler = (field: string, value: any, update?: boolean) => {
-    const newValues = { ...updateTicket.reSaleValues };
-    if(field === 'event_name'){
-      newValues.eventName = value;
-    }else if(field === 'ticket_type_name'){
-      newValues.ticketTypeName = value;
-
-    } else if (field === 'min_amount') {
-      newValues.resaleMinPrice = value;
-    }else if(field === 'max_amount'){
-      newValues.resaleMaxPrice = value;
-    } 
-    else if (field === 'start_date') {
-      newValues.resaleStartDate = value;
-    } else {
-      newValues.resaleEndDate = value;
-    }
-
-    setUpdateTicket((prevState: any) => {
-      return {
-        ...prevState,
-        reSaleValues: { ...newValues },
-      };
-    });
-  };
-
-  const updateTicketHandler = () => {
-    const { updateTicketEnabled, ticketData, reSaleValues } = updateTicket;
-    if(updateTicketEnabled) {
-      const mutationParams: UpdateTicketProps = {
-        id: ticketData?.id,
-        eventId: ticketData?.eventId,
-        ticketTypeId: ticketData?.ticketTypeId,
-        event: {
-          name: reSaleValues.eventName
-        },
-        ticketType: {
-          resaleEnabled: 1,
-          resaleEnabledFromDate: reSaleValues.resaleStartDate,
-          resaleEnabledToDate: reSaleValues.resaleEndDate,
-          resaleMinPrice: reSaleValues.resaleMinPrice,
-          resaleMaxPrice: reSaleValues.resaleMaxPrice,
-          name: ticketData.ticket_type.name,
-          ticketTypeId: ticketData?.ticketTypeId,
-          ticketProviderId: ticketData.ticketProviderId
-        }
-      }
-      updateMutation.mutate(mutationParams);
-    }else {
-      const mutationParams: UpdateTicketProps = {
-        id: ticketData?.id,
-        eventId: ticketData?.eventId,
-        ticketTypeId: ticketData?.ticketTypeId,
-        event: {
-          name: reSaleValues.eventName
-        },
-        ticketType: {
-          name: ticketData.ticket_type.name,
-          ticketTypeId: ticketData?.ticketTypeId,
-          ticketProviderId: ticketData.ticketProviderId
-        }
-      }
-      updateMutation.mutate(mutationParams);
-    }
-  }
-  
   return (
     <>
       <PageContent>
@@ -586,26 +511,8 @@ const Ticket: FC<TicketInterface> = () => {
         saleEnabled={saleEnabled}
         saleEnabledHandler = {(value) => setSaleEnabled({...saleEnabled, saleEnable: value})}
         saleEnableChangeHandler = {saleEnableChangeHandler}
-      />
-      <UpdateTicketModal
-        title="Update Ticket"
-        openModal={updateTicket.updateTicketEnabled}
-        closeModal={() => {
-          setSaleEnabled({...saleEnabled, saleEnable: false})
-          setUpdateTicket({...updateTicket, updateTicketEnabled: false})
-          return;
-        }}
-        submitForm={updateTicketHandler}
-        inputValueHandler={(field: string, value: string | number) => createTicketFormValuesHandler(field, value)}
-        ticketProviders={ticketProviders}
-        users={users}
-        newUserHandler={(value) => setNewUser({ ...newUser, newUserExists: value })}
-        newUser={newUser}
-        newUserChangeHandler={newUserChangeHandler}
-        saleEnabled={saleEnabled}
-        saleEnabledHandler = {(value) => setSaleEnabled({...saleEnabled, saleEnable: value})}
-        saleEnableChangeHandler = {reSaleEnableChangeHandler}
-        ticketData={updateTicket.ticketData}
+        events={events}
+        ticketTypes={ticketTypes}
       />
       <ConfirmationModal
         title="Create Ticket"
