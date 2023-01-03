@@ -7,6 +7,7 @@ import TicketTransfer from '../pages/TicketTransfer';
 import TicketProviderEncryptionKey from '../pages/TicketProviderEncryptionKey';
 import Events from '../pages/Events'
 import Landing from '../pages/Landing';
+import TicketType from '../pages/TicketType/index'
 
 export const protectedRoutes = [
   {
@@ -59,6 +60,10 @@ export const protectedBackendRoutes = [
   {
     backendPath: '/validate-backend/ticket-provider-encryption-key',
     element: TicketProviderEncryptionKey,
+  },
+  {
+    backendPath: '/validate-backend/ticket-types',
+    element: TicketType,
   },
 ];
 

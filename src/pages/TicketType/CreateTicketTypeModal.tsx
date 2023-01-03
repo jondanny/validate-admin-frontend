@@ -43,6 +43,7 @@ const SwitchesDiv = styled('div')(({ theme }) => ({
 interface optionType {
   id: number;
   name: string;
+  uuid?: string;
 }
 
 interface CreateTicketModalProps {
@@ -50,33 +51,35 @@ interface CreateTicketModalProps {
   openModal: boolean;
   closeModal: () => any;
   submitForm: () => any;
-  inputValueHandler: (field: string, value: string | number) => any;
-  newUserHandler: (value: boolean) => any;
-  ticketProviders: any;
-  users: any;
-  newUser: any;
-  newUserChangeHandler: (field: string, value: string | number) => any;
-  saleEnableChangeHandler: (field: string, value: string | number) => any;
-  saleEnabled: any;
+  inputValueHandler: (field: string, value: string) => any;
+  newUserHandler?: (value: boolean) => any;
+  ticketProviders?: any;
+  events?: any;
+  newUser?: any;
+  newUserChangeHandler?: (field: string, value: string | number) => any;
+  saleEnableChangeHandler: (field: string, value: string) => any;
+  resaleEnableChangeHandler: (field: string, value: string) => void
+  saleEnabled?: any;
+  reSaleEnabled?: any;
   saleEnabledHandler: (value: boolean) => any;
-  ticketData: any
+  resaleEnabledHandler: (value: boolean) => void;
+  currencies?: any;
 }
 
-const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
+const CreateTicketTypeModal: React.FC<CreateTicketModalProps> = ({
   title,
   openModal,
   closeModal,
   submitForm,
   inputValueHandler,
-  ticketProviders,
-  users,
-  newUserHandler,
-  newUser,
-  newUserChangeHandler,
+  events,
   saleEnabled,
+  reSaleEnabled,
   saleEnabledHandler,
   saleEnableChangeHandler,
-  ticketData,
+  resaleEnabledHandler,
+  resaleEnableChangeHandler,
+  currencies
 }) => {
   const [dateStart, setDateStart] = useState<Dayjs | null>(dayjs(new Date()));
   const [dateEnd, setDateEnd] = useState<Dayjs | null>(dayjs(new Date()));
@@ -91,66 +94,42 @@ const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
           <SwitchesDiv>
             <FormControlLabel
               value="start"
+              control={<Switch color="primary" onChange={(e) => resaleEnabledHandler(e.target.checked)} />}
+              label={<strong>Resale Enable</strong>}
+              labelPlacement="start"
+              style={{ display: 'flex' }}
+            />
+            <FormControlLabel
+              value="start"
               control={<Switch color="primary" onChange={(e) => saleEnabledHandler(e.target.checked)} />}
-              label={<strong>Re-Sale Enable</strong>}
+              label={<strong>Sale Enable</strong>}
               labelPlacement="start"
               style={{ display: 'flex' }}
             />
           </SwitchesDiv>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
+              <Autocomplete
+                options={events}
+                getOptionLabel={(option: optionType) => option.name}
+                autoComplete
+                includeInputInList
+                onChange={(e: any, newValue: optionType | null) => {
+                  inputValueHandler('eventId', newValue ? `${newValue?.uuid}` : '');
+                }}
+                renderInput={(params) => <TextField {...params} label="Event *" fullWidth variant="standard" />}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="eventName"
-                name="eventName"
-                label="Event Name"
-                fullWidth
-                autoComplete="given-name"
-                variant="standard"
-                onChange={(e) => saleEnableChangeHandler('event_name', e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
                 id="ticketType"
                 name="type"
-                label={"Ticket Type"}
+                label="Ticket Type"
                 fullWidth
-                defaultValue={ticketData?.ticket_type?.name ? ticketData?.ticket_type?.name: ''}
                 autoComplete="given-name"
                 variant="standard"
-                onChange={(e) => saleEnableChangeHandler('ticket_type_name', e.target.value)}
-              />
-            </Grid>
-          </Grid>
-          <br />
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <Autocomplete
-                disabled={ticketData?.user?.name}
-                options={users}
-                getOptionLabel={(option: optionType) => option.name}
-                autoComplete
-                includeInputInList
-                onChange={(e: any, newValue: optionType | null) => {
-                  inputValueHandler('userId', newValue ? newValue?.id : 0);
-                }}
-                renderInput={(params) => <TextField {...params} label={ticketData?.user?.name? ticketData?.user?.name : "User *"} fullWidth variant="standard" />}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Autocomplete
-                options={ticketProviders.filter((provider: any) => provider.id)}
-                getOptionLabel={(option: optionType) => option.name}
-                autoComplete
-                includeInputInList
-                disabled={ticketData?.ticketProvider?.name}
-                onChange={(e: any, newValue: optionType | null) => {
-                  inputValueHandler('ticketProviderId', newValue ? newValue?.id : 0);
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label={ticketData?.ticketProvider?.name ? ticketData?.ticketProvider?.name : "Ticket Provider *"} fullWidth variant="standard" />
-                )}
+                onChange={(e) => inputValueHandler('type', e.target.value)}
               />
             </Grid>
           </Grid>
@@ -159,13 +138,12 @@ const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
             <Grid item xs={12} sm={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Start Date*"
-                  value={ticketData?.ticket_type?.ticketDateStart ? ticketData?.ticket_type?.ticketDateStart :dateStart}
+                  label="Ticket Start Date*"
+                  value={dateStart}
                   onChange={(newValue: Dayjs | null) => {
                     setDateStart(newValue);
                     inputValueHandler('dateStart', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
                   }}
-                  disabled={ticketData?.ticket_type?.ticketDateStart}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -173,65 +151,48 @@ const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
             <Grid item xs={12} sm={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="End Date"
-                  value={ticketData?.ticket_type?.ticketDateEnd ? ticketData?.ticket_type?.ticketDateEnd :dateEnd}
+                  label="Ticket End Date"
+                  value={dateEnd}
                   onChange={(newValue: Dayjs | null) => {
                     setDateEnd(newValue);
                     inputValueHandler('dateEnd', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
                   }}
-                  disabled={ticketData?.ticket_type?.ticketDateEnd}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
             </Grid>
           </Grid>
-          <br />
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                id="imageUrl"
-                name="imageUrl"
-                label={ticketData?.imageUrl ? ticketData?.imageUrl :"Image URL"}
-                fullWidth
-                disabled={ticketData?.imageUrl}
-                autoComplete="given-image-url"
-                variant="standard"
-                onChange={(e) => inputValueHandler('imageUrl', e.target.value)}
-              />
-            </Grid>
-          </Grid>
 
 
-          <div style={{ display: saleEnabled.saleEnable ? 'block' : 'none' }}>
+          <div style={{ display: saleEnabled.saleEnabled ? 'block' : 'none' }}>
             <Divider />
 
-            <ModalSubTitle>Re-Sale Enable Data</ModalSubTitle>
+            <ModalSubTitle>Sale Enable Data</ModalSubTitle>
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="reSaleMinAmountPrice"
-                  name="saleAmountPrice"
-                  label="Re-Sale Min Price"
-                  fullWidth
-                  autoComplete="given-name"
-                  variant="standard"
-                  defaultValue={newUser?.userFieldsValues?.amount || ''}
-                  onChange={(e) => saleEnableChangeHandler('min_amount', e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
                   id="saleAmountPrice"
                   name="saleAmountPrice"
-                  label="Re-Sale Max Price"
+                  label="Sale Amount"
                   fullWidth
                   autoComplete="given-name"
                   variant="standard"
-                  defaultValue={newUser?.userFieldsValues?.amount || ''}
-                  onChange={(e) => saleEnableChangeHandler('max_amount', e.target.value)}
+                  onChange={(e) => saleEnableChangeHandler('sale_amount', e.target.value)}
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  options={currencies}
+                  getOptionLabel={(option: optionType) => option.name}
+                  autoComplete
+                  includeInputInList
+                  onChange={(e: any, newValue: optionType | null) => {
+                    saleEnableChangeHandler('sale_currency', newValue ? `${newValue?.uuid}` : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Sale Currency *" fullWidth variant="standard" />}
                 />
               </Grid>
             </Grid>
@@ -243,7 +204,7 @@ const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
                   value={saleEnabledateStart}
                   onChange={(newValue: Dayjs | null) => {
                     setSaleEnableDateStart(newValue);
-                    saleEnableChangeHandler('start_date', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
+                    saleEnableChangeHandler('sale_start_date', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -265,12 +226,89 @@ const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
             </Grid>
           </div>
 
+
+          <div style={{ display: reSaleEnabled.resaleEnabled ? 'block' : 'none' }}>
+            <Divider />
+
+            <ModalSubTitle>Re-Sale Enable Data</ModalSubTitle>
+
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="resaleMaxAmount"
+                  name="resaleMaxAmount"
+                  label="Re-Sale Max Amount"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  onChange={(e) => resaleEnableChangeHandler('max_amount', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="resaleMinAmount"
+                  name="resaleMinAmount"
+                  label="Re-Sale Min Amount"
+                  fullWidth
+                  autoComplete="given-name"
+                  variant="standard"
+                  onChange={(e) => resaleEnableChangeHandler('min_amount', e.target.value)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={3} mt={3}>
+              <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Start Date*"
+                  value={saleEnabledateStart}
+                  onChange={(newValue: Dayjs | null) => {
+                    setSaleEnableDateStart(newValue);
+                    resaleEnableChangeHandler('resale_start_date', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="End Date*"
+                  value={saleEnabledateEnd}
+                  onChange={(newValue: Dayjs | null) => {
+                    setSaleEnableDateEnd(newValue);
+                    resaleEnableChangeHandler('resale_end_date', newValue !== null ? newValue.format('YYYY-MM-DD') : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              </Grid>
+            </Grid>
+            <Grid container spacing={3} mt={3} >
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  options={currencies}
+                  getOptionLabel={(option: optionType) => option.name}
+                  autoComplete
+                  includeInputInList
+                  onChange={(e: any, newValue: optionType | null) => {
+                    resaleEnableChangeHandler('resale_currency', newValue ? `${newValue?.uuid}` : '');
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Re-Sale Currency *" fullWidth variant="standard" />}
+                />
+              </Grid>
+
+            </Grid>
+          </div>
+
           <ButtonDiv>
             <Button variant="contained" onClick={closeModal} sx={{ mt: 3, ml: 1 }} color="inherit">
               Close
             </Button>
             <Button variant="contained" onClick={submitForm} sx={{ mt: 3, ml: 1 }} color="primary">
-              Update
+              Create
             </Button>
           </ButtonDiv>
         </Box>
@@ -279,4 +317,4 @@ const UpdateTicketModal: React.FC<CreateTicketModalProps> = ({
   );
 };
 
-export default UpdateTicketModal;
+export default CreateTicketTypeModal;

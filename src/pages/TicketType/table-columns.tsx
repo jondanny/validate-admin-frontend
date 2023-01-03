@@ -10,14 +10,10 @@ export interface Column {
 }
 
 const dateConversionHandler = (date: string) => {
-  return moment(date).format('DD-MM-YYYY');
-};
-const dateTimeConversionHandler = (date: string) => {
   return moment(date).format('DD-MM-YYYY hh:mm:ss');
 };
 
 export const columns: Column[] = [
-  { id: 'id', label: 'Id', minWidth: 40 },
   { id: 'uuid', label: 'UUID', minWidth: 100 },
   {
     id: 'name',
@@ -27,70 +23,64 @@ export const columns: Column[] = [
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'imageUrl',
-    label: 'Image URL',
+    id: 'saleEnabled',
+    label: 'Sale Enabled',
     minWidth: 130,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'contractId',
-    label: 'Contract ID',
-    minWidth: 60,
-    align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'tokenId',
-    label: 'Token ID',
-    minWidth: 60,
-    align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'ticketProvider',
-    label: 'Ticket Provider',
-    minWidth: 60,
-    align: 'center',
-    name: true,
-  },
-  {
-    id: 'user',
-    label: 'User ID',
-    minWidth: 60,
-    align: 'center',
-    name: true,
-  },
-  {
-    id: 'status',
-    label: 'Status',
-    minWidth: 40,
-    align: 'center',
-    format: (value: number) => value.toFixed(2),
-  },
-  {
-    id: 'ipfsUri',
-    label: 'IPFS URI',
+    id: 'saleAmount',
+    label: 'Sale Amount',
     minWidth: 130,
     align: 'center',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'type',
-    label: 'Type',
-    minWidth: 150,
-    align: 'center',
-  },
-  {
-    id: 'dateStart',
-    label: 'Started At',
+    id: 'saleEnabledFromDate',
+    label: 'Sale Enabled From',
     minWidth: 150,
     align: 'center',
     dateFormater: (value: string) => dateConversionHandler(value),
   },
   {
-    id: 'dateEnd',
-    label: 'ended At',
+    id: 'saleEnabledToDate',
+    label: 'Sale Enabled To',
+    minWidth: 150,
+    align: 'center',
+    dateFormater: (value: string) => dateConversionHandler(value),
+  },
+  {
+    id: 'resaleEnabled',
+    label: 'Resale Enabled',
+    minWidth: 130,
+    align: 'center',
+    format: (value: number) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'resaleMaxPrice',
+    label: 'Resale Max Price',
+    minWidth: 120,
+    align: 'center',
+    format: (value: number) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'resaleMinPrice',
+    label: 'Resale Min Price',
+    minWidth: 120,
+    align: 'center',
+    format: (value: number) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'resaleEnabledFromDate',
+    label: 'Resale Enabled From',
+    minWidth: 150,
+    align: 'center',
+    dateFormater: (value: string) => dateConversionHandler(value),
+  },
+  {
+    id: 'resaleEnabledToDate',
+    label: 'Resale Enabled To',
     minWidth: 150,
     align: 'center',
     dateFormater: (value: string) => dateConversionHandler(value),
@@ -100,12 +90,13 @@ export const columns: Column[] = [
     label: 'Created At',
     minWidth: 150,
     align: 'center',
-    dateFormater: (value: string) => dateTimeConversionHandler(value),
+    dateFormater: (value: string) => dateConversionHandler(value),
   },
   {
-    id: 'errorData',
-    label: 'Error Data',
-    minWidth: 120,
+    id: 'updatedAt',
+    label: 'Updated At',
+    minWidth: 150,
     align: 'center',
-  }
+    dateFormater: (value: string) => dateConversionHandler(value),
+  },
 ];
