@@ -4,11 +4,11 @@ import { useQuery } from 'react-query';
 import { styled } from '@mui/material/styles';
 import Title from '../../components/Title/index';
 import DataTable from '../../components/DataTable/index';
-import { columns } from './table-columns'
+import { columns } from './table-columns';
 import { getOrders, getOrderByUuid } from '../../services/app/orders-service';
 import { errorHandler } from '../../utils/network/error-handler';
 import { AxiosError } from 'axios';
-import OrderDetailsModal from './OrderDetailsModal'
+import OrderDetailsModal from './OrderDetailsModal';
 
 interface OrdersPageProps {}
 
@@ -18,7 +18,7 @@ const PageContent = styled('div')(({ theme }) => ({
 
 const OrdersPage: FC<OrdersPageProps> = () => {
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
 
   const [tableSize, setTableSize] = useState({
     default: 10,
@@ -35,58 +35,63 @@ const OrdersPage: FC<OrdersPageProps> = () => {
 
   const [openOrderModal, setOpenOrderModal] = useState({
     value: false,
-    orderUuid: ''
-  })
-
-  const [orderDetail, setOrderDetail] = useState<any>('')
-
-
-  const getOrderQuery = useQuery(['orders', tableSize.default], async () => getOrders({limit: tableSize.default, location}),{
-    onSuccess: (data) => {
-      setOrders(data)
-    },
-    onError: (err: AxiosError) => errorHandler(err, navigate),
-    refetchOnWindowFocus: true,
+    orderUuid: '',
   });
 
-  const getOrderByUuidQuery = useQuery(['orderUuid', openOrderModal.value], () => getOrderByUuid(openOrderModal.orderUuid, location), {
-    onSuccess: (data) => {
-      console.log('this is the data: ', data);
-      setOrderDetail(data);
+  const [orderDetail, setOrderDetail] = useState<any>('');
+
+  const getOrderQuery = useQuery(
+    ['orders', tableSize.default],
+    async () => getOrders({ limit: tableSize.default, location }),
+    {
+      onSuccess: (data) => {
+        setOrders(data);
+      },
+      onError: (err: AxiosError) => errorHandler(err, navigate),
+      refetchOnWindowFocus: true,
     },
-    onError: () => (err: AxiosError) => errorHandler(err, navigate),
-    enabled: openOrderModal.orderUuid ? true :false
-  })
+  );
+
+  const getOrderByUuidQuery = useQuery(
+    ['orderUuid', openOrderModal.value],
+    () => getOrderByUuid(openOrderModal.orderUuid, location),
+    {
+      onSuccess: (data) => {
+        setOrderDetail(data[0]);
+      },
+      onError: () => (err: AxiosError) => errorHandler(err, navigate),
+      enabled: openOrderModal.orderUuid ? true : false,
+    },
+  );
 
   const orderModalHandler = (row: any) => {
     setOpenOrderModal(() => {
       return {
         value: true,
-        orderUuid: row.uuid
-      }
-    })
-
-  }
-
+        orderUuid: row.uuid,
+      };
+    });
+  };
 
   return (
     <>
       <PageContent>
-        <Title title='Orders'/>
+        <Title title="Orders" />
       </PageContent>
       <DataTable
         data={orders?.data.length ? orders : []}
         columns={columns}
-        buttonText={location.pathname.split('/')[1] === 'validate-web-backend' ? '' : "Create"}
+        buttonText={location.pathname.split('/')[1] === 'validate-web-backend' ? '' : 'Create'}
         rowClickHandler={orderModalHandler}
       />
-      <OrderDetailsModal 
+      <OrderDetailsModal
         openModal={openOrderModal.value}
-        closeModal={() => setOpenOrderModal({value: false, orderUuid: ''})}
+        closeModal={() => setOpenOrderModal({ value: false, orderUuid: '' })}
         title="Order Detail"
+        orderDetail={orderDetail}
       />
     </>
-  )
-}
+  );
+};
 
 export default OrdersPage;
