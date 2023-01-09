@@ -259,9 +259,9 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
                       <p>{quantity || "Null"}</p>
                     </Grid>
                   </Grid>
-                  <LeftTypoGraphy>
+                  <CenteredTypoGraphy>
                     <h2>Tickets: </h2>
-                  </LeftTypoGraphy>
+                  </CenteredTypoGraphy>
                   {returnTickets(tickets)}
                 </>
               )
