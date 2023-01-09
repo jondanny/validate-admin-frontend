@@ -71,6 +71,7 @@ const OrdersPage: FC<OrdersPageProps> = () => {
         orderUuid: row.uuid,
       };
     });
+    navigate(`/validate-web-backend/orders/${row.uuid}`)
   };
 
   return (

@@ -28,7 +28,6 @@ export const getOrders = async ( { limit, ticketProviderId, location }: getOrder
 
 
 export const getOrderByUuid = async (orderUuid: string, location: any) => {
-  console.log({orderUuid})
   const { pathname } = location;
   let path = 'validate-web-backend';
 
