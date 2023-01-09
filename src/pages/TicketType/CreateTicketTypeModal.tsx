@@ -162,6 +162,22 @@ const CreateTicketTypeModal: React.FC<CreateTicketModalProps> = ({
               </LocalizationProvider>
             </Grid>
           </Grid>
+          <br />
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                required
+                id="ticketType"
+                name="type"
+                label="Description"
+                fullWidth
+                autoComplete="given-name"
+                variant="standard"
+                onChange={(e) => inputValueHandler('description', e.target.value)}
+              />
+
+            </Grid>
+          </Grid>
 
 
           <div style={{ display: saleEnabled.saleEnabled ? 'block' : 'none' }}>

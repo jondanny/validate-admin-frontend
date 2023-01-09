@@ -30,7 +30,8 @@ export interface CreateTicketTypeInterface {
   resaleEnabledFromDate?: string;
   resaleEnabledToDate?: string;
   resaleCurrency?: string;
-  saleCurrency?: string
+  saleCurrency?: string;
+  description: string;
 }
 
 const PageContent = styled('div')(({ theme }) => ({
@@ -81,6 +82,7 @@ const TicketType: FC<TicketTypeInterface> = () => {
     name: '',
     ticketDateStart: '',
     ticketDateEnd: '',
+    description: '',
   })
 
   const [currencies, setCurrencies] = useState([])
@@ -176,7 +178,7 @@ const TicketType: FC<TicketTypeInterface> = () => {
   }
 
   const createTicketType = () => {
-    const { eventId, name, ticketDateStart, ticketDateEnd} = ticketTypeValues;
+    const { eventId, name, ticketDateStart, ticketDateEnd, description} = ticketTypeValues;
     const {saleEnabled, saleEnableValues} = saleEnabledState;
     const { saleAmount, saleEnabledFromDate, saleEnabledToDate } = saleEnableValues;
     const {resaleEnabled, resaleEnableValues} = resaleEnabledState;
@@ -200,7 +202,8 @@ const TicketType: FC<TicketTypeInterface> = () => {
       eventUuid: eventId,
       name,
       ticketDateStart,
-      ticketDateEnd
+      ticketDateEnd,
+      description
     }
     if(saleEnabled){
       if(!saleAmount || !saleEnabledFromDate || !saleEnabledToDate){
@@ -261,6 +264,9 @@ const TicketType: FC<TicketTypeInterface> = () => {
         break;
       case 'dateStart':
         newValues.ticketDateStart = value;
+        break;
+      case 'description':
+        newValues.description = value;
         break;
       default: 
         newValues.ticketDateEnd = value;
