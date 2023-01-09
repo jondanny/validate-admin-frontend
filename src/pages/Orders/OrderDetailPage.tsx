@@ -45,16 +45,16 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
   const [ primaryPurchaseTickets, setPrimaryPurchaseTickets ] = useState<any>()
 
   useEffect(() => {
-    const urlArray = location.pathname.split('/');
+    const urlArray = location?.pathname?.split('/');
     const uuid = urlArray[urlArray.length - 1];
 
     uuid && setOrderUuid(uuid);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const getOrderDetails = useQuery(['orderDetails'], () => getOrderByUuid(orderUuid, location),{
+  useQuery(['orderDetails'], () => getOrderByUuid(orderUuid, location),{
     onSuccess: (data) => {
       const {buyer, seller, payment, primaryPurchases } = data;
-      const { quantity, tickets } = primaryPurchases;
       let keys = Object.keys(data);
       let nonObjectArr: any = [];
       let sellers: any = []
@@ -63,7 +63,7 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
       let primaryPurchaseTicket:any = [];
 
 
-      const nonObjectKeys = keys.filter((key) => {
+      keys.forEach((key) => {
         if(!isObject(data[`${key}`])){
           const result = key.replace(/([A-Z])/g, " $1");
           const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
@@ -146,7 +146,7 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
 
 
   const returnTickets = (tickets: any) => {
-    return tickets?.map((ticket: any) => (
+    return tickets?.length > 0 && tickets?.map((ticket: any) => (
       <Grid container spacing={3}>
         <Grid item pl={20} xs={6} sm={6} lg={6}>
           <h3>{ticket.title}</h3>
@@ -155,9 +155,7 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
           <p>{ticket.data || "Null"}</p>
         </Grid>
       </Grid>
-
     ))
-
   }
 
   return (
