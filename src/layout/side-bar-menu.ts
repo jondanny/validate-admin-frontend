@@ -5,6 +5,7 @@ import ApiIcon from '@mui/icons-material/Api';
 import BusinessIcon from '@mui/icons-material/Business';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import EventIcon from '@mui/icons-material/Event';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 
 export const sideBarWebMenu = [
   { title: 'Users', icon: PeopleIcon, path: '/validate-backend/users' },
@@ -22,4 +23,5 @@ export const sideBarBackendMenu = [
   { title: 'Tickets', icon: InboxIcon, path: '/validate-web-backend/ticket' },
   { title: 'Ticket Providers', icon: BusinessIcon, path: '/validate-web-backend/ticket-provider' },
   { title: 'Events', icon: EventIcon, path: '/validate-web-backend/events'},
+  { title: 'Orders', icon: LocalGroceryStoreIcon, path: '/validate-web-backend/orders'},
 ]

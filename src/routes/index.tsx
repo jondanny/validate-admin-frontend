@@ -8,6 +8,8 @@ import TicketProviderEncryptionKey from '../pages/TicketProviderEncryptionKey';
 import Events from '../pages/Events'
 import Landing from '../pages/Landing';
 import TicketType from '../pages/TicketType/index'
+import Orders from '../pages/Orders';
+import OrdersDetailPage from '../pages/Orders/OrderDetailPage';
 
 export const protectedRoutes = [
   {
@@ -30,6 +32,14 @@ export const protectedRoutes = [
   {
     webPath: '/validate-web-backend/events',
     element: Events
+  },
+  {
+    webPath: '/validate-web-backend/orders',
+    element: Orders,
+  },
+  {
+    webPath: '/validate-web-backend/orders/:uuid',
+    element: OrdersDetailPage,
   }
 ];
 export const protectedBackendRoutes = [

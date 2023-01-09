@@ -65,6 +65,7 @@ interface DataTableProps {
   retryButtonClickHandler?: (data: any) => void;
   eventsFilterValue?: string;
   events?: any;
+  rowClickHandler?: (row: any) => void
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -86,8 +87,16 @@ const DataTable: React.FC<DataTableProps> = ({
   eventsHandler,
   eventsFilterValue,
   events,
+  rowClickHandler,
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
+
+  const rowClicked = (row: any) => {
+    if(rowClickHandler){
+      rowClickHandler(row);
+    }
+    return;
+  }
   return (
     <>
       <TableFilters>
@@ -172,10 +181,10 @@ const DataTable: React.FC<DataTableProps> = ({
           <TableBody>
             {data?.data?.map((row: any) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.code} onClick={() => rowClicked(row)}>
                   {columns.map((column: any) => {
                     let value = column?.name
-                      ? row[column.id]?.name || row?.event?.name || 'N/A'
+                      ? row[column.id]?.name || row?.event?.name || row?.payment?.externalStatus || 'N/A'
                       : column.id === 'delete' || column.id === 'update' || column.id === 'delete/update'
                       ? column.id
                       : row[column.id] || 'N/A';
