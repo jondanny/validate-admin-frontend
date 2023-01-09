@@ -7,7 +7,7 @@ import { getOrderByUuid } from '../../services/app/orders-service';
 import { styled } from '@mui/material/styles';
 import Title from '../../components/Title/index';
 import { Box, Grid } from '@mui/material';
-import { isObject, isArray, isPlainObject } from 'lodash';
+import { isObject} from 'lodash';
 
 
 interface OrderDetailPageProps {}
@@ -28,15 +28,21 @@ const CenteredTypoGraphy = styled('div')(({ theme }) => ({
   marginTop: '2rem'
 }))
 
+const LeftTypoGraphy = styled('div')(({ theme }) => ({
+  paddingLeft: '1rem',
+  marginTop: '2rem'
+}))
+
 const OrderDetailPage: FC<OrderDetailPageProps> = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [ orderUuid, setOrderUuid ] = useState('');
   const [ orderData, setOrderData ] = useState<any>({})
   const [ filteredKeys, setFilteredKeys ] = useState<any>()
-  const [ buyers, setBuyers ] = useState<any>()
-  const [ sellers, setSellers ] = useState<any>()
-  const [ payments, setPayments ] = useState<any>()
+  const [ buyer, setBuyer ] = useState<any>()
+  const [ seller, setSeller ] = useState<any>()
+  const [ payment, setPayment ] = useState<any>()
+  const [ primaryPurchaseTickets, setPrimaryPurchaseTickets ] = useState<any>()
 
   useEffect(() => {
     const urlArray = location.pathname.split('/');
@@ -48,11 +54,13 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
   const getOrderDetails = useQuery(['orderDetails'], () => getOrderByUuid(orderUuid, location),{
     onSuccess: (data) => {
       const {buyer, seller, payment, primaryPurchases } = data;
+      const { quantity, tickets } = primaryPurchases;
       let keys = Object.keys(data);
       let nonObjectArr: any = [];
       let sellers: any = []
       let buyers: any = []
       let payments: any = []
+      let primaryPurchaseTicket:any = [];
 
 
       const nonObjectKeys = keys.filter((key) => {
@@ -70,7 +78,7 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
 
       setFilteredKeys(nonObjectArr)
 
-      Object.keys(buyer)?.forEach((key) => {
+       buyer && Object.keys(buyer)?.forEach((key) => {
           const result = key.replace(/([A-Z])/g, " $1");
           const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
           
@@ -80,9 +88,9 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
             title: finalResult
           })
       })
-      setBuyers(buyers)
+      setBuyer(buyers)
 
-      Object.keys(seller)?.forEach((key) => {
+      seller && Object.keys(seller)?.forEach((key) => {
           const result = key.replace(/([A-Z])/g, " $1");
           const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
           
@@ -93,9 +101,9 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
           })
       })
 
-      setSellers(sellers)
+      setSeller(sellers)
       
-      Object.keys(payment)?.forEach((key) => {
+      payment && Object.keys(payment)?.forEach((key) => {
           const result = key.replace(/([A-Z])/g, " $1");
           const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
 
@@ -106,12 +114,51 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
           })
       })
 
-      setPayments(payments)
+      primaryPurchases?.length > 0 && primaryPurchases.forEach(({quantity, tickets: primaryTickets}: any) => {
+        let obj: any = {
+          quantity: '',
+          tickets: []
+        };
+        obj.quantity = quantity;
+
+        primaryTickets.forEach((ticket: any) => {
+          Object.keys(ticket)?.forEach((key) => {
+            const result = key.replace(/([A-Z])/g, " $1");
+            const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+
+            obj?.tickets?.push({
+              name: key,
+              data: ticket[key],
+              title: finalResult
+            })
+          })
+        })
+        primaryPurchaseTicket.push(obj)
+      })
+
+      setPrimaryPurchaseTickets(primaryPurchaseTicket)
+      setPayment(payments)
       setOrderData(data);
     },
     onError: (err: AxiosError) => errorHandler(err, navigate),
     enabled: !orderUuid ? false : true
   })
+
+
+  const returnTickets = (tickets: any) => {
+    return tickets?.map((ticket: any) => (
+      <Grid container spacing={3}>
+        <Grid item pl={20} xs={6} sm={6} lg={6}>
+          <h3>{ticket.title}</h3>
+        </Grid>
+        <Grid item pl={20} xs={6} sm={6} lg={6}>
+          <p>{ticket.data || "Null"}</p>
+        </Grid>
+      </Grid>
+
+    ))
+
+  }
 
   return (
     <>
@@ -143,7 +190,7 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
           </CenteredTypoGraphy>
           
           {
-            buyers?.map((buyerKey: any) => {
+            buyer?.map((buyerKey: any) => {
               const { buyer } = orderData || {}; 
               return buyer ? (
                 <Grid container spacing={3}>
@@ -158,11 +205,13 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
             })
           }
 
-          <CenteredTypoGraphy>
-            <h1>Seller Details</h1>
-          </CenteredTypoGraphy>
           {
-            sellers?.map((sellerKey: any) => {
+            seller?.length && <CenteredTypoGraphy>
+              <h1>Seller Details</h1>
+            </CenteredTypoGraphy>
+          }
+          {
+            seller?.map((sellerKey: any) => {
               const { seller } = orderData || {}; 
               return seller ? (
                 <Grid container spacing={3}>
@@ -181,7 +230,7 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
             <h1>Payment Details</h1>
           </CenteredTypoGraphy>
           {
-            payments?.map((paymentKey: any) => {
+            payment?.map((paymentKey: any) => {
               const { payment } = orderData || {}; 
               return payment ? (
                 <Grid container spacing={3}>
@@ -193,6 +242,31 @@ const OrderDetailPage: FC<OrderDetailPageProps> = () => {
                   </Grid>
                 </Grid>
               ) : null
+            })
+          }
+
+          <CenteredTypoGraphy>
+            <h1>Primary Purchases</h1>
+          </CenteredTypoGraphy>
+          
+          {
+            primaryPurchaseTickets?.map(({quantity, tickets}: any) =>{
+              return (
+                <>
+                  <Grid container spacing={3}>
+                    <Grid item pl={20} xs={6} sm={6} lg={6}>
+                      <h3>Quantity</h3>
+                    </Grid>
+                    <Grid item pl={20} xs={6} sm={6} lg={6}>
+                      <p>{quantity || "Null"}</p>
+                    </Grid>
+                  </Grid>
+                  <LeftTypoGraphy>
+                    <h2>Tickets: </h2>
+                  </LeftTypoGraphy>
+                  {returnTickets(tickets)}
+                </>
+              )
             })
           }
         </BoxedContent>
