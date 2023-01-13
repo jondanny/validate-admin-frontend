@@ -41,10 +41,15 @@ export const getTicketProviders = async ({location}: any) => {
     path = 'validate-admin-backend'
   }
 
-  const response = await network.get({
-    path: `/${path}/ticket-providers/get-all`,
-  });
-  return response?.data;
+  try {
+    
+    const response = await network.get({
+      path: `/${path}/ticket-providers/get-all`,
+    });
+    return response?.data;
+  }catch(err: any){
+    return err;
+  }
 };
 
 export const createEventService = async (data: createEvent, location: any) => {

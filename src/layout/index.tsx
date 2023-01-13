@@ -29,6 +29,7 @@ import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { getAccessTokenHandler } from '../services/auth/access-token-service'
+import { getTicketProviders } from '../services/app/events-service';
 
 
 const drawerWidth = 240;
@@ -92,7 +93,10 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
 
   React.useEffect(() => {
     const refreshTokenApiHandler = async () => {
-      await getAccessTokenHandler(navigate);
+      const ticketProviders = await getTicketProviders({location})
+      if(ticketProviders?.response?.status === 401){
+        await getAccessTokenHandler(navigate);
+      }
     }
     if(location.pathname.split('/').length > 0){
       refreshTokenApiHandler()
