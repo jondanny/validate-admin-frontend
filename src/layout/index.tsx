@@ -21,13 +21,14 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { sideBarWebMenu, sideBarBackendMenu } from './side-bar-menu';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { deleteAccessToken, deleteRefreshToken } from '../utils/auth';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { logoutServiceHandler } from '../services/auth/logout-services';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { getAccessTokenHandler } from '../services/auth/access-token-service'
 
 
 const drawerWidth = 240;
@@ -84,9 +85,20 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function AdminLayout({ children }: React.PropsWithChildren) {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [openMenu, setOpenMenu] = React.useState({web:false, backend: false})
+
+  React.useEffect(() => {
+    const refreshTokenApiHandler = async () => {
+      await getAccessTokenHandler(navigate);
+    }
+    if(location.pathname.split('/').filter((e) => e !== '').length > 0){
+      refreshTokenApiHandler()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const mutation = useMutation(() => logoutServiceHandler({refreshToken: Cookies.get('refreshToken')}), {
     onSuccess: (data) => {
@@ -118,6 +130,8 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  
 
   return (
     <Box sx={{ display: 'flex' }}>
