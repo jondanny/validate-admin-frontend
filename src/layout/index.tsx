@@ -94,7 +94,7 @@ export default function AdminLayout({ children }: React.PropsWithChildren) {
     const refreshTokenApiHandler = async () => {
       await getAccessTokenHandler(navigate);
     }
-    if(location.pathname.split('/').filter((e) => e !== '').length > 0){
+    if(location.pathname.split('/').length > 0){
       refreshTokenApiHandler()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
