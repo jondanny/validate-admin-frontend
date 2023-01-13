@@ -115,7 +115,7 @@ const TicketType: FC<TicketTypeInterface> = () => {
     }
   })
 
-  const getTicketTypesQuery = useQuery(['ticket-types', tableSize.default, eventsFilterValue], () => getTicketTypes({limit: tableSize.default, location, eventUuid: eventsFilterValue}), {
+  const getTicketTypesQuery = useQuery([location.pathname.split('/').includes('validate-backend') ? 'ticket-types' : 'ticket-type', tableSize.default, eventsFilterValue], () => getTicketTypes({limit: tableSize.default, location, eventUuid: eventsFilterValue}), {
     onSuccess: (data) => {
       setTicketTypes(data)
     },

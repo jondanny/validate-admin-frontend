@@ -37,6 +37,13 @@ export const columns: Column[] = [
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
+    id: 'saleAmountAvailable',
+    label: 'Sale Amount Available',
+    minWidth: 150,
+    align: 'center',
+    format: (value: number) => value.toLocaleString('en-US'),
+  },
+  {
     id: 'saleEnabledFromDate',
     label: 'Sale Enabled From',
     minWidth: 150,

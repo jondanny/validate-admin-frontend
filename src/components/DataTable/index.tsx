@@ -65,7 +65,9 @@ interface DataTableProps {
   retryButtonClickHandler?: (data: any) => void;
   eventsFilterValue?: string;
   events?: any;
-  rowClickHandler?: (row: any) => void
+  rowClickHandler?: (row: any) => void;
+  inputChangeHandler?: (field: string, marketType: any) => void;
+  orderValues?: any
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -88,8 +90,11 @@ const DataTable: React.FC<DataTableProps> = ({
   eventsFilterValue,
   events,
   rowClickHandler,
+  inputChangeHandler,
+  orderValues
 }) => {
   const [searchedValue, setSearchedValue] = useState('');
+  const [buyerInputValue, setBuyerInputValue] = useState('');
 
   const rowClicked = (row: any) => {
     if(rowClickHandler){
@@ -113,6 +118,34 @@ const DataTable: React.FC<DataTableProps> = ({
                 searchHandler(e.target.value);
               }}
             />
+          )}
+          {inputChangeHandler && (
+            <>
+              <TextField
+                label="Buyer Email/PhoneNumber"
+                id="outlined-size-small"
+                defaultValue="Small"
+                size="small"
+                style={{width: '12rem'}}
+                value={buyerInputValue}
+                onChange={(e) => {
+                  setBuyerInputValue(e.target.value);
+                  inputChangeHandler('buyer_input_value', e.target.value);
+                }}
+              />
+              <TextField
+                label="Payment Id"
+                id="outlined-size-small"
+                defaultValue="Small"
+                size="small"
+                style={{marginLeft: '1.5rem'}}
+                value={searchedValue}
+                onChange={(e) => {
+                  setSearchedValue(e.target.value);
+                  inputChangeHandler('payment_id', e.target.value);
+                }}
+              />
+            </>
           )}
           {tickProviderHandler && ticketProviders && (
             <TicketProviderFilter>
@@ -152,6 +185,69 @@ const DataTable: React.FC<DataTableProps> = ({
               </Select>
             </TicketProviderFilter>
           )}
+          {
+            inputChangeHandler && orderValues.marketType && (
+              <TicketProviderFilter>
+                <InputLabel id="events" style={{ marginLeft: '2rem' }}>
+                  MarketType
+                </InputLabel>
+                <Select
+                  value={eventsFilterValue}
+                  onChange={(e) => inputChangeHandler('market_type', e.target.value as string)}
+                  style={{ marginLeft: '2rem', width: '11rem' }}
+                  size="small"
+                  defaultValue="All"
+                  labelId="events"
+                >
+                  {orderValues?.marketType?.map((market: any) => {
+                    return <MenuItem value={market}>{market}</MenuItem>;
+                  })}
+                </Select>
+              </TicketProviderFilter>
+            )
+          }
+          {
+            inputChangeHandler && orderValues.orderStatus && (
+              <TicketProviderFilter>
+                <InputLabel id="events" style={{ marginLeft: '2rem' }}>
+                  Order Status
+                </InputLabel>
+                <Select
+                  value={eventsFilterValue}
+                  onChange={(e) => inputChangeHandler('order_status', e.target.value as string)}
+                  style={{ marginLeft: '2rem', width: '11rem' }}
+                  size="small"
+                  defaultValue="All"
+                  labelId="events"
+                >
+                  {orderValues?.orderStatus?.map((status: any) => {
+                    return <MenuItem value={status}>{status}</MenuItem>;
+                  })}
+                </Select>
+              </TicketProviderFilter>
+            )
+          }
+          {
+            inputChangeHandler && orderValues.paymentExternalStatus && (
+              <TicketProviderFilter>
+                <InputLabel id="events" style={{ marginLeft: '2rem' }}>
+                  Payment Status
+                </InputLabel>
+                <Select
+                  value={eventsFilterValue}
+                  onChange={(e) => inputChangeHandler('payment_external_status', e.target.value as string)}
+                  style={{ marginLeft: '2rem', width: '11rem' }}
+                  size="small"
+                  defaultValue="All"
+                  labelId="events"
+                >
+                  {orderValues?.paymentExternalStatus?.map((paymentStatus: any) => {
+                    return <MenuItem value={paymentStatus}>{paymentStatus}</MenuItem>;
+                  })}
+                </Select>
+              </TicketProviderFilter>
+            )
+          }
         </Filters>
         {buttonText && (
           <Button variant="contained" color="primary" onClick={createClickHandler}>
