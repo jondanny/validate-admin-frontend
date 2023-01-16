@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import network from "../../utils/network";
 
 interface getOrdersParams {
@@ -5,9 +6,11 @@ interface getOrdersParams {
   ticketProviderId?: string
   location?: any;
   orderSearchedParams?: any
+  afterCursor?: string;
+  beforeCursor?: string;
 }
 
-export const getOrders = async ( { limit, ticketProviderId, location, orderSearchedParams }: getOrdersParams ) => {
+export const getOrders = async ( { limit, ticketProviderId, location, orderSearchedParams, afterCursor, beforeCursor }: getOrdersParams ) => {
   const { pathname } = location;
   let params: { [key: string]: any } = {};
   let path = 'validate-web-backend';
@@ -17,6 +20,9 @@ export const getOrders = async ( { limit, ticketProviderId, location, orderSearc
   orderSearchedParams.externalStatus && orderSearchedParams.externalStatus !== 'All' && (params.paymentStatus = orderSearchedParams.externalStatus);
   orderSearchedParams.buyerValues && (params.buyerInputValue = orderSearchedParams.buyerValues);
   orderSearchedParams.paymentId && (params.paymentExternalId = orderSearchedParams.paymentId);
+  
+  afterCursor ? (params.afterCursor = afterCursor) : '';
+  beforeCursor ? (params.beforeCursor = beforeCursor) : '';
 
   ticketProviderId && (params.ticketProviderId = ticketProviderId)
 

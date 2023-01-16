@@ -64,8 +64,13 @@ const OrdersPage: FC<OrdersPageProps> = () => {
   })
 
   const getOrderQuery = useQuery(
-    ['orders', tableSize.default, orderSearchedValues],
-    async () => getOrders({ limit: tableSize.default, location, orderSearchedParams: orderSearchedValues }),
+    ['orders', tableSize.default, orderSearchedValues, currentCursor.value],
+    async () => getOrders({ 
+      limit: tableSize.default,
+      location,
+      orderSearchedParams: orderSearchedValues,
+      afterCursor: currentCursor.name === 'next' ? currentCursor.value : '',
+      beforeCursor: currentCursor.name === 'previuous' ? currentCursor.value : '', }),
     {
       onSuccess: (data) => {
         setOrders(data);
