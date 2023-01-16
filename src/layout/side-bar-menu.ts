@@ -21,6 +21,7 @@ export const sideBarWebMenu = [
 export const sideBarBackendMenu = [
   { title: 'Users', icon: PeopleIcon, path: '/validate-web-backend/users' },
   { title: 'Tickets', icon: InboxIcon, path: '/validate-web-backend/ticket' },
+  { title: 'Ticket Type', icon: EventIcon, path: '/validate-web-backend/ticket-types'},
   { title: 'Ticket Providers', icon: BusinessIcon, path: '/validate-web-backend/ticket-provider' },
   { title: 'Events', icon: EventIcon, path: '/validate-web-backend/events'},
   { title: 'Orders', icon: LocalGroceryStoreIcon, path: '/validate-web-backend/orders'},

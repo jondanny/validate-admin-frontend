@@ -3,14 +3,21 @@ import network from "../../utils/network";
 interface getOrdersParams {
   limit?: number,
   ticketProviderId?: string
-  location?: any
+  location?: any;
+  orderSearchedParams?: any
 }
 
-export const getOrders = async ( { limit, ticketProviderId, location }: getOrdersParams ) => {
+export const getOrders = async ( { limit, ticketProviderId, location, orderSearchedParams }: getOrdersParams ) => {
   const { pathname } = location;
   let params: { [key: string]: any } = {};
   let path = 'validate-web-backend';
   params.limit = limit;
+  orderSearchedParams.marketType && orderSearchedParams.marketType!== 'All' && (params.marketType = orderSearchedParams.marketType);
+  orderSearchedParams.status && orderSearchedParams.status !== 'All' && (params.orderStatus = orderSearchedParams.status);
+  orderSearchedParams.externalStatus && orderSearchedParams.externalStatus !== 'All' && (params.paymentStatus = orderSearchedParams.externalStatus);
+  orderSearchedParams.buyerValues && (params.buyerInputValue = orderSearchedParams.buyerValues);
+  orderSearchedParams.paymentId && (params.paymentExternalId = orderSearchedParams.paymentId);
+
   ticketProviderId && (params.ticketProviderId = ticketProviderId)
 
   if(pathname.split('/').includes('validate-backend')){

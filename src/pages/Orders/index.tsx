@@ -40,9 +40,32 @@ const OrdersPage: FC<OrdersPageProps> = () => {
 
   const [orderDetail, setOrderDetail] = useState<any>('');
 
+  const [currentCursor, setCurrentCursor] = useState({
+    name: '',
+    value: '',
+  });
+
+  const [orderSearchedValues, setOrderSearchedValues] = useState<any>({
+    marketType: '',
+    status: '',
+    externalStatus: '',
+    buyerValues: '',
+    paymentId: '',
+  })
+
+  const [ orderStatus, setOrdersStatus ] = useState<any>({
+    marketType: [
+      'All', 'primary', 'secondary'
+    ],
+    orderStatus: [
+      'All', 'created', 'paid', 'canceled', 'completed'
+    ],
+    paymentExternalStatus: [ 'All', 'pending', 'error', 'completed', 'declined']
+  })
+
   const getOrderQuery = useQuery(
-    ['orders', tableSize.default],
-    async () => getOrders({ limit: tableSize.default, location }),
+    ['orders', tableSize.default, orderSearchedValues],
+    async () => getOrders({ limit: tableSize.default, location, orderSearchedParams: orderSearchedValues }),
     {
       onSuccess: (data) => {
         setOrders(data);
@@ -74,6 +97,57 @@ const OrdersPage: FC<OrdersPageProps> = () => {
     navigate(`/validate-web-backend/orders/${row.uuid}`)
   };
 
+  const pageSizeHandler = (pageSize: number) => {
+    setTableSize({
+      ...tableSize,
+      default: pageSize,
+    });
+    getOrderQuery.refetch();
+  };
+
+  const changePageHandler = (changePage: string) => {
+    const { cursor } = orders || {};
+    const { afterCursor, beforeCursor } = cursor || {};
+    if (changePage === 'go_back' && beforeCursor !== '') {
+      setCurrentCursor({
+        name: 'previous',
+        value: beforeCursor,
+      });
+    } else {
+      if (afterCursor !== '') {
+        setCurrentCursor({
+          name: 'next',
+          value: afterCursor,
+        });
+      }
+    }
+    getOrderQuery.refetch();
+  };
+
+  const orderSearchHandler = (feild: string, value: any) => {
+
+    switch(feild) {
+      case 'market_type':
+        setOrderSearchedValues({...orderSearchedValues, marketType: value})
+        break;
+      case 'order_status':
+        setOrderSearchedValues({...orderSearchedValues, status: value})
+        break;
+      case 'payment_external_status':
+        setOrderSearchedValues({...orderSearchedValues, externalStatus: value})
+        break;
+      case 'buyer_input_value':
+        setOrderSearchedValues({...orderSearchedValues, buyerValues: value})
+        break;
+      case 'payment_id':
+        setOrderSearchedValues({...orderSearchedValues, paymentId: value})
+        break;
+      default:
+        break;
+    }
+
+  }
+
   return (
     <>
       <PageContent>
@@ -84,6 +158,11 @@ const OrdersPage: FC<OrdersPageProps> = () => {
         columns={columns}
         buttonText={location.pathname.split('/')[1] === 'validate-web-backend' ? '' : 'Create'}
         rowClickHandler={orderModalHandler}
+        pageSizeChangeHandler={(pageSize: number) => pageSizeHandler(pageSize)}
+        changePageHandler={changePageHandler}
+        tableSize={tableSize}
+        inputChangeHandler={orderSearchHandler}
+        orderValues={orderStatus}
       />
       <OrderDetailsModal
         openModal={openOrderModal.value}

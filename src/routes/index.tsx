@@ -40,7 +40,11 @@ export const protectedRoutes = [
   {
     webPath: '/validate-web-backend/orders/:uuid',
     element: OrdersDetailPage,
-  }
+  },
+  {
+    webPath: '/validate-web-backend/ticket-types',
+    element: TicketType,
+  },
 ];
 export const protectedBackendRoutes = [
   {
