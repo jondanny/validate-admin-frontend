@@ -1,10 +1,10 @@
-import network from "../../utils/network";
-import { CreateTicketTypeInterface } from '../../pages/TicketType/index'
+import network from '../../utils/network';
+import { CreateTicketTypeInterface } from '../../pages/TicketType/index';
 
 interface getTicketTypeParams {
-  limit?: number,
+  limit?: number;
   eventUuid?: string;
-  location?: any
+  location?: any;
 }
 
 export const getTicketTypes = async ({ limit, eventUuid, location }: getTicketTypeParams) => {
@@ -13,34 +13,35 @@ export const getTicketTypes = async ({ limit, eventUuid, location }: getTicketTy
   let params: { [key: string]: any } = {};
   let path = 'validate-web-backend';
   params.limit = limit;
-  if(eventUuid?.toString() !== alpha){
-    eventUuid &&  (params.eventUuid = eventUuid)
+  if (eventUuid?.toString() !== alpha) {
+    eventUuid && (params.eventUuid = eventUuid);
   }
 
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
   const response = await network.get({
-    path: `/${path}/ticket-types`,
+    // path: `/${path}/ticket-types`,
+    path: `/ticket-types`,
     options: {
       params,
     },
   });
 
   return response?.data;
-}
+};
 
-export const getTicketProviders = async ({location}: any) => {
-
+export const getTicketProviders = async ({ location }: any) => {
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
   const response = await network.get({
-    path: `/${path}/ticket-providers/get-all`,
+    // path: `/${path}/ticket-providers/get-all`,
+    path: `/ticket-providers/get-all`,
   });
   return response?.data;
 };
@@ -48,21 +49,23 @@ export const getTicketProviders = async ({location}: any) => {
 export const createTicketTypeService = async (data: CreateTicketTypeInterface, location: any) => {
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
-  const response = await network.post(`/${path}/ticket-types`, data);
+  // const response = await network.post(`/${path}/ticket-types`, data);
+  const response = await network.post(`/ticket-types`, data);
   return response?.data;
-}
+};
 
-export const getCurrencies = async(location: any) => {
+export const getCurrencies = async (location: any) => {
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
-  const response = await network.get({path: `/${path}/ticket-types/currencies`})
+  // const response = await network.get({ path: `/${path}/ticket-types/currencies` });
+  const response = await network.get({ path: `/ticket-types/currencies` });
   return response?.data;
-}
+};

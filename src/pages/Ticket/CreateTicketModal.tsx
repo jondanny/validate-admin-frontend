@@ -111,6 +111,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                 autoComplete
                 includeInputInList
                 onChange={(e: any, newValue: optionType | null) => {
+                  console.log('this is the fucking shit: ', newValue);
                   inputValueHandler('eventId', newValue ? newValue?.id : '');
                 }}
                 renderInput={(params) => (

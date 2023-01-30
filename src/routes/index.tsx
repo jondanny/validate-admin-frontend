@@ -11,42 +11,46 @@ import TicketType from '../pages/TicketType/index'
 import Orders from '../pages/Orders';
 import OrdersDetailPage from '../pages/Orders/OrderDetailPage';
 
-export const protectedRoutes = [
+// export const protectedRoutes = [
+//   {
+//     webPath: '/',
+//     element: Landing,
+//   },
+//   {
+//     webPath: '/validate-web-backend/ticket-provider',
+//     element: TicketProvider,
+//   },
+//   {
+//     webPath: '/validate-web-backend/ticket',
+//     element: Ticket,
+//   },
+//   {
+//     webPath: '/validate-web-backend/users',
+//     element: Users,
+//   },
+
+//   {
+//     webPath: '/validate-web-backend/events',
+//     element: Events
+//   },
+//   {
+//     webPath: '/validate-web-backend/orders',
+//     element: Orders,
+//   },
+//   {
+//     webPath: '/validate-web-backend/orders/:uuid',
+//     element: OrdersDetailPage,
+//   },
+//   {
+//     webPath: '/validate-web-backend/ticket-types',
+//     element: TicketType,
+//   },
+// ];
+export const protectedBackendRoutes = [
   {
-    webPath: '/',
+    backendPath: '/',
     element: Landing,
   },
-  {
-    webPath: '/validate-web-backend/ticket-provider',
-    element: TicketProvider,
-  },
-  {
-    webPath: '/validate-web-backend/ticket',
-    element: Ticket,
-  },
-  {
-    webPath: '/validate-web-backend/users',
-    element: Users,
-  },
-
-  {
-    webPath: '/validate-web-backend/events',
-    element: Events
-  },
-  {
-    webPath: '/validate-web-backend/orders',
-    element: Orders,
-  },
-  {
-    webPath: '/validate-web-backend/orders/:uuid',
-    element: OrdersDetailPage,
-  },
-  {
-    webPath: '/validate-web-backend/ticket-types',
-    element: TicketType,
-  },
-];
-export const protectedBackendRoutes = [
   {
     backendPath: '/validate-backend/ticket-provider',
     element: TicketProvider,
@@ -79,6 +83,14 @@ export const protectedBackendRoutes = [
     backendPath: '/validate-backend/ticket-types',
     element: TicketType,
   },
+  {
+    backendPath: '/validate-backend/orders',
+    element: Orders,
+  },
+  {
+    backendPath: '/validate-backend/orders/:uuid',
+    element: OrdersDetailPage,
+  }
 ];
 
 export const publicRoutes = [

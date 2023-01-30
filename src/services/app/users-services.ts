@@ -16,7 +16,7 @@ interface getTicketProviderParams {
   beforeCursor?: string;
   searchText?: string;
   ticketProviderId?: string;
-  location?: any
+  location?: any;
 }
 
 export const getUsers = async ({
@@ -25,7 +25,7 @@ export const getUsers = async ({
   beforeCursor,
   searchText,
   ticketProviderId,
-  location
+  location,
 }: getTicketProviderParams) => {
   let params: { [key: string]: any } = {};
 
@@ -43,12 +43,12 @@ export const getUsers = async ({
 
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
   const response = await network.get({
-    path: `/${path}/users`,
+    path: `/users`,
     options: {
       params,
     },
@@ -57,51 +57,47 @@ export const getUsers = async ({
 };
 
 export const createUser = async (data: createUserInterface, location: any) => {
-
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
-  const response = await network.post(`/${path}/users`, data);
+  const response = await network.post(`/users`, data);
   return response?.data;
 };
 
 export const updateUser = async (data: createUserInterface, userId: string, location: any) => {
-
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
-  const response = await network.patch(`/${path}/users/${userId}`, data);
+  const response = await network.patch(`/users/${userId}`, data);
   return response?.data;
 };
 
 export const deleteUser = async (id: string, location: any) => {
-  
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
-  const response = await network.delete(`/${path}/users/${id}`);
+  const response = await network.delete(`/users/${id}`);
   return response?.data;
 };
 
 export const getTicketProviders = async (location: any) => {
-
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
   const response = await network.get({
-    path: `/${path}/ticket-providers/get-all`,
+    path: `/ticket-providers/get-all`,
   });
   return response?.data;
 };

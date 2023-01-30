@@ -10,19 +10,15 @@ import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 export const sideBarWebMenu = [
   { title: 'Users', icon: PeopleIcon, path: '/validate-backend/users' },
   { title: 'Tickets', icon: InboxIcon, path: '/validate-backend/ticket' },
-  { title: 'Ticket Type', icon: EventIcon, path: '/validate-backend/ticket-types'},
+  { title: 'Ticket Type', icon: EventIcon, path: '/validate-backend/ticket-types' },
   { title: 'Ticket Providers', icon: BusinessIcon, path: '/validate-backend/ticket-provider' },
   { title: 'Ticket Provider Api Token', icon: ApiIcon, path: '/validate-backend/ticket-provider-api-token' },
-  { title: 'Ticket Provider Encryption Key', icon: VpnKeyIcon, path: '/validate-backend/ticket-provider-encryption-key' },
+  {
+    title: 'Ticket Provider Encryption Key',
+    icon: VpnKeyIcon,
+    path: '/validate-backend/ticket-provider-encryption-key',
+  },
   { title: 'Ticket Transfer Log', icon: SendIcon, path: '/validate-backend/ticket-transfer' },
-  { title: 'Events', icon: EventIcon, path: '/validate-backend/events'},
+  { title: 'Events', icon: EventIcon, path: '/validate-backend/events' },
+  { title: 'Orders', icon: LocalGroceryStoreIcon, path: '/validate-backend/orders' },
 ];
-
-export const sideBarBackendMenu = [
-  { title: 'Users', icon: PeopleIcon, path: '/validate-web-backend/users' },
-  { title: 'Tickets', icon: InboxIcon, path: '/validate-web-backend/ticket' },
-  { title: 'Ticket Type', icon: EventIcon, path: '/validate-web-backend/ticket-types'},
-  { title: 'Ticket Providers', icon: BusinessIcon, path: '/validate-web-backend/ticket-provider' },
-  { title: 'Events', icon: EventIcon, path: '/validate-web-backend/events'},
-  { title: 'Orders', icon: LocalGroceryStoreIcon, path: '/validate-web-backend/orders'},
-]

@@ -1,9 +1,9 @@
-import network from "../../utils/network";
+import network from '../../utils/network';
 
 interface getEventsParams {
-  limit?: number,
-  ticketProviderId?: string
-  location?: any
+  limit?: number;
+  ticketProviderId?: string;
+  location?: any;
 }
 
 interface createEvent {
@@ -13,54 +13,54 @@ interface createEvent {
   ticketProviderId: string | number;
 }
 
-export const getEvents = async ( { limit, ticketProviderId, location }: getEventsParams ) => {
+export const getEvents = async ({ limit, ticketProviderId, location }: getEventsParams) => {
   const { pathname } = location;
   let params: { [key: string]: any } = {};
   let path = 'validate-web-backend';
   params.limit = limit;
-  ticketProviderId && (params.ticketProviderId = ticketProviderId)
+  ticketProviderId && (params.ticketProviderId = ticketProviderId);
 
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
   const response = await network.get({
-    path: `/${path}/events`,
+    // path: `/${path}/events`,
+    path: `/events`,
     options: {
       params,
     },
   });
   return response?.data;
-}
+};
 
-export const getTicketProviders = async ({location}: any) => {
-
+export const getTicketProviders = async ({ location }: any) => {
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
   try {
-    
     const response = await network.get({
-      path: `/${path}/ticket-providers/get-all`,
+      // path: `/${path}/ticket-providers/get-all`,
+      path: `/ticket-providers/get-all`,
     });
     return response?.data;
-  }catch(err: any){
+  } catch (err: any) {
     return err;
   }
 };
 
 export const createEventService = async (data: createEvent, location: any) => {
-
   const { pathname } = location;
   let path = 'validate-web-backend';
-  if(pathname.split('/').includes('validate-backend')){
-    path = 'validate-admin-backend'
+  if (pathname.split('/').includes('validate-backend')) {
+    path = 'validate-admin-backend';
   }
 
-  const response = await network.post(`/${path}/events`, data);
+  // const response = await network.post(`/${path}/events`, data);
+  const response = await network.post(`/events`, data);
 
   return response?.data;
-}
+};
