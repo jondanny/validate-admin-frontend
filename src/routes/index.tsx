@@ -17,43 +17,43 @@ export const protectedBackendRoutes = [
     element: Landing,
   },
   {
-    backendPath: '/validate-backend/ticket-provider',
+    backendPath: '/ticket-provider',
     element: TicketProvider,
   },
   {
-    backendPath: '/validate-backend/ticket',
+    backendPath: '/ticket',
     element: Ticket,
   },
   {
-    backendPath: '/validate-backend/users',
+    backendPath: '/users',
     element: Users,
   },
   {
-    backendPath: '/validate-backend/events',
+    backendPath: '/events',
     element: Events
   },
   {
-    backendPath: '/validate-backend/ticket-provider-api-token',
+    backendPath: '/ticket-provider-api-token',
     element: TicketProviderApiToken,
   },
   {
-    backendPath: '/validate-backend/ticket-transfer',
+    backendPath: '/ticket-transfer',
     element: TicketTransfer,
   },
   {
-    backendPath: '/validate-backend/ticket-provider-encryption-key',
+    backendPath: '/ticket-provider-encryption-key',
     element: TicketProviderEncryptionKey,
   },
   {
-    backendPath: '/validate-backend/ticket-types',
+    backendPath: '/ticket-types',
     element: TicketType,
   },
   {
-    backendPath: '/validate-backend/orders',
+    backendPath: '/orders',
     element: Orders,
   },
   {
-    backendPath: '/validate-backend/orders/:uuid',
+    backendPath: '/orders/:uuid',
     element: OrdersDetailPage,
   }
 ];
