@@ -99,7 +99,7 @@ const OrdersPage: FC<OrdersPageProps> = () => {
         orderUuid: row.uuid,
       };
     });
-    navigate(`/validate-web-backend/orders/${row.uuid}`)
+    navigate(`/orders/${row.uuid}`)
   };
 
   const pageSizeHandler = (pageSize: number) => {
